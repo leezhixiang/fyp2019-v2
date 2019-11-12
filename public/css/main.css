@@ -1,0 +1,13 @@
+body {
+    background-color: greenyellow;
+}
+
+#navigation,
+.navbar-brand {
+    padding: 0px !important;
+}
+
+.nav-item a,
+.navbar-text a {
+    /* color: white !important; */
+}
