@@ -1,21 +1,35 @@
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #6769F0;" id="navigation">
-    <div class="container">
-        <a class="navbar-brand" href="/">
-            <img class="border" id="logo" src="/img/logo.png" alt="" height="56" width="56">
-        </a>
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link active" href="/">Discover</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/quizzes">Quizzes</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/reports">Reports</a>
-            </li>
-        </ul>
-        <span class="navbar-text mr-4">
-            <a href="/games/join-game" id="enterPIN">Enter Game PIN!</a>
-        </span>
-    </div>
+<nav id="navigation">
+    <a href="/">
+        <img class="border" id="logo" src="/img/logo.png" alt="" height="56" width="56">
+    </a>
+    <ul>
+        <li>
+            <a href="/">Discover</a>
+        </li>
+        <li>
+            <a href="/quizzes" id="quizzes">Quizzes</a>
+        </li>
+        <li>
+            <a href="/reports" id="reports">Reports</a>
+        </li>
+    </ul>
+    <ul id="user-nav">
+        <li>
+            <a href="/games/play-game" id="enterPIN">Enter Game PIN!</a>
+        </li>
+        <li>
+           <a href="#" id="logout">Logout</a>
+        </li>
+    </ul>
+    <ul id="guest-nav">
+        <li>
+            <a href="/games/play-game" id="enterPIN">Enter Game PIN!</a>
+        </li>
+        <li>
+            <a href="/users/login">Log In</a>
+        </li>
+        <li>
+            <a href="/users/register">Sign Up</a>
+        </li>
+    </ul>
 </nav>

@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
-router.get('/join-game', function(req, res) {
-    res.render('games/join-game')
-})
-
-router.get('/host-game', function(req, res) {
-    res.render('games/join-game')
+router.post('/host-game', function(req, res) {
+    res.render('games/host-game', {
+        javascript: 'host-game.js'
+    })
 })
 
 router.get('/play-game', function(req, res) {
-    res.render('games/join-game')
+    res.render('games/play-game', {
+        javascript: 'play-game.js'
+    })
 })
 
 

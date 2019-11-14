@@ -2,17 +2,19 @@ let hosters = [];
 
 module.exports = class Hoster {
     constructor(
+        userId,
         socketId,
         quizId,
         gameId,
         isGameLive = false,
         isQuestionLive = false,
-        questionIndex = 0,
+        questionIndex = -1,
         answeredPlayers = [],
         receivedPlayers = [],
         timeLeft = 0,
         summary = {}
     ) {
+        this.userId = userId;
         this.socketId = socketId;
         this.quizId = quizId;
         this.gameId = gameId;
@@ -39,7 +41,24 @@ module.exports = class Hoster {
         hosters = [...hosters.slice(0, index), ...hosters.slice(index + 1)]
     }
 
+    static updateHoster(hoster) {
+        const index = hosters.findIndex(hoster => hoster.socketId === hoster.socketId)
+        hosters = [...hosters.slice(0, index), hoster, ...hosters.slice(index + 1)]
+    }
+
     static getHosterById(socketId) {
         return hosters.find((hoster) => hoster.socketId === socketId)
+    }
+
+    static generateRandomPIN() {
+        let gameId = String(Math.floor(Math.random() * 90000) + 10000);
+        const existingGameId = hosters.find((hoster) => {
+            return hoster.gameId === gameId;
+        })
+        if (existingGameId) {
+            generateRandomPIN();
+        } else {
+            return gameId;
+        }
     }
 }

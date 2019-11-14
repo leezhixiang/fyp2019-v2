@@ -28,10 +28,6 @@ const PlayerResultsSchema = new mongoose.Schema({
 
 const ChoiceSchema = new mongoose.Schema({
     choice_id: mongoose.Schema.Types.ObjectId,
-    choice_num: {
-        type: Number,
-        default: 0
-    },
     choice: {
         type: String,
         required: true
@@ -48,10 +44,6 @@ const ChoiceSchema = new mongoose.Schema({
 
 const QuestionSchema = new mongoose.Schema({
     question_id: mongoose.Schema.Types.ObjectId,
-    question_num: {
-        type: Number,
-        default: 0
-    },
     question: {
         type: String,
         required: true
@@ -77,7 +69,6 @@ const LeaderboardSchema = new mongoose.Schema({
 })
 
 const HosterReportSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
     socket_id: {
         type: String,
         required: true
@@ -113,7 +104,9 @@ const HosterReportSchema = new mongoose.Schema({
     questions: {
         type: [QuestionSchema]
     },
-    players: [PlayerResultsSchema]
+    players: {
+        type: [PlayerResultsSchema]
+    }
 })
 
 

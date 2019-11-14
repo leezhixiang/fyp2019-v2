@@ -13,8 +13,8 @@ router.post('/login', (req, res) => {
 
     if (!email || !password) {
         return res.status(400).json({
-            isLogged: false,
-            message: 'all fields are required'
+            message: 'all fields are required',
+            isLogged: false
         })
     }
 
@@ -22,39 +22,40 @@ router.post('/login', (req, res) => {
         .then(user => {
             if (!user) {
                 return res.status(400).json({
-                    isLogged: false,
-                    message: 'user account does not exist'
+                    message: 'user account does not exist',
+                    isLogged: false
                 })
             } else {
                 bcrypt.compare(password, user.password)
                     .then(isMatch => {
                         if (!isMatch) {
                             return res.status(400).json({
-                                isLogged: false,
-                                message: 'invalid credentials'
+                                message: 'invalid credentials',
+                                isLogged: false
                             })
                         }
 
-                        const payload = {
-                            _id: user.id,
+                        const userInfo = {
+                            _id: user._id,
                             name: user.name,
                             email: user.email,
                         }
 
-                        jwt.sign({ payload }, config.get('jwtSecret'), (err, token) => {
+                        jwt.sign({ userInfo }, config.get('jwtSecret'), (err, token) => {
                             if (err) throw err;
                             res.status(201).json({
-                                isLogged: true,
+                                message: 'succedd to log in',
                                 token,
-                                user
+                                user,
+                                isLogged: true
                             })
                         })
                     })
                     .catch(err => {
                         console.log(err)
                         res.status(400).json({
+                            message: err,
                             isLogged: false,
-                            message: err
                         })
                     })
             }
@@ -62,8 +63,8 @@ router.post('/login', (req, res) => {
         .catch((err) => {
             console.log(err);
             res.status(400).json({
-                isRegistered: false,
-                message: err
+                message: err,
+                isLogged: false,
             })
         })
 })

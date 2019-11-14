@@ -1,4 +1,4 @@
 {
-    "mongoURI": "mongodb+srv://zhixiang:xiang1125@clscluster-j3yy1.mongodb.net/CLSDB?retryWrites=true&w=majority",
+    "mongoURI": "mongodb+srv://zhixiang25:xiang1125@clscluster-j3yy1.mongodb.net/CLSDB?retryWrites=true&w=majority",
     "jwtSecret": "fyp2019@secretKey"
 }
