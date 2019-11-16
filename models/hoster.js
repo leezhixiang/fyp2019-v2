@@ -8,10 +8,17 @@ module.exports = class Hoster {
         isGameLive = false,
         isQuestionLive = false,
         questionIndex = -1,
+        question = {},
+        questionLength = 0,
         answeredPlayers = [],
         receivedPlayers = [],
         timeLeft = 0,
-        summary = {}
+        summary = {
+            c1: 0,
+            c2: 0,
+            c3: 0,
+            c4: 0
+        }
     ) {
         this.socketId = socketId;
         this.quizId = quizId;
@@ -19,6 +26,8 @@ module.exports = class Hoster {
         this.isGameLive = isGameLive;
         this.isQuestionLive = isQuestionLive;
         this.questionIndex = questionIndex;
+        this.question = question;
+        this.questionLength = questionLength;
         this.answeredPlayers = answeredPlayers;
         this.receivedPlayers = receivedPlayers;
         this.timeLeft = timeLeft;
@@ -50,7 +59,7 @@ module.exports = class Hoster {
 
     static updateHoster(newHoster) {
         // replacing caring about position
-        const indexOldHoster = hosters.findIndex(hoster => hoster.socketId === hoster.socketId)
+        const indexOldHoster = hosters.findIndex(hoster => hoster.socketId === newHoster.socketId)
         hosters = [...hosters.slice(0, indexOldHoster), newHoster, ...hosters.slice(indexOldHoster + 1)]
     }
 

@@ -1,9 +1,11 @@
 const io = require('../models/socket').getIO()
 
 // data model
-const Hoster = require('../models/hoster')
-const Quiz = require('../models/mongoose/quiz')
-const HosterReport = require('../models/mongoose/hoster_report')
+const Hoster = require('../models/hoster');
+const Player = require('../models/player');
+const Quiz = require('../models/mongoose/quiz');
+const HosterReport = require('../models/mongoose/hoster_report');
+const PlayerReport = require('../models/mongoose/hoster_report');
 
 const hosterRoutes = (socket) => {
     const userId = socket.request.user._id;
@@ -64,7 +66,12 @@ const hosterRoutes = (socket) => {
             hoster.questionIndex += 1;
             hoster.answeredPlayers = [];
             hoster.receivedPlayers = [];
-            hoster.summary = 0;
+            hoster.summary = {
+                c1: 0,
+                c2: 0,
+                c3: 0,
+                c4: 0
+            };
             Hoster.updateHoster(hoster);
 
             Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
@@ -82,14 +89,17 @@ const hosterRoutes = (socket) => {
                     })
                 }
 
-                const question = quiz.questions[hoster.questionIndex];
-                const choicesId = question.choices.map((choice) => choice._id)
+                hoster.question = quiz.questions[hoster.questionIndex];
+                hoster.questionLength = quiz.questions.length;
+                Hoster.updateHoster(hoster);
+
+                const choicesId = hoster.question.choices.map((choice) => choice._id)
 
                 // response to hoster
                 callback({
                     nextQuestion: true,
                     nextQuestionData: {
-                        question,
+                        question: hoster.question,
                         gameId: hoster.gameId
                     }
                 })
@@ -102,11 +112,13 @@ const hosterRoutes = (socket) => {
                 });
             });
         } else if (btnState == false) {
-
+            console.log(hoster.summary);
             // response to hoster
             callback({
                 nextQuestion: false,
-                nextQuestionData: {}
+                nextQuestionData: {
+                    summary: hoster.summary
+                }
             })
 
             // response to players
@@ -114,18 +126,14 @@ const hosterRoutes = (socket) => {
         }
     })
 
+    socket.on('time-left', (timeLeft) => {
+        const hoster = Hoster.getHosterById(socket.id)
 
-
-
-
-
-
-
-
-
-
-
-
+        if (hoster) {
+            hoster.timeLeft = timeLeft;
+            Hoster.updateHoster(hoster);
+        }
+    })
 
 };
 

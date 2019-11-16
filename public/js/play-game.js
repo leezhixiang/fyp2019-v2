@@ -52,51 +52,92 @@ window.onload = () => {
         })
     })
 
+    let result = false;
+
     socket.on('player-next-question', (data) => {
-        // reset to false
-        result = false;
 
         socket.emit('receive-question');
 
         const { questionIndex, questionLength, choicesId } = data
 
         if (questionIndex > 1) {
-            document.querySelector("#waitingStart").classList.add("hidden");
-        } else {
             document.querySelector("#waitingNext").classList.add("hidden");
+        } else {
+            document.querySelector("#waitingStart").classList.add("hidden");
+        }
+
+        if (result === true) {
+            document.querySelector("#correct").classList.add("hidden");
+        } else if (result === false) {
+            document.querySelector("#wrong").classList.add("hidden");
+        } else {
+            document.querySelector("#wrong").classList.add("hidden");
         }
 
         document.querySelector("#choices").classList.remove("hidden");
 
-        document.querySelector(".choice").disabled = false;
+        // reset to false
+        result = 0;
+
+        document.querySelectorAll(".choice").forEach((choice) => {
+            choice.disabled = false
+        })
 
         document.querySelector("#questionIndex").textContent = questionIndex;
         document.querySelector("#totalQuestion").textContent = questionLength;
 
-        const choices = document.querySelectorAll(".choice")
-
-        Array.prototype.forEach.call(choices, (choice, index) => {
+        document.querySelectorAll(".choice").forEach((choice, index) => {
             choice.setAttribute("data-id", choicesId[index])
-        });
+        })
 
         console.log(`[next] next question`);
     });
 
+    document.querySelectorAll(".choice").forEach((choice, index) => {
+        choice.addEventListener("click", () => {
 
+            document.querySelector("#choices").classList.add("hidden");
+            document.querySelector("#waitingOthers").classList.remove("hidden");
 
+            choice.disabled = true;
 
+            const choiceId = choice.getAttribute("data-id");
 
+            socket.emit('player-answer', choiceId, (data) => {
+                // get results from server, either true or false
+                result = data
+                console.log(`[player-answer] answer is ${result}`)
+            })
+        })
+    })
 
+    socket.on('open-results', () => {
+        if (result === true) {
+            document.querySelector("#waitingOthers").classList.add("hidden");
+            document.querySelector("#correct").classList.remove("hidden");
 
+        } else if (result === false) {
+            document.querySelector("#waitingOthers").classList.add("hidden");
+            document.querySelector("#wrong").classList.remove("hidden");
+        } else {
+            document.querySelector("#choices").classList.add("hidden");
+            document.querySelector("#wrong").classList.remove("hidden");
+        }
+    })
 
+    socket.on('player-game-over', () => {
+
+        document.querySelector("#playGame").remove();
+        document.querySelector("#gameOver").classList.remove("hidden");
+
+        console.log(`[next] game over`);
+    })
 
     socket.on('hoster-disconnect', () => {
         window.location.reload();
     });
 
-    const exitBtns = document.querySelectorAll(".exit")
-
-    Array.prototype.forEach.call(exitBtns, (exitBtn, index) => {
+    document.querySelectorAll(".exit").forEach((exitBtn, index) => {
         exitBtn.addEventListener('click', () => {
             if (confirm("Are you sure you want to leave?")) {
                 window.location.replace("http://localhost:3000");

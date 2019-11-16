@@ -47,4 +47,10 @@ module.exports = class Player {
             return player.socketId != socketId;
         });
     }
+
+    static updatePlayer(newPlayer) {
+        // replacing caring about position
+        const indexOldPlayer = players.findIndex(player => player.socketId === newPlayer.socketId)
+        players = [...players.slice(0, indexOldPlayer), newPlayer, ...players.slice(indexOldPlayer + 1)]
+    }
 }

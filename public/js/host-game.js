@@ -47,6 +47,9 @@ window.onload = () => {
         document.querySelector("#totalPlayers").textContent = names.length;
     });
 
+    let counter = 0;
+    let interval = 0;
+
     document.querySelector("#startBtn").addEventListener("click", () => {
         const btnState = true;
 
@@ -71,6 +74,8 @@ window.onload = () => {
 
                 document.querySelector("#gameId").textContent = gameId;
 
+                displayTimer(question.timer, counter, interval);
+
                 document.querySelector('#nextBtn').setAttribute('data-state', false)
 
                 console.log(`[next] next question`);
@@ -88,7 +93,7 @@ window.onload = () => {
                 const { question, gameId } = nextQuestionData;
 
                 // change to next question
-                document.querySelector("#statistic").classList.add("hidden");
+                document.querySelector("#summary").classList.add("hidden");
                 document.querySelector("#displayQuestion").classList.remove("hidden");
 
                 document.querySelector("#question").textContent = question.question;
@@ -102,17 +107,26 @@ window.onload = () => {
 
                 document.querySelector("#gameId").textContent = gameId;
 
+                displayTimer(question.timer, counter, interval);
+
                 document.querySelector('#nextBtn').setAttribute('data-state', false)
 
                 console.log(`[next] next question`);
 
             } else if (nextQuestion === false) {
+                const { summary } = nextQuestionData;
+                console.log(summary)
                 document.querySelector("#displayQuestion").classList.add("hidden");
-                document.querySelector("#statistic").classList.remove("hidden");
+                document.querySelector("#summary").classList.remove("hidden");
+
+                document.querySelectorAll(".total-chooses").forEach((totalChooses, index) => {
+                    totalChooses.textContent = summary[Object.keys(summary)[index]];
+                    console.log(summary[Object.keys(summary)[index]])
+                })
 
                 document.querySelector('#nextBtn').setAttribute('data-state', true)
 
-                console.log(`[next] show statistic`);
+                console.log(`[next] show summary`);
 
             } else {
                 document.querySelector("#hostGame").remove();
@@ -123,6 +137,9 @@ window.onload = () => {
         })
     })
 
+    socket.on('display-summary', function() {
+        document.querySelector("#nextBtn").click()
+    })
 
 
 
@@ -130,21 +147,39 @@ window.onload = () => {
 
 
 
+    displayTimer = (timer, counter, interval) => {
+        convertSeconds = (s) => {
+            const min = Math.floor(s / 60);
+            const sec = s % 60;
+            return ("00" + min).substr(-2) + ': ' + ("00" + sec).substr(-2);
+        }
 
+        timeIt = () => {
+            counter++;
+            socket.emit('time-left', (timer - counter));
+            document.querySelector('#timer').textContent = convertSeconds((timer - counter));
 
+            if (counter == timer) {
+                clearInterval(interval);
+                counter = 0;
+                document.querySelector("#nextBtn").click();
+            }
+        }
 
+        // initiation timer
+        socket.emit('time-left', timer);
+        document.querySelector('#timer').textContent = convertSeconds((timer - counter));
 
+        interval = setInterval(timeIt, 1000);
 
+        document.querySelector("#nextBtn").addEventListener("click", () => {
+            clearInterval(interval);
+            counter = 0;
+            document.querySelector('#timer').textContent = convertSeconds((timer - timer));
+        })
+    }
 
-
-
-
-
-
-
-    const exitBtns = document.querySelectorAll(".exit")
-
-    Array.prototype.forEach.call(exitBtns, (exitBtn, index) => {
+    document.querySelectorAll(".exit").forEach((exitBtn, index) => {
         exitBtn.addEventListener('click', () => {
             if (confirm("Are you sure you want to leave?")) {
                 window.location.replace("http://localhost:3000");
