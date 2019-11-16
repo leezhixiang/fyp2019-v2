@@ -13,12 +13,7 @@ module.exports = class Hoster {
         answeredPlayers = [],
         receivedPlayers = [],
         timeLeft = 0,
-        summary = {
-            c1: 0,
-            c2: 0,
-            c3: 0,
-            c4: 0
-        }
+        summary = { c1: 0, c2: 0, c3: 0, c4: 0 }
     ) {
         this.socketId = socketId;
         this.quizId = quizId;
@@ -38,19 +33,6 @@ module.exports = class Hoster {
         hosters.push(this);
     }
 
-    static getHosters() {
-        return hosters;
-        // .map((hoster) => hoster.socketId);
-    }
-
-    static getHosterById(socketId) {
-        return hosters.find((hoster) => hoster.socketId === socketId)
-    }
-
-    static getHosterByGameId(gameId) {
-        return hosters.find((hoster) => hoster.gameId === gameId)
-    }
-
     static removeHoster(socketId) {
         hosters = hosters.filter((hoster) => {
             return hoster.socketId != socketId;
@@ -61,6 +43,18 @@ module.exports = class Hoster {
         // replacing caring about position
         const indexOldHoster = hosters.findIndex(hoster => hoster.socketId === newHoster.socketId)
         hosters = [...hosters.slice(0, indexOldHoster), newHoster, ...hosters.slice(indexOldHoster + 1)]
+    }
+
+    static getHosters() {
+        return hosters;
+    }
+
+    static getHosterById(socketId) {
+        return hosters.find((hoster) => hoster.socketId === socketId)
+    }
+
+    static getHosterByGameId(gameId) {
+        return hosters.find((hoster) => hoster.gameId === gameId)
     }
 
     static generateGameId() {
@@ -79,5 +73,4 @@ module.exports = class Hoster {
     //     const index = hosters.findIndex(hoster => hoster.socketId === socketId)
     //     hosters = [...hosters.slice(0, index), ...hosters.slice(index + 1)]
     // }
-
 }

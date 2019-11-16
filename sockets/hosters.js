@@ -60,18 +60,15 @@ const hosterRoutes = (socket) => {
     socket.on('next-question', (btnState, callback) => {
         const hoster = Hoster.getHosterById(socket.id);
 
+        if (!hoster) return;
+
         if (btnState === true) {
             hoster.isGameLive = true;
             hoster.isQuestionLive = true;
             hoster.questionIndex += 1;
             hoster.answeredPlayers = [];
             hoster.receivedPlayers = [];
-            hoster.summary = {
-                c1: 0,
-                c2: 0,
-                c3: 0,
-                c4: 0
-            };
+            hoster.summary = { c1: 0, c2: 0, c3: 0, c4: 0 };
             Hoster.updateHoster(hoster);
 
             Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
@@ -80,11 +77,22 @@ const hosterRoutes = (socket) => {
                 if (hoster.questionIndex == quiz.questions.length) {
                     // response to players
                     socket.to(hoster.gameId).emit('player-game-over');
+
+                    // scoreboard calc
+                    const players = Player.getPlayersByGameId(hoster.gameId);
+
+                    const scoreBoard = players.map((player) => {
+                        const scorer = {}
+                        scorer.name = player.name
+                        scorer.score = player.score
+                        return scorer
+                    }).sort((a, b) => { b.score - a.score }).splice(0, 5)
+
                     // response to hoster
                     return callback({
                         nextQuestion: 0,
                         nextQuestionData: {
-
+                            scoreBoard
                         }
                     })
                 }
@@ -92,8 +100,6 @@ const hosterRoutes = (socket) => {
                 hoster.question = quiz.questions[hoster.questionIndex];
                 hoster.questionLength = quiz.questions.length;
                 Hoster.updateHoster(hoster);
-
-                const choicesId = hoster.question.choices.map((choice) => choice._id)
 
                 // response to hoster
                 callback({
@@ -104,6 +110,7 @@ const hosterRoutes = (socket) => {
                     }
                 })
 
+                const choicesId = hoster.question.choices.map((choice) => choice._id);
                 // response to players
                 socket.to(hoster.gameId).emit('player-next-question', {
                     questionIndex: hoster.questionIndex + 1,
@@ -112,15 +119,13 @@ const hosterRoutes = (socket) => {
                 });
             });
         } else if (btnState == false) {
-            console.log(hoster.summary);
             // response to hoster
             callback({
                 nextQuestion: false,
                 nextQuestionData: {
                     summary: hoster.summary
                 }
-            })
-
+            });
             // response to players
             socket.to(hoster.gameId).emit('open-results');
         }
@@ -129,12 +134,18 @@ const hosterRoutes = (socket) => {
     socket.on('time-left', (timeLeft) => {
         const hoster = Hoster.getHosterById(socket.id)
 
+        if (!hoster) return;
+
         if (hoster) {
             hoster.timeLeft = timeLeft;
             Hoster.updateHoster(hoster);
         }
-    })
 
+        if (timeLeft === 0) {
+            hoster.isQuestionLive = false;
+            Hoster.updateHoster(hoster);
+        }
+    })
 };
 
 module.exports = hosterRoutes;

@@ -21,27 +21,6 @@ module.exports = class Player {
         players.push(this);
     }
 
-    static getPlayers() {
-        return players;
-        // .map((hoster) => hoster.socketId);
-    }
-
-    static getPlayersByGameId(gameId) {
-        return players.filter((player) => player.gameId === gameId)
-    }
-
-    static getPlayerByName(name) {
-        return players.find((player) => player.name === name)
-    }
-
-    static getPlayerById(socketId) {
-        return players.find((player) => player.socketId === socketId)
-    }
-
-    static getPlayerByGameId(gameId) {
-        return players.find((player) => player.gameId === gameId)
-    }
-
     static removePlayer(socketId) {
         players = players.filter((player) => {
             return player.socketId != socketId;
@@ -52,5 +31,25 @@ module.exports = class Player {
         // replacing caring about position
         const indexOldPlayer = players.findIndex(player => player.socketId === newPlayer.socketId)
         players = [...players.slice(0, indexOldPlayer), newPlayer, ...players.slice(indexOldPlayer + 1)]
+    }
+
+    static getPlayers() {
+        return players;
+    }
+
+    static getPlayersByGameId(gameId) {
+        return players.filter((player) => player.gameId === gameId)
+    }
+
+    static getPlayerById(socketId) {
+        return players.find((player) => player.socketId === socketId)
+    }
+
+    static getPlayerByName(name) {
+        return players.find((player) => player.name === name)
+    }
+
+    static getPlayerByGameId(gameId) {
+        return players.find((player) => player.gameId === gameId)
     }
 }

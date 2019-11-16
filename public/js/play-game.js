@@ -30,8 +30,6 @@ window.onload = () => {
 
             if (isJoined === true) {
                 console.log(`[join-game] ${message}`);
-                console.log(`[join-game]`);
-                console.log(joinGameData);
 
                 // change to next page
                 document.querySelector("#joinGame").classList.add("hidden");
@@ -126,11 +124,17 @@ window.onload = () => {
     })
 
     socket.on('player-game-over', () => {
+        socket.emit('get-overall-result', function(data) {
+            const { score, correct, incorrect, unattempted } = data
 
-        document.querySelector("#playGame").remove();
-        document.querySelector("#gameOver").classList.remove("hidden");
+            document.querySelector("#playGame").remove();
+            document.querySelector("#gameOver").classList.remove("hidden");
 
-        console.log(`[next] game over`);
+            console.log(`[next] game over`);
+            console.log(`[next]`);
+            console.table(data);
+
+        })
     })
 
     socket.on('hoster-disconnect', () => {

@@ -98,9 +98,7 @@ window.onload = () => {
 
                 document.querySelector("#question").textContent = question.question;
 
-                const choices = document.querySelectorAll(".choice");
-
-                Array.prototype.forEach.call(choices, (choice, index) => {
+                document.querySelectorAll(".choice").forEach((choice, index) => {
                     choice.textContent = question.choices[index].choice;
                     choice.setAttribute("data-correct", question.choices[index].is_correct);
                 });
@@ -115,13 +113,12 @@ window.onload = () => {
 
             } else if (nextQuestion === false) {
                 const { summary } = nextQuestionData;
-                console.log(summary)
+
                 document.querySelector("#displayQuestion").classList.add("hidden");
                 document.querySelector("#summary").classList.remove("hidden");
 
                 document.querySelectorAll(".total-chooses").forEach((totalChooses, index) => {
                     totalChooses.textContent = summary[Object.keys(summary)[index]];
-                    console.log(summary[Object.keys(summary)[index]])
                 })
 
                 document.querySelector('#nextBtn').setAttribute('data-state', true)
@@ -129,10 +126,14 @@ window.onload = () => {
                 console.log(`[next] show summary`);
 
             } else {
+                const { scoreBoard } = nextQuestionData;
+
                 document.querySelector("#hostGame").remove();
                 document.querySelector("#gameOver").classList.remove("hidden");
 
                 console.log(`[next] game over`);
+                console.log(`[next]`);
+                console.table(scoreBoard);
             }
         })
     })
