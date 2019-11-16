@@ -1,9 +1,57 @@
-<div id="lobby">
-    <p class="lead">Join at <span>www.cls.com</span> or
-        <span>CLS app</span> with Game PIN:</p>
-    <h1 id="lobbyPIN"></h1>
-    <h2><span id="total-players">0</span>Players</h2>
-    <img class="img-thumbnail" src="/img/logo.png" alt="" height="70" width="70">
-    <div id="name-list"></div>
-    <h4>Waiting for players...</h4>
+<div id="lobby" class="host-game">
+    <div class="lobby-header">
+        <p>Join at www.cls.com or CLS app with Game PIN:</p>
+        <h1 id="gameId"></h1>
+    </div>
+
+    <div>
+        <h2><span id="totalPlayers">0</span>Players</h2>
+        <img class="img-thumbnail" src="/img/logo.png" alt="" height="70" width="70">
+        <button id="startBtn">Start</button>
+    </div>
+
+    <div>
+        <ul id="nameList"></ul>
+    </div>
+
+    <div class="lobby-footer">
+        <h4>Waiting for players...</h4>
+    </div>
+</div>
+
+<div id="hostGame" class="host-game hidden">
+    <div class="host-game-header">
+        <span class="exit">X</span>
+        <h3 id="timer">00:00</h3>
+        <button id="nextBtn">Next</button>
+    </div>
+
+    <div id="displayQuestion" class="host-game-content">
+        <p id="question"></p>
+    </div>
+
+    <div id="statistic" class="host-game-content hidden">
+        <div class="block">block 1</div>
+        <div class="block">block 2</div>
+        <div class="block">block 3</div>
+        <div class="block">block 4</div>
+    </div>
+
+    <div id="choices" class="host-game-content">
+        <button class="choice">Choice 1</button>
+        <button class="choice">Choice 2</button>
+        <button class="choice">Choice 3</button>
+        <button class="choice">Choice 4</button>
+    </div>
+
+    <div class="host-game-footer">
+        <h3>Game PIN: <span id="gameId"></span></h3>
+    </div>
+</div>
+
+<div id="gameOver" class="host-game hidden">
+    <div class="host-game-header">
+        <span class="exit">X</span>
+        <h1>Game Over</h1>
+    </div>
 </div>

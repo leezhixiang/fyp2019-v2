@@ -2,7 +2,7 @@ window.onload = () => {
     document.querySelector('#user-nav').classList.add("hidden");
     document.querySelector('#guest-nav').classList.add("hidden");
 
-    document.querySelector("#userForm").addEventListener("submit", (e) => {
+    document.querySelector("#loginForm").addEventListener("submit", (e) => {
         e.preventDefault();
         const email = document.querySelector('#email').value
         const password = document.querySelector('#password').value

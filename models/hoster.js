@@ -2,7 +2,6 @@ let hosters = [];
 
 module.exports = class Hoster {
     constructor(
-        userId,
         socketId,
         quizId,
         gameId,
@@ -14,7 +13,6 @@ module.exports = class Hoster {
         timeLeft = 0,
         summary = {}
     ) {
-        this.userId = userId;
         this.socketId = socketId;
         this.quizId = quizId;
         this.gameId = gameId;
@@ -28,7 +26,7 @@ module.exports = class Hoster {
     }
 
     addHoster() {
-        hosters = [...hosters, this];
+        hosters.push(this);
     }
 
     static getHosters() {
@@ -36,29 +34,41 @@ module.exports = class Hoster {
         // .map((hoster) => hoster.socketId);
     }
 
-    static removeHoster(socketId) {
-        const index = hosters.findIndex(hoster => hoster.socketId === socketId)
-        hosters = [...hosters.slice(0, index), ...hosters.slice(index + 1)]
-    }
-
-    static updateHoster(hoster) {
-        const index = hosters.findIndex(hoster => hoster.socketId === hoster.socketId)
-        hosters = [...hosters.slice(0, index), hoster, ...hosters.slice(index + 1)]
-    }
-
     static getHosterById(socketId) {
         return hosters.find((hoster) => hoster.socketId === socketId)
     }
 
-    static generateRandomPIN() {
+    static getHosterByGameId(gameId) {
+        return hosters.find((hoster) => hoster.gameId === gameId)
+    }
+
+    static removeHoster(socketId) {
+        hosters = hosters.filter((hoster) => {
+            return hoster.socketId != socketId;
+        });
+    }
+
+    static updateHoster(newHoster) {
+        // replacing caring about position
+        const indexOldHoster = hosters.findIndex(hoster => hoster.socketId === hoster.socketId)
+        hosters = [...hosters.slice(0, indexOldHoster), newHoster, ...hosters.slice(indexOldHoster + 1)]
+    }
+
+    static generateGameId() {
         let gameId = String(Math.floor(Math.random() * 90000) + 10000);
         const existingGameId = hosters.find((hoster) => {
             return hoster.gameId === gameId;
         })
         if (existingGameId) {
-            generateRandomPIN();
+            generateGameId();
         } else {
             return gameId;
         }
     }
+
+    // static removeHoster(socketId) {
+    //     const index = hosters.findIndex(hoster => hoster.socketId === socketId)
+    //     hosters = [...hosters.slice(0, index), ...hosters.slice(index + 1)]
+    // }
+
 }

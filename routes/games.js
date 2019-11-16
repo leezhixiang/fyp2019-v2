@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-router.post('/host-game', function(req, res) {
+router.get('/host-game', function(req, res) {
     res.render('games/host-game', {
         javascript: 'host-game.js'
     })

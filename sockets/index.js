@@ -37,14 +37,15 @@ module.exports = () => {
     }));
 
     io.on('connection', (socket) => {
+        const hasToken = socket.request.user.logged_in;
         // now you can access user info through socket.request.user
         // socket.request.user.logged_in will be set to true if the user was authenticated
-        socket.emit('success', {
-            message: 'success logged in!',
-            // user: socket.request.user
+        socket.emit('socket-conn', {
+            message: 'connected successful',
+            hasToken
         });
 
-        hosterRoutes(socket)
-        playerRoutes(socket)
+        hosterRoutes(socket, hasToken)
+        playerRoutes(socket, hasToken)
     });
 };

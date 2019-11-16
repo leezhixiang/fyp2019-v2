@@ -16,6 +16,7 @@ window.onload = () => {
             return res.json()
         })
         .then(function(quizzes) {
+            console.log(quizzes)
             let html = "";
 
             quizzes.forEach(quiz => {

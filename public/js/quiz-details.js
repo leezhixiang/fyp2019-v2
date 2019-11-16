@@ -28,10 +28,8 @@ window.onload = () => {
                         <p>${quiz.title}</p>
                         <p><span>${quiz.creator.name}</span> • <span>${quiz.plays}</span> plays</p>
                     </div>
-                    <div>
-                        <form action="/games/host-game?quizId=${quizId}" method="POST"> 
-                            <button type="submit">Multiple Choice</button>
-                        </form>
+                    <div> 
+                        <button onclick="window.location.href='http://localhost:3000/games/host-game?quizId=${quizId}'">Multiple Choice</button>
                     </div>
                     <p>Sample Questions</p>`
 

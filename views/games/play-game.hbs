@@ -1,15 +1,58 @@
-<div class="join-game">
+<div id="joinGame" class="play-game">
     <img src="/img/logo.png" alt="" height="130" width="130">
 
-    <form id="userForm">
-        <div>
-            <input type="text" id="name" placeholder="Display Name">
-        </div>
-        <div>
-            <input type="text" id="gameId" placeholder="Game PIN">
-        </div>
-        <button type="submit">Enter</button>
-    </form>
+    <div class="join-game-form">
+        <form id="joinGameForm">
+            <div>
+                <input type="text" id="name" placeholder="Display Name">
+            </div>
+            <div>
+                <input type="text" id="gameId" placeholder="Game PIN">
+            </div>
+            <button type="submit">Enter</button>
+        </form>
+    </div>
 
     <p>Discover more quizzes at <a href="/" id="here">here</a></p>
+</div>
+
+<div id="playGame" class="play-game hidden">
+    <div class="play-game-header">
+        <span class="exit">X</span>
+        <span id="questionIndex">0</span><span>/</span><span id="totalQuestion">0</span>
+    </div>
+
+    <div id="waitingStart" class="play-game-content hidden">
+        <h1>You're in!</h1>
+        <h4>See your name on screen?</h4>
+    </div>
+
+    <div id="waitingNext" class="play-game-content hidden">
+        <h1>You're in!</h1>
+        <h4>Waiting for next question to answer...</h4>
+    </div>
+
+    <div id="waitingOthers" class="play-game-content hidden"><span>Spinner</span></div>
+
+    <div id="correct" class="play-game-content hidden"><span>Correct</span></div>
+
+    <div id="wrong" class="play-game-content hidden"><span>Wrong</span></div>
+
+    <div id="choices" class="play-game-content hidden">
+        <button class="choice">Choice 1</button>
+        <button class="choice">Choice 2</button>
+        <button class="choice">Choice 3</button>
+        <button class="choice">Choice 4</button>
+    </div>
+
+    <div class="play-game-footer">
+        <span id="playerName"></span>
+    </div>
+</div>
+
+<div id="gameOver" class="play-game hidden">
+    <div class="play-game-header">
+        <span class="exit">X</span>
+        <h1>Game Over</h1>
+    </div>
 </div>

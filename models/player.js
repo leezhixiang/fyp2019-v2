@@ -2,35 +2,49 @@ let players = [];
 
 module.exports = class Player {
     constructor(
-        userId,
         socketId,
-        gameId
+        name,
+        gameId,
+        correct = 0,
+        incorrect = 0,
+        score = 0
     ) {
-        this.userId = userId;
         this.socketId = socketId;
+        this.name = name;
         this.gameId = gameId;
+        this.correct = correct;
+        this.incorrect = incorrect;
+        this.score = score;
     }
 
     addPlayer() {
-        hosters = [...hosters, this];
+        players.push(this);
     }
 
     static getPlayers() {
-        return hosters;
+        return players;
         // .map((hoster) => hoster.socketId);
     }
 
-    static removePlayer(socketId) {
-        const index = hosters.findIndex(hoster => hoster.socketId === socketId)
-        hosters = [...hosters.slice(0, index), ...hosters.slice(index + 1)]
+    static getPlayersByGameId(gameId) {
+        return players.filter((player) => player.gameId === gameId)
     }
 
-    static updatePlayer(hoster) {
-        const index = hosters.findIndex(hoster => hoster.socketId === hoster.socketId)
-        hosters = [...hosters.slice(0, index), hoster, ...hosters.slice(index + 1)]
+    static getPlayerByName(name) {
+        return players.find((player) => player.name === name)
     }
 
     static getPlayerById(socketId) {
-        return hosters.find((hoster) => hoster.socketId === socketId)
+        return players.find((player) => player.socketId === socketId)
+    }
+
+    static getPlayerByGameId(gameId) {
+        return players.find((player) => player.gameId === gameId)
+    }
+
+    static removePlayer(socketId) {
+        players = players.filter((player) => {
+            return player.socketId != socketId;
+        });
     }
 }

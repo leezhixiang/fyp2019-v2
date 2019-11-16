@@ -1,38 +1,97 @@
 const io = require('../models/socket').getIO()
 
-const playerRoutes = (socket) => {
-    socket.on('join-game', function(data, callback) {
-        const { name, pin } = data
+// data model
+const Hoster = require('../models/hoster')
+const Player = require('../models/player')
 
-        if (!name || !pin) {
-            return callback({ isJoined: false, message: 'failed to join game, all fields are required' })
+const playerRoutes = (socket) => {
+    const userId = socket.request.user._id;
+
+    socket.on('disconnect', (callback) => {
+        const player = Player.getPlayerById(socket.id)
+
+        if (player) {
+            Player.removePlayer(socket.id)
+            console.log(`[disconnect] ${player.socketId} ${player.name} player has left from room ${player.gameId}`);
+
+            const players = Player.getPlayersByGameId(player.gameId);
+            console.log(`[disconnect]`)
+            console.log(players)
+
+            const hoster = Hoster.getHosterByGameId(player.gameId)
+
+            if (hoster && hoster.isGameLive == false) {
+                const players = Player.getPlayersByGameId(player.gameId)
+                const names = players.map((player) => player.name)
+
+                // response to hoster
+                io.to(`${hoster.socketId}`).emit('display-name', names);
+            }
+        }
+    });
+
+    socket.on('join-game', function(data, callback) {
+        const { name, gameId } = data
+
+        if (!name || !gameId) {
+            return callback({
+                error: 'all fields are required',
+                message: 'join game failed',
+                isJoined: false
+            })
         }
 
-        const existingPlayer = player.getPlayer(name, pin)
-        const existingHoster = hoster.getHosterByPin(pin)
+        const hoster = Hoster.getHosterByGameId(gameId);
+        const player = Player.getPlayerByName(name);
 
-        if (!existingPlayer && existingHoster) {
-            const newPlayer = player.addPlayer(socket.id, name, pin)
+        if (!player && hoster) {
+            const player = new Player(socket.id, name, gameId);
+            // save to memory
+            player.addPlayer();
 
-            socket.join(newPlayer.pin);
+            const players = Player.getPlayersByGameId(player.gameId);
+            const names = players.map((player) => player.name);
+            console.log(`[join-game]`);
+            console.log(players);
 
-            const onlinePlayers = player.getOnlinePlayers(newPlayer.pin)
+            socket.join(player.gameId);
+            console.log(`[join-game] ${player.socketId} ${player.name} joined room ${player.gameId}`)
 
-            io.to(`${existingHoster.socketId}`).emit('display-name', onlinePlayers);
+            // const players = Player.getPlayersByGameId(player.gameId)
+            // const names = players.map((player) => player.name)
 
-            console.log(`${newPlayer.socketId} ${newPlayer.name} joined room ${newPlayer.pin}`)
+            // response to hoster
+            io.to(`${hoster.socketId}`).emit('display-name', names);
 
-            console.log(`Number of Online Players in Room ${existingHoster.pin}: ${onlinePlayers.length}`)
-
-            const data = {}
-
-            data["name"] = newPlayer.name
-            data["gameLive"] = existingHoster.gameLive
-
-            callback(true, data)
+            // response to player
+            callback({
+                error: null,
+                message: 'join game successful',
+                isJoined: true,
+                joinGameData: {
+                    gameLive: hoster.isGameLive,
+                    name
+                }
+            })
         } else {
-            callback(false)
+            callback({
+                error: 'display name or game PIN is invalid',
+                message: 'join game failed',
+                isJoined: false
+            })
         }
     })
+
+    socket.on('receive-question', function() {
+        const player = Player.getPlayerById(socket.id);
+        const hoster = Hoster.getHosterByGameId(player.gameId);
+
+        hoster.receivedPlayers.push(socket.id);
+        Hoster.updateHoster(hoster);
+
+        console.log(`[receive-question] Answered players: ${hoster.answeredPlayers}`)
+        console.log(`[receive-question] Received players: ${hoster.receivedPlayers}`)
+    })
 };
+
 module.exports = playerRoutes;
