@@ -11,24 +11,48 @@ const playerRoutes = (socket) => {
     const userId = socket.request.user._id;
 
     socket.on('disconnect', (callback) => {
-        const player = Player.getPlayerById(socket.id)
+        const player = Player.getPlayerById(socket.id);
+        if (!player) return;
+        const hoster = Hoster.getHosterByGameId(player.gameId);
 
         if (player) {
-            Player.removePlayer(socket.id)
-            console.log(`[disconnect] ${player.socketId} ${player.name} player has left from room ${player.gameId}`);
+            Player.removePlayer(socket.id);
 
+            if (hoster) {
+                hoster.answeredPlayers = hoster.answeredPlayers.filter((answeredPlayer) => answeredPlayer != socket.id)
+                hoster.receivedPlayers = hoster.receivedPlayers.filter((receivedPlayer) => receivedPlayer != socket.id)
+                Hoster.updateHoster(hoster);
+            }
+
+            console.log(`[disconnect] ${player.socketId} ${player.name} disconnected from room ${player.gameId}`)
             const players = Player.getPlayersByGameId(player.gameId);
-            console.log(`[disconnect]`)
-            console.log(players)
+            console.log(`[disconnect]`);
+            console.log(players);
 
-            const hoster = Hoster.getHosterByGameId(player.gameId)
-
+            // update names of lobby
             if (hoster && hoster.isGameLive == false) {
-                const players = Player.getPlayersByGameId(player.gameId)
-                const names = players.map((player) => player.name)
-
+                const players = Player.getPlayersByGameId(player.gameId);
+                const names = players.map((player) => player.name);
                 // response to hoster
                 io.to(`${hoster.socketId}`).emit('display-name', names);
+            }
+
+            // validation of last question
+            if (hoster && hoster.isGameLive === true && hoster.isQuestionLive === true) {
+                const totalAnsweredPlayers = hoster.answeredPlayers.length;
+                const totalReceivedPlayers = hoster.receivedPlayers.length;
+
+                if (totalAnsweredPlayers == totalReceivedPlayers) {
+                    console.log('[checking] all answered');
+                    console.log(`[checking] answered players: ${hoster.answeredPlayers}`);
+                    console.log(`[checking] received players: ${hoster.receivedPlayers}`);
+                    hoster.isQuestionLive = false;
+                    Hoster.updateHoster(hoster);
+                    // response to hoster
+                    io.to(hoster.socketId).emit('display-summary');
+                    // response to player
+                    io.in(hoster.gameId).emit('open-results');
+                }
             }
         }
     });
@@ -58,7 +82,7 @@ const playerRoutes = (socket) => {
             // console.log(players);
 
             socket.join(player.gameId);
-            console.log(`[join-game] ${player.socketId} ${player.name} joined room ${player.gameId}`)
+            console.log(`[join-game] ${player.socketId} ${player.name} disconnected from room ${player.gameId}`)
 
             const players = Player.getPlayersByGameId(player.gameId)
             const names = players.map((player) => player.name)
@@ -67,7 +91,6 @@ const playerRoutes = (socket) => {
             if (hoster.isGameLive === false) {
                 io.to(`${hoster.socketId}`).emit('display-name', names);
             }
-
             // response to player
             callback({
                 error: null,
@@ -78,6 +101,7 @@ const playerRoutes = (socket) => {
                     name
                 }
             })
+
         } else {
             // response to player
             callback({
@@ -90,25 +114,20 @@ const playerRoutes = (socket) => {
 
     socket.on('receive-question', () => {
         const player = Player.getPlayerById(socket.id);
-
         if (!player) return;
-
         const hoster = Hoster.getHosterByGameId(player.gameId);
 
         if (hoster) {
             hoster.receivedPlayers.push(socket.id);
             Hoster.updateHoster(hoster);
-
-            console.log(`[receive-question] Answered players: ${hoster.answeredPlayers}`)
-            console.log(`[receive-question] Received players: ${hoster.receivedPlayers}`)
+            console.log(`[receive-question] answered players: ${hoster.answeredPlayers}`)
+            console.log(`[receive-question] received players: ${hoster.receivedPlayers}`)
         }
     })
 
     socket.on('player-answer', (choiceId, callback) => {
         const player = Player.getPlayerById(socket.id);
-
         if (!player) return;
-
         const hoster = Hoster.getHosterByGameId(player.gameId);
 
         if (hoster.isQuestionLive === true) {
@@ -126,37 +145,36 @@ const playerRoutes = (socket) => {
                 player.score += (100 + timeScore);
                 player.correct += 1;
                 Player.updatePlayer(player);
-
                 // response to player
                 callback(true)
 
             } else if (result === false) {
                 player.incorrect += 1;
                 Player.updatePlayer(player);
-
                 // response to player
                 callback(false)
             }
 
+            // scoreboard
             const players = Player.getPlayersByGameId(player.gameId);
 
             const scoreBoard = players.map((player) => {
-                const scorer = {}
-                scorer.name = player.name
-                scorer.score = player.score
-                return scorer
-            }).sort((a, b) => { b.score - a.score }).splice(0, 5)
+                    const scorer = {}
+                    scorer.name = player.name
+                    scorer.score = player.score
+                    return scorer
+                }).sort((a, b) => { b.score - a.score })
+                .splice(0, 5);
+            console.log(`[scoreboard]`);
+            console.log(scoreBoard);
 
-            console.log('Final Scoreboard')
-            console.log(scoreBoard)
-
-            const unattepmted = (hoster.questionLength - player.correct - player.incorrect)
-
-            console.log('Performance Stats')
-            console.log(`Points: ${player.score}`)
-            console.log(`Correct: ${player.correct}`)
-            console.log(`Incorrect: ${player.incorrect}`)
-            console.log(`Unattempted: ${unattepmted}`)
+            // performance stats
+            const unattepmted = (hoster.questionLength - player.correct - player.incorrect);
+            console.log(`[stats] pts: ${player.score} corr: ${player.correct} incorr: ${player.incorrect} unatt: ${unattepmted}`);
+            // console.log(`points: ${player.score}`)
+            // console.log(`correct: ${player.correct}`)
+            // console.log(`incorrect: ${player.incorrect}`)
+            // console.log(`unattempted: ${unattepmted}`)
 
             hoster.question.choices.forEach((choice, index) => {
                 if (choice._id == choiceId) {
@@ -172,18 +190,14 @@ const playerRoutes = (socket) => {
 
         const totalAnsweredPlayers = hoster.answeredPlayers.length;
         const totalReceivedPlayers = hoster.receivedPlayers.length;
-
         // validation of last question
         if (totalAnsweredPlayers == totalReceivedPlayers) {
+            console.log('[checking] all answered');
+            console.log(`[checking] answered players: ${hoster.answeredPlayers}`);
+            console.log(`[checking] received players: ${hoster.receivedPlayers}`);
 
-            console.log('[player-answer] all players have answered');
-            console.log(`[player-answer] Answered players: ${hoster.answeredPlayers}`)
-            console.log(`[player-answer] Received players: ${hoster.receivedPlayers}`)
-
-            // 设置开放问题
             hoster.isQuestionLive = false;
             Hoster.updateHoster(hoster);
-
             // response to hoster
             io.to(hoster.socketId).emit('display-summary');
             // response to player
@@ -193,13 +207,10 @@ const playerRoutes = (socket) => {
 
     socket.on('get-overall-result', (callback) => {
         const player = Player.getPlayerById(socket.id);
-
         if (!player) return;
-
         const hoster = Hoster.getHosterByGameId(player.gameId);
 
-        const unattepmted = (hoster.questionLength - player.correct - player.incorrect)
-
+        const unattepmted = (hoster.questionLength - player.correct - player.incorrect);
         // response to player
         callback({
             score: player.score,
@@ -208,8 +219,6 @@ const playerRoutes = (socket) => {
             unattepmted
         })
     })
-
-
 };
 
 module.exports = playerRoutes;

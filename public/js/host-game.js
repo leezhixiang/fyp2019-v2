@@ -17,7 +17,7 @@ window.onload = () => {
     // connection successful
     socket.on('socket-conn', (data) => {
         console.log(`[socket-conn] ${data.message}`);
-        console.log(`[socket-conn] hasToken: ${data.hasToken}`);
+        console.log(`[socket-conn] token: ${data.hasToken}`);
     })
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -78,7 +78,7 @@ window.onload = () => {
 
                 document.querySelector('#nextBtn').setAttribute('data-state', false)
 
-                console.log(`[next] next question`);
+                console.log(`[start-button] next question`);
             }
         })
     })
@@ -109,7 +109,7 @@ window.onload = () => {
 
                 document.querySelector('#nextBtn').setAttribute('data-state', false)
 
-                console.log(`[next] next question`);
+                console.log(`[next-button] next question`);
 
             } else if (nextQuestion === false) {
                 const { summary } = nextQuestionData;
@@ -123,7 +123,7 @@ window.onload = () => {
 
                 document.querySelector('#nextBtn').setAttribute('data-state', true)
 
-                console.log(`[next] show summary`);
+                console.log(`[next-button] show summary`);
 
             } else {
                 const { scoreBoard } = nextQuestionData;
@@ -131,7 +131,7 @@ window.onload = () => {
                 document.querySelector("#hostGame").remove();
                 document.querySelector("#gameOver").classList.remove("hidden");
 
-                console.log(`[next] game over`);
+                console.log(`[next-button] game over`);
                 console.log(`[next]`);
                 console.table(scoreBoard);
             }
@@ -141,12 +141,6 @@ window.onload = () => {
     socket.on('display-summary', function() {
         document.querySelector("#nextBtn").click()
     })
-
-
-
-
-
-
 
     displayTimer = (timer, counter, interval) => {
         convertSeconds = (s) => {

@@ -17,7 +17,7 @@ window.onload = () => {
     // connection successful
     socket.on('socket-conn', (data) => {
         console.log(`[socket-conn] ${data.message}`);
-        console.log(`[socket-conn] hasToken: ${data.hasToken}`);
+        console.log(`[socket-conn] token: ${data.hasToken}`);
     })
 
     document.querySelector("#joinGameForm").addEventListener("submit", function(e) {
@@ -71,7 +71,6 @@ window.onload = () => {
         } else {
             document.querySelector("#wrong").classList.add("hidden");
         }
-
         document.querySelector("#choices").classList.remove("hidden");
 
         // reset to false
@@ -88,7 +87,7 @@ window.onload = () => {
             choice.setAttribute("data-id", choicesId[index])
         })
 
-        console.log(`[next] next question`);
+        console.log(`[received] received question`);
     });
 
     document.querySelectorAll(".choice").forEach((choice, index) => {
@@ -103,8 +102,8 @@ window.onload = () => {
 
             socket.emit('player-answer', choiceId, (data) => {
                 // get results from server, either true or false
-                result = data
-                console.log(`[player-answer] answer is ${result}`)
+                result = data;
+                console.log(`[player-answer] your answer is ${result}`);
             })
         })
     })
@@ -113,7 +112,6 @@ window.onload = () => {
         if (result === true) {
             document.querySelector("#waitingOthers").classList.add("hidden");
             document.querySelector("#correct").classList.remove("hidden");
-
         } else if (result === false) {
             document.querySelector("#waitingOthers").classList.add("hidden");
             document.querySelector("#wrong").classList.remove("hidden");
@@ -121,6 +119,7 @@ window.onload = () => {
             document.querySelector("#choices").classList.add("hidden");
             document.querySelector("#wrong").classList.remove("hidden");
         }
+        console.log(`[open-results] see results`)
     })
 
     socket.on('player-game-over', () => {
@@ -130,8 +129,8 @@ window.onload = () => {
             document.querySelector("#playGame").remove();
             document.querySelector("#gameOver").classList.remove("hidden");
 
-            console.log(`[next] game over`);
-            console.log(`[next]`);
+            console.log(`[game-over] game has over`);
+            console.log(`[game-over]`);
             console.table(data);
 
         })

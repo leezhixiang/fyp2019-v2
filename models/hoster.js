@@ -69,6 +69,7 @@ module.exports = class Hoster {
         }
     }
 
+
     // static removeHoster(socketId) {
     //     const index = hosters.findIndex(hoster => hoster.socketId === socketId)
     //     hosters = [...hosters.slice(0, index), ...hosters.slice(index + 1)]

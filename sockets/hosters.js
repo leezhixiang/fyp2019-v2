@@ -1,4 +1,4 @@
-const io = require('../models/socket').getIO()
+const io = require('../models/socket').getIO();
 
 // data model
 const Hoster = require('../models/hoster');
@@ -7,21 +7,23 @@ const Quiz = require('../models/mongoose/quiz');
 const HosterReport = require('../models/mongoose/hoster_report');
 const PlayerReport = require('../models/mongoose/hoster_report');
 
-const hosterRoutes = (socket) => {
+const hosterRoutes = (socket, hasToken) => {
     const userId = socket.request.user._id;
 
     socket.on('disconnect', (callback) => {
-        const hoster = Hoster.getHosterById(socket.id)
+        const hoster = Hoster.getHosterById(socket.id);
+
+        if (!hoster) return;
 
         if (hoster) {
             socket.to(hoster.gameId).emit('hoster-disconnect');
 
-            Hoster.removeHoster(socket.id)
-            console.log(`[disconnect] ${hoster.socketId} hoster has left room ${hoster.gameId}`);
+            Hoster.removeHoster(socket.id);
 
-            const hosters = Hoster.getHosters()
-            console.log(`[host-game]`)
-            console.log(hosters)
+            console.log(`[disconnect] ${hoster.socketId} hoster has left room ${hoster.gameId}`);
+            const hosters = Hoster.getHosters();
+            console.log(`[disconnect]`);
+            console.log(hosters);
         }
     });
 
@@ -41,9 +43,9 @@ const hosterRoutes = (socket) => {
         // save to memory
         hoster.addHoster();
 
-        const hosters = Hoster.getHosters()
-        console.log(`[host-game]`)
-        console.log(hosters)
+        // const hosters = Hoster.getHosters();
+        // console.log(`[host-game]`);
+        // console.log(hosters);
 
         socket.join(hoster.gameId);
         console.log(`[host-game] ${hoster.socketId} hoster created new room ${hoster.gameId}`);
@@ -82,11 +84,12 @@ const hosterRoutes = (socket) => {
                     const players = Player.getPlayersByGameId(hoster.gameId);
 
                     const scoreBoard = players.map((player) => {
-                        const scorer = {}
-                        scorer.name = player.name
-                        scorer.score = player.score
-                        return scorer
-                    }).sort((a, b) => { b.score - a.score }).splice(0, 5)
+                            const scorer = {}
+                            scorer.name = player.name
+                            scorer.score = player.score
+                            return scorer
+                        }).sort((a, b) => { b.score - a.score })
+                        .splice(0, 5);
 
                     // response to hoster
                     return callback({
@@ -108,7 +111,7 @@ const hosterRoutes = (socket) => {
                         question: hoster.question,
                         gameId: hoster.gameId
                     }
-                })
+                });
 
                 const choicesId = hoster.question.choices.map((choice) => choice._id);
                 // response to players
@@ -132,7 +135,7 @@ const hosterRoutes = (socket) => {
     })
 
     socket.on('time-left', (timeLeft) => {
-        const hoster = Hoster.getHosterById(socket.id)
+        const hoster = Hoster.getHosterById(socket.id);
 
         if (!hoster) return;
 
