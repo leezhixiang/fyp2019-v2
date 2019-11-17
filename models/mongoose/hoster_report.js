@@ -16,7 +16,7 @@ const PlayerResultsSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    unattempt: {
+    unattempted: {
         type: Number,
         default: 0
     },
@@ -27,7 +27,7 @@ const PlayerResultsSchema = new mongoose.Schema({
 })
 
 const ChoiceSchema = new mongoose.Schema({
-    choice_id: mongoose.Schema.Types.ObjectId,
+    _id: mongoose.Schema.Types.ObjectId,
     choice: {
         type: String,
         required: true
@@ -43,7 +43,7 @@ const ChoiceSchema = new mongoose.Schema({
 })
 
 const QuestionSchema = new mongoose.Schema({
-    question_id: mongoose.Schema.Types.ObjectId,
+    _id: mongoose.Schema.Types.ObjectId,
     question: {
         type: String,
         required: true
@@ -57,8 +57,8 @@ const QuestionSchema = new mongoose.Schema({
     },
 })
 
-const LeaderboardSchema = new mongoose.Schema({
-    display_name: {
+const ScoreboardSchema = new mongoose.Schema({
+    name: {
         type: String,
         required: true
     },
@@ -98,13 +98,13 @@ const HosterReportSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    leaderboard: {
-        type: [LeaderboardSchema],
+    scoreboard: {
+        type: [ScoreboardSchema],
     },
     questions: {
         type: [QuestionSchema]
     },
-    players: {
+    player_results: {
         type: [PlayerResultsSchema]
     }
 })

@@ -5,9 +5,9 @@ const Hoster = require('../models/hoster');
 const Player = require('../models/player');
 const Quiz = require('../models/mongoose/quiz');
 const HosterReport = require('../models/mongoose/hoster_report');
-const PlayerReport = require('../models/mongoose/hoster_report');
+const PlayerReport = require('../models/mongoose/player_report');
 
-const playerRoutes = (socket) => {
+const playerRoutes = (socket, hasToken) => {
     const userId = socket.request.user._id;
 
     socket.on('disconnect', (callback) => {
@@ -16,6 +16,14 @@ const playerRoutes = (socket) => {
         const hoster = Hoster.getHosterByGameId(player.gameId);
 
         if (player) {
+            // mongoDB
+            if (hasToken === true && hoster && hoster.isGameOver === false) {
+                PlayerReport.findOneAndRemove({ socket_id: socket.id }, (err, data) => {
+                    if (err) throw err;
+                    console.log(`[disconenct] player report was deleted`);
+                });
+            }
+            // memory
             Player.removePlayer(socket.id);
 
             if (hoster) {
@@ -25,9 +33,16 @@ const playerRoutes = (socket) => {
             }
 
             console.log(`[disconnect] ${player.socketId} ${player.name} disconnected from room ${player.gameId}`)
+
             const players = Player.getPlayersByGameId(player.gameId);
-            console.log(`[disconnect]`);
-            console.log(players);
+            console.log(`[disconnect] player list:`);
+            // console.log(players);
+            console.log(players.map((player) => {
+                return {
+                    socketId: player.socketId,
+                    name: player.name
+                }
+            }));
 
             // update names of lobby
             if (hoster && hoster.isGameLive == false) {
@@ -68,26 +83,47 @@ const playerRoutes = (socket) => {
             })
         }
 
-        const hoster = Hoster.getHosterByGameId(gameId);
         const player = Player.getPlayerByName(name);
+        const hoster = Hoster.getHosterByGameId(gameId);
 
         if (!player && hoster) {
             const player = new Player(socket.id, name, gameId);
-            // save to memory
+            // memory
             player.addPlayer();
 
-            // const players = Player.getPlayersByGameId(player.gameId);
-            // const names = players.map((player) => player.name);
-            // console.log(`[join-game]`);
+            // mongoDB
+            if (hasToken === true) {
+                Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
+                    if (err) throw err;
+                    // save to mongoDB
+                    const playerReport = new PlayerReport({
+                        socket_id: socket.id,
+                        game_id: gameId,
+                        player: socket.request.user._id,
+                        game_name: quiz.title,
+                        hoster_name: hoster.name,
+                        questions: quiz.questions
+                    });
+                    playerReport.save()
+                    console.log(`[join-game] player report was created`);
+                });
+            }
+
+            const players = Player.getPlayersByGameId(player.gameId);
+            console.log(`[join-game] player list:`);
             // console.log(players);
+            console.log(players.map((player) => {
+                return {
+                    socketId: player.socketId,
+                    name: player.name
+                }
+            }));
 
             socket.join(player.gameId);
-            console.log(`[join-game] ${player.socketId} ${player.name} disconnected from room ${player.gameId}`)
-
-            const players = Player.getPlayersByGameId(player.gameId)
-            const names = players.map((player) => player.name)
+            console.log(`[join-game] ${player.socketId} ${player.name} joined room ${player.gameId}`)
 
             // response to hoster
+            const names = players.map((player) => player.name);
             if (hoster.isGameLive === false) {
                 io.to(`${hoster.socketId}`).emit('display-name', names);
             }
@@ -141,8 +177,7 @@ const playerRoutes = (socket) => {
 
             if (result === true) {
                 const timeScore = Math.floor((hoster.timeLeft / hoster.question.timer) * 100);
-
-                player.score += (100 + timeScore);
+                player.points += (100 + timeScore);
                 player.correct += 1;
                 Player.updatePlayer(player);
                 // response to player
@@ -153,35 +188,38 @@ const playerRoutes = (socket) => {
                 Player.updatePlayer(player);
                 // response to player
                 callback(false)
-            }
-
-            // scoreboard
-            const players = Player.getPlayersByGameId(player.gameId);
-
-            const scoreBoard = players.map((player) => {
-                    const scorer = {}
-                    scorer.name = player.name
-                    scorer.score = player.score
-                    return scorer
-                }).sort((a, b) => { b.score - a.score })
-                .splice(0, 5);
-            console.log(`[scoreboard]`);
-            console.log(scoreBoard);
-
-            // performance stats
-            const unattepmted = (hoster.questionLength - player.correct - player.incorrect);
-            console.log(`[stats] pts: ${player.score} corr: ${player.correct} incorr: ${player.incorrect} unatt: ${unattepmted}`);
-            // console.log(`points: ${player.score}`)
-            // console.log(`correct: ${player.correct}`)
-            // console.log(`incorrect: ${player.incorrect}`)
-            // console.log(`unattempted: ${unattepmted}`)
-
+            };
+            // summary
             hoster.question.choices.forEach((choice, index) => {
                 if (choice._id == choiceId) {
                     hoster.summary[Object.keys(hoster.summary)[index]] += 1;
                     Hoster.updateHoster(hoster);
-                }
-            })
+                };
+            });
+            // mongoDB
+            PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, { $set: { "questions.$[i].choices.$[j].is_answer": true } }, {
+                    arrayFilters: [{ "i._id": hoster.question._id }, { "j._id": choiceId }],
+                    upsert: true
+                },
+                (err, data) => {
+                    if (err) throw err;
+                    console.log(`[player-answer] player report was updated`);
+                });
+
+            // scoreboard
+            const players = Player.getPlayersByGameId(player.gameId);
+            const scoreBoard = players.map((player) => {
+                    const scorer = {}
+                    scorer.name = player.name
+                    scorer.points = player.points
+                    return scorer
+                }).sort((a, b) => { b.points - a.points })
+                .splice(0, 5);
+            console.log(`[scoreboard]`);
+            console.log(scoreBoard);
+            // performance stats
+            const unattepmted = (hoster.questionLength - player.correct - player.incorrect);
+            console.log(`[stats] points: ${player.points} correct: ${player.correct} incorrect: ${player.incorrect} unattempted: ${unattepmted}`);
 
         } else if (hoster.isQuestionLive === false) {
             // answer is not allowed while question is not live
@@ -213,11 +251,19 @@ const playerRoutes = (socket) => {
         const unattepmted = (hoster.questionLength - player.correct - player.incorrect);
         // response to player
         callback({
-            score: player.score,
+            points: player.points,
             correct: player.correct,
             incorrect: player.incorrect,
             unattepmted
         })
+
+        // mongoDB
+        PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, {
+            $set: { "correct": player.correct, "incorrect": player.incorrect, "unattempted": unattepmted }
+        }, { upsert: true }, (err, data) => {
+            if (err) throw err;
+            console.log(`[player-results] player report was updated`);
+        });
     })
 };
 

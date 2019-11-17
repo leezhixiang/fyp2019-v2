@@ -124,7 +124,7 @@ window.onload = () => {
 
     socket.on('player-game-over', () => {
         socket.emit('get-overall-result', function(data) {
-            const { score, correct, incorrect, unattempted } = data
+            const { points, correct, incorrect, unattempted } = data
 
             document.querySelector("#playGame").remove();
             document.querySelector("#gameOver").classList.remove("hidden");

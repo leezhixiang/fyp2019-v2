@@ -7,14 +7,14 @@ module.exports = class Player {
         gameId,
         correct = 0,
         incorrect = 0,
-        score = 0
+        points = 0
     ) {
         this.socketId = socketId;
         this.name = name;
         this.gameId = gameId;
         this.correct = correct;
         this.incorrect = incorrect;
-        this.score = score;
+        this.points = points;
     }
 
     addPlayer() {

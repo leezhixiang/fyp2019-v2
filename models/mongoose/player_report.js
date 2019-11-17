@@ -4,7 +4,7 @@ const User = require('./user')
 const Quiz = require('./quiz')
 
 const ChoiceSchema = new mongoose.Schema({
-    choice_id: mongoose.Schema.Types.ObjectId,
+    _id: mongoose.Schema.Types.ObjectId,
     choice: {
         type: String,
         required: true
@@ -14,8 +14,7 @@ const ChoiceSchema = new mongoose.Schema({
         required: true
     },
     is_answer: {
-        type: Boolean,
-        required: true
+        type: Boolean
     },
     accuracy: {
         type: Number,
@@ -24,7 +23,7 @@ const ChoiceSchema = new mongoose.Schema({
 })
 
 const QuestionSchema = new mongoose.Schema({
-    question_id: mongoose.Schema.Types.ObjectId,
+    _id: mongoose.Schema.Types.ObjectId,
     question: {
         type: String,
         required: true
@@ -34,8 +33,18 @@ const QuestionSchema = new mongoose.Schema({
     },
 })
 
+const ScoreboardSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    points: {
+        type: Number,
+        default: 0
+    }
+})
+
 const PlayerReportSchema = new mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
     socket_id: {
         type: String,
         required: true
@@ -69,20 +78,14 @@ const PlayerReportSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    unattempt: {
+    unattempted: {
         type: Number,
         default: 0
 
     },
-    leaderboard: [{
-        display_name: {
-            type: String
-        },
-        points: {
-            type: Number,
-            default: 0
-        }
-    }],
+    scoreboard: {
+        type: [ScoreboardSchema],
+    },
     questions: {
         type: [QuestionSchema]
     }
