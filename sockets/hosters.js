@@ -148,8 +148,8 @@ const hosterRoutes = (socket, hasToken) => {
                         playerResults.name = player.name;
                         playerResults.correct = player.correct;
                         playerResults.incorrect = player.incorrect;
-                        playerResults.unattepmted = hoster.questionLength - player.correct - player.incorrect;
-                        playerResults.accuracy = Math.floor((player.correct / (player.correct + player.incorrect + playerResults.unattepmted) * 100));
+                        playerResults.unattempted = hoster.questionLength - player.correct - player.incorrect;
+                        playerResults.accuracy = Math.floor((player.correct / (player.correct + player.incorrect + playerResults.unattempted) * 100));
                         return playerResults
                     });
 
@@ -157,10 +157,10 @@ const hosterRoutes = (socket, hasToken) => {
                         .reduce((accumulator, currentValue) => accumulator + currentValue);
                     const totalIncorrect = players.map((player) => player.incorrect)
                         .reduce((accumulator, currentValue) => accumulator + currentValue);
-                    const totalUnattepmted = players.map((player) => hoster.questionLength - player.correct - player.incorrect)
+                    const totalUnattempted = players.map((player) => hoster.questionLength - player.correct - player.incorrect)
                         .reduce((accumulator, currentValue) => accumulator + currentValue);
 
-                    const gameAccuracy = Math.floor((totalCorrect / (totalCorrect + totalIncorrect + totalUnattepmted) * 100));
+                    const gameAccuracy = Math.floor((totalCorrect / (totalCorrect + totalIncorrect + totalUnattempted) * 100));
 
                     // save to mongoDB
                     HosterReport.findOneAndUpdate({ "socket_id": socket.id }, {

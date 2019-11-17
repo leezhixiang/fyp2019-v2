@@ -248,18 +248,18 @@ const playerRoutes = (socket, hasToken) => {
         if (!player) return;
         const hoster = Hoster.getHosterByGameId(player.gameId);
 
-        const unattepmted = (hoster.questionLength - player.correct - player.incorrect);
+        const unattempted = (hoster.questionLength - player.correct - player.incorrect);
         // response to player
         callback({
             points: player.points,
             correct: player.correct,
             incorrect: player.incorrect,
-            unattepmted
+            unattempted
         })
 
         // mongoDB
         PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, {
-            $set: { "correct": player.correct, "incorrect": player.incorrect, "unattempted": unattepmted }
+            $set: { "correct": player.correct, "incorrect": player.incorrect, "unattempted": unattempted }
         }, { upsert: true }, (err, data) => {
             if (err) throw err;
             console.log(`[player-results] player report was updated`);
