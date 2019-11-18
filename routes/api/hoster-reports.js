@@ -22,7 +22,17 @@ router.get('/', (req, res) => {
 
 // @GET /api/hoster-reports/:hosterReportId
 router.get('/:hosterReportId', (req, res) => {
-
+    HosterReport.find({ "_id": req.params.hosterReportId })
+        .populate({
+            path: 'hoster',
+            select: 'name'
+        })
+        .then(hosterReport => {
+            res.status(200).json(hosterReport)
+        })
+        .catch(err => {
+            res.status(500).json(err);
+        });
 })
 
 module.exports = router;

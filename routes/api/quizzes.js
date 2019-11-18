@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const checkAuth = require('../../middleware/check-auth');
+
 // data model
 const Quiz = require('../../models/mongoose/quiz');
 
 // @POST /api/quizzes
-router.post('/', (req, res) => {
+router.post('/', checkAuth, (req, res) => {
     const quiz = new Quiz({
         title: req.body.title,
-        creator: req.body.creator,
+        creator: req.payload.userData._id,
         questions: req.body.questions
     });
 
