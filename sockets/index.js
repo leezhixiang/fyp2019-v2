@@ -18,8 +18,8 @@ module.exports = () => {
     }, (payload, done) => {
         // you done callback will not include any payload data now
         // if no token was supplied
-        if (payload && payload.userInfo) {
-            User.findOne({ email: payload.userInfo.email }, (err, user) => {
+        if (payload && payload.userData) {
+            User.findOne({ email: payload.userData.email }, (err, user) => {
                 if (err) {
                     // return error
                     return done(err);

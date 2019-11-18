@@ -148,7 +148,8 @@ const hosterRoutes = (socket, hasToken) => {
                         }).sort((a, b) => { b.points - a.points })
                         .splice(0, 5);
 
-                    if (hasToken === true) {
+                    const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
+                    if (hasToken === true && onlinePlayers.length > 0) {
                         // calculate game accuracy
                         const totalCorrect = players.map((player) => player.correct)
                             .reduce((accumulator, currentValue) => accumulator + currentValue);
@@ -178,18 +179,16 @@ const hosterRoutes = (socket, hasToken) => {
                             console.log(`[scoreboard] hoster report was updated`);
                         });
 
-                        const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
-                        if (onlinePlayers.length > 0) {
-                            PlayerReport.updateMany({ "game_id": hoster.gameId }, {
-                                $set: { "scoreboard": scoreBoard }
-                            }, { upsert: true }, (err, data) => {
-                                if (err) {
-                                    console.log(err);
-                                    return;
-                                };
-                                console.log(`[scoreboard] player report was updated`);
-                            });
-                        }
+                        PlayerReport.updateMany({ "game_id": hoster.gameId }, {
+                            $set: { "scoreboard": scoreBoard }
+                        }, { upsert: true }, (err, data) => {
+                            if (err) {
+                                console.log(err);
+                                return;
+                            };
+                            console.log(`[scoreboard] player report was updated`);
+                        });
+
                     };
                     // response to players
                     socket.to(hoster.gameId).emit('player-game-over');
@@ -222,8 +221,8 @@ const hosterRoutes = (socket, hasToken) => {
                 });
             });
         } else if (btnState === false) {
-            // check whether the room has players
-            if (hasToken === true) {
+            const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
+            if (hasToken === true && onlinePlayers.length > 0) {
                 // calculate question accuracy
                 calcQuestionAccuracy = () => {
                     const choicesSummary = [];
@@ -249,36 +248,32 @@ const hosterRoutes = (socket, hasToken) => {
                 choicesAccuracy.c4 = calcChoiceAccuracy(hoster.summary.c4, hoster.receivedPlayers.length);
 
                 const noAnsAccuracy = Math.floor(((hoster.receivedPlayers.length - hoster.answeredPlayers.length) / hoster.receivedPlayers.length) * 100);
-
-                const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
-                if (onlinePlayers.length > 0) {
-                    // save to mongoDB
-                    PlayerReport.updateMany({ "game_id": hoster.gameId }, {
-                            $set: {
-                                "questions.$[q].choices.$[c1].accuracy": choicesAccuracy.c1,
-                                "questions.$[q].choices.$[c2].accuracy": choicesAccuracy.c2,
-                                "questions.$[q].choices.$[c3].accuracy": choicesAccuracy.c3,
-                                "questions.$[q].choices.$[c4].accuracy": choicesAccuracy.c4
-                            }
-                        }, {
-                            arrayFilters: [
-                                { "q._id": hoster.question._id },
-                                { "c1._id": hoster.question.choices[0]._id },
-                                { "c2._id": hoster.question.choices[1]._id },
-                                { "c3._id": hoster.question.choices[2]._id },
-                                { "c4._id": hoster.question.choices[3]._id }
-                            ],
-                            upsert: true
-                        },
-                        (err, data) => {
-                            if (err) {
-                                console.log(err);
-                                return;
-                            };
-                            console.log(`[accuracy] player report was updated`);
-                        });
-                };
                 // save to mongoDB
+                PlayerReport.updateMany({ "game_id": hoster.gameId }, {
+                        $set: {
+                            "questions.$[q].choices.$[c1].accuracy": choicesAccuracy.c1,
+                            "questions.$[q].choices.$[c2].accuracy": choicesAccuracy.c2,
+                            "questions.$[q].choices.$[c3].accuracy": choicesAccuracy.c3,
+                            "questions.$[q].choices.$[c4].accuracy": choicesAccuracy.c4
+                        }
+                    }, {
+                        arrayFilters: [
+                            { "q._id": hoster.question._id },
+                            { "c1._id": hoster.question.choices[0]._id },
+                            { "c2._id": hoster.question.choices[1]._id },
+                            { "c3._id": hoster.question.choices[2]._id },
+                            { "c4._id": hoster.question.choices[3]._id }
+                        ],
+                        upsert: true
+                    },
+                    (err, data) => {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        };
+                        console.log(`[accuracy] player report was updated`);
+                    });
+
                 HosterReport.findOneAndUpdate({ "socket_id": socket.id }, {
                         $set: {
                             "questions.$[q].accuracy": questionAccuracy,

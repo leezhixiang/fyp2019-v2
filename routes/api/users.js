@@ -35,13 +35,13 @@ router.post('/login', (req, res) => {
                             })
                         }
 
-                        const userInfo = {
+                        const userData = {
                             _id: user._id,
                             name: user.name,
                             email: user.email,
                         }
 
-                        jwt.sign({ userInfo }, config.get('jwtSecret'), (err, token) => {
+                        jwt.sign({ userData }, config.get('jwtSecret'), (err, token) => {
                             if (err) throw err;
                             res.status(201).json({
                                 message: 'succedd to log in',

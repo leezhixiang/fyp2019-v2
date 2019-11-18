@@ -98,10 +98,6 @@ const HosterReportSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    players: {
-        type: Number,
-        default: 0
-    },
     scoreboard: {
         type: [ScoreboardSchema],
     },
@@ -111,8 +107,6 @@ const HosterReportSchema = new mongoose.Schema({
     player_results: {
         type: [PlayerResultsSchema]
     }
-})
-
-
+});
 
 module.exports = mongoose.model('HosterReport', HosterReportSchema, 'hoster_reports')

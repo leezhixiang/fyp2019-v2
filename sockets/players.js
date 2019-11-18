@@ -42,14 +42,14 @@ const playerRoutes = (socket, hasToken) => {
                 return { socketId: player.socketId, name: player.name }
             }));
             // update names of lobby
-            if (hoster && hoster.isGameLive == false) {
+            if (hoster && hoster.isGameLive === false) {
                 const players = Player.getPlayersByGameId(player.gameId);
                 const names = players.map((player) => player.name);
                 // response to hoster
                 io.to(`${hoster.socketId}`).emit('display-name', names);
             }
             // validation of last question
-            if (hoster && hoster.isGameLive === true && hoster.isQuestionLive === true) {
+            if (hoster && hoster.isGameLive === true && hoster.isGameOver === false && hoster.isQuestionLive === true) {
                 const totalAnsweredPlayers = hoster.answeredPlayers.length;
                 const totalReceivedPlayers = hoster.receivedPlayers.length;
 
@@ -88,6 +88,14 @@ const playerRoutes = (socket, hasToken) => {
             player.addPlayer();
 
             // save to mongoDB
+            Quiz.findOneAndUpdate({ _id: hoster.quizId }, { $inc: { plays: 1 } }, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                };
+                console.log(`[join-game] quiz was updated`);
+            });
+
             if (hasToken === true) {
                 Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
                     if (err) {

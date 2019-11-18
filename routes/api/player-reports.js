@@ -1,27 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const checkAuth = require('../../middleware/check-auth');
+
 // data model
-const Quiz = require('../../models/mongoose/quiz');
+const playerReport = require('../../models/mongoose/player_report');
 
-// @POST /api/quizzes
-router.post('/', (req, res) => {
-    const quiz = new Quiz({
-        title: req.body.title,
-        creator: req.body.creator,
-        questions: req.body.questions
-    });
-
-    quiz.save()
-        .then((quiz) => {
-            res.status(201).json(quiz);
-        })
-        .catch((err) => {
-            res.status(500).json(err);
-        });
-});
-
-// @GET /api/quizzes
+// @GET /api/player-reports
 router.get('/', (req, res) => {
     Quiz.find()
         .populate('creator', 'name')
@@ -33,8 +16,8 @@ router.get('/', (req, res) => {
         });
 })
 
-// @GET /api/quizzes/:quizId
-router.get('/:quizId', function(req, res) {
+// @GET /api/player-reports/:playerReportId
+router.get('/:playerReportId', (req, res) => {
     Quiz.findById(req.params.quizId)
         .populate('creator', 'name')
         .then(quiz => {
