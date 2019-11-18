@@ -41,6 +41,10 @@ module.exports = class Player {
         return players.filter((player) => player.gameId === gameId)
     }
 
+    static getOnlinePlayersByGameId(gameId) {
+        return players.filter((player) => player.gameId === gameId)
+    }
+
     static getPlayerById(socketId) {
         return players.find((player) => player.socketId === socketId)
     }

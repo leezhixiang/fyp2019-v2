@@ -55,6 +55,10 @@ const QuestionSchema = new mongoose.Schema({
     choices: {
         type: [ChoiceSchema]
     },
+    noAnsAccuracy: {
+        type: Number,
+        default: 0
+    }
 })
 
 const ScoreboardSchema = new mongoose.Schema({
