@@ -17,6 +17,7 @@ window.onload = () => {
         })
         .then(function(quizzes) {
             let html = "";
+            console.log(quizzes);
 
             quizzes.forEach(quiz => {
                 html += `<div class="quiz-card">

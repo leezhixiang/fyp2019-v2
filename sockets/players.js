@@ -67,7 +67,6 @@ const playerRoutes = (socket, hasToken) => {
             };
         };
     });
-
     socket.on('join-game', function(data, callback) {
         const { name, gameId } = data
 
@@ -86,7 +85,6 @@ const playerRoutes = (socket, hasToken) => {
             const player = new Player(socket.id, name, gameId);
             // save to memory
             player.addPlayer();
-
             // save to mongoDB
             Quiz.findOneAndUpdate({ _id: hoster.quizId }, { $inc: { plays: 1 } }, (err, data) => {
                 if (err) {
@@ -95,7 +93,6 @@ const playerRoutes = (socket, hasToken) => {
                 };
                 console.log(`[join-game] quiz was updated`);
             });
-
             if (hasToken === true) {
                 Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
                     if (err) {
@@ -123,8 +120,8 @@ const playerRoutes = (socket, hasToken) => {
             }));
             // join player to room
             socket.join(player.gameId);
-            console.log(`[join-game] ${player.socketId} ${player.name} joined room ${player.gameId}`)
-                // response to hoster
+            console.log(`[join-game] ${player.socketId} ${player.name} joined room ${player.gameId}`);
+            // response to hoster
             const names = players.map((player) => player.name);
             if (hoster.isGameLive === false) {
                 io.to(`${hoster.socketId}`).emit('display-name', names);
@@ -167,7 +164,6 @@ const playerRoutes = (socket, hasToken) => {
         const player = Player.getPlayerById(socket.id);
         if (!player) return;
         const hoster = Hoster.getHosterByGameId(player.gameId);
-
         // Input Validation
         const choicesId = hoster.question.choices.map(choice => {
             return choice._id;
@@ -175,8 +171,7 @@ const playerRoutes = (socket, hasToken) => {
         if (choicesId.includes(choiceId) === false) {
             console.log('Something went wrong!');
             return;
-        }
-
+        };
         if (hoster.isQuestionLive === true) {
             hoster.answeredPlayers.push(socket.id);
             Hoster.updateHoster(hoster);
@@ -206,7 +201,6 @@ const playerRoutes = (socket, hasToken) => {
                     Hoster.updateHoster(hoster);
                 };
             });
-
             if (hasToken === true) {
                 // save to mongoDB
                 PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, { $set: { "questions.$[i].choices.$[j].is_answer": true } }, {
@@ -252,7 +246,7 @@ const playerRoutes = (socket, hasToken) => {
             console.log('[last-question] all answered');
             console.log(`[last-question] answered players: ${hoster.answeredPlayers}`);
             console.log(`[last-question] received players: ${hoster.receivedPlayers}`);
-        }
+        };
     })
 
     socket.on('get-overall-result', (callback) => {
@@ -267,7 +261,7 @@ const playerRoutes = (socket, hasToken) => {
             correct: player.correct,
             incorrect: player.incorrect,
             unattempted
-        })
+        });
         if (hasToken === true) {
             // save to mongoDB
             PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, {

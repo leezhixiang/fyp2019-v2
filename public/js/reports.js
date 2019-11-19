@@ -7,8 +7,7 @@ window.onload = () => {
         document.querySelector('#guest-nav').classList.add("hidden");
     } else {
         document.querySelector('#user-nav').classList.add("hidden");
-    }
-
+    };
     document.querySelector("#logout").addEventListener("click", () => {
         localStorage.removeItem('auth_token');
         window.location.href = "http://localhost:3000/";

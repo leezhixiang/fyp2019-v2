@@ -5,12 +5,12 @@ const config = require('config')
 const expressHandlebars = require('express-handlebars')
 const checkAuth = require('./middleware/check-auth');
 
-const rootDir = require('./util/path')
-const userRoutes = require('./routes/api/users')
-const quizRoutes = require('./routes/api/quizzes')
-const hosterReportRoutes = require('./routes/api/hoster-reports')
-const playerReportRoutes = require('./routes/api/player-reports')
-const errorController = require('./controllers/error')
+const rootDir = require('./util/path');
+const userRoutes = require('./routes/api/users');
+const quizRoutes = require('./routes/api/quizzes');
+const libraryRoutes = require('./routes/api/library');
+const reportRoutes = require('./routes/api/reports');
+const errorController = require('./controllers/error');
 
 const app = express();
 const server = require('http').Server(app);
@@ -39,8 +39,8 @@ app.use(express.static(path.join(rootDir, 'public')));
 // api
 app.use('/api/users', userRoutes);
 app.use('/api/quizzes', quizRoutes);
-app.use('/api/hoster-reports', checkAuth, hosterReportRoutes);
-app.use('/api/player-reports', checkAuth, playerReportRoutes);
+app.use('/api/library', checkAuth, libraryRoutes);
+app.use('/api/reports', checkAuth, reportRoutes);
 
 // routes
 app.use(require('./routes/quizzes'));
