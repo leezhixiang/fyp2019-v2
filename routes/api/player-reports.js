@@ -2,14 +2,17 @@ const express = require('express');
 const router = express.Router();
 
 // data model
-const playerReport = require('../../models/mongoose/player_report');
+const PlayerReport = require('../../models/mongoose/player_report');
 
 // @GET /api/player-reports
 router.get('/', (req, res) => {
-    Quiz.find()
-        .populate('creator', 'name')
-        .then(quizzes => {
-            res.status(200).json(quizzes)
+    PlayerReport.find({ "player": req.payload.userData._id })
+        .populate({
+            path: 'player',
+            select: 'name'
+        })
+        .then(playerReport => {
+            res.status(200).json(playerReport)
         })
         .catch(err => {
             res.status(500).json(err);
@@ -18,15 +21,13 @@ router.get('/', (req, res) => {
 
 // @GET /api/player-reports/:playerReportId
 router.get('/:playerReportId', (req, res) => {
-    Quiz.findById(req.params.quizId)
-        .populate('creator', 'name')
-        .then(quiz => {
-            if (!quiz) {
-                return res.status(404).json({
-                    message: "Quiz not found"
-                });
-            }
-            res.status(200).json(quiz);
+    PlayerReport.find({ "_id": req.params.playerReportId })
+        .populate({
+            path: 'player',
+            select: 'name'
+        })
+        .then(playerReport => {
+            res.status(200).json(playerReport)
         })
         .catch(err => {
             res.status(500).json(err);
