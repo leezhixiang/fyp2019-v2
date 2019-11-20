@@ -32,7 +32,7 @@ const playerRoutes = (socket, hasToken) => {
                         console.log(err);
                         return;
                     };
-                    console.log(`[@player disconnect] player report was deleted from mongoDB`);
+                    console.log(`[@player disconnect] mongoDB responses success`);
                 });
             };
 
@@ -163,8 +163,7 @@ const playerRoutes = (socket, hasToken) => {
             Hoster.updateHoster(hoster);
         };
 
-        // reset to answerResult to false
-        player.answerResult = false;
+        // reset to false, no answer after receives new question
         player.didAnswer = false;
         Player.updatePlayer(player);
     })
@@ -194,14 +193,39 @@ const playerRoutes = (socket, hasToken) => {
             const result = correctChoicesId.includes(choiceId)
 
             if (result === true) {
-                const timeScore = Math.floor((hoster.timeLeft / hoster.question.timer) * 100);
-                player.points += (100 + timeScore);
-                player.correct += 1;
-                player.answerResult = true;
-                player.didAnswer = true;
-                Player.updatePlayer(player);
+                const timeScore = Math.floor((hoster.timeLeft / hoster.question.timer) * 1000);
+                player.currentPoints = timeScore;
+
+                // previous answer result is true && toggled to 1000
+                if (player.answerResult === true && player.points >= 0) {
+                    //streak ++
+                    player.streak += 1;
+                    // points (up to 1000 points) + bonus
+                    player.points += (timeScore + ((player.streak * 100) - 100));
+                    console.log(`bonus ${((player.streak * 100) - 100)}`)
+                    player.correct += 1;
+                    // update answer result to true
+                    player.answerResult = true;
+                    player.didAnswer = true;
+                    Player.updatePlayer(player);
+
+                } else {
+                    // points (up to 1000 points) 
+                    player.points += timeScore;
+                    player.correct += 1;
+                    player.answerResult = true;
+                    player.didAnswer = true;
+                    Player.updatePlayer(player);
+                }
 
             } else if (result === false) {
+                // having streak
+                if (player.streak > 0) {
+                    // lost streak
+                    player.isLostStreak = true;
+                    player.streak = 0;
+                    Player.updatePlayer(player);
+                }
                 player.incorrect += 1;
                 player.answerResult = false;
                 player.didAnswer = true;
@@ -265,10 +289,22 @@ const playerRoutes = (socket, hasToken) => {
 
         // find current rank among all players
         const currentRank = scoreBoard.findIndex((scorer) => scorer.socketId === socket.id);
-        console.log(`[@player player-answer] ${player.name}`)
-        console.log(`[@player player-answer] current rank: ${currentRank + 1}`);
+
+        let previousScorerName = null;
+        let differencePts = null;
+        let previousScorerPts = 0;
+
+        if (currentRank > 0) {
+            const previousScorer = scoreBoard[currentRank - 1];
+            previousScorerName = previousScorer.name;
+            previousScorerPts = previousScorer.points;
+            differencePts = (previousScorerPts - player.points);
+        }
+
         player.rank = currentRank + 1;
         Player.updatePlayer(player);
+        console.log(`[@player player-answer] ${player.name}`)
+        console.log(`[@player player-answer] current rank: ${currentRank + 1}`);
 
         // calculate performance statistics
         const unattepmted = (hoster.questionLength - player.correct - player.incorrect);
@@ -277,10 +313,14 @@ const playerRoutes = (socket, hasToken) => {
         callback({
             answerResult: player.answerResult,
             didAnswer: player.didAnswer,
-            points: player.points,
-            rank: player.rank
-        });
-    });
+            isLostStreak: player.isLostStreak,
+            streak: player.streak,
+            currentPoints: player.currentPoints,
+            rank: player.rank,
+            previousScorerName,
+            differencePts
+        })
+    })
 
     socket.on('get-overall-results', (callback) => {
         const player = Player.getPlayerById(socket.id);
@@ -301,7 +341,7 @@ const playerRoutes = (socket, hasToken) => {
         if (hasToken === true) {
             // save to mongoDB
             PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, {
-                $set: { "correct": player.correct, "incorrect": player.incorrect, "unattempted": unattempted }
+                $set: { "rank": player.rank, "correct": player.correct, "incorrect": player.incorrect, "unattempted": unattempted }
             }, { upsert: true }, (err, data) => {
                 if (err) {
                     console.log(err);

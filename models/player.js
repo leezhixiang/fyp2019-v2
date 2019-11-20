@@ -10,7 +10,10 @@ module.exports = class Player {
         correct = 0,
         incorrect = 0,
         answerResult = undefined,
-        didAnswer = undefined
+        didAnswer = undefined,
+        currentPoints = 0,
+        isLostStreak = false,
+        streak = 0
     ) {
         this.socketId = socketId;
         this.name = name;
@@ -20,7 +23,10 @@ module.exports = class Player {
         this.correct = correct;
         this.incorrect = incorrect;
         this.answerResult = answerResult;
-        this.didAnswer = didAnswer
+        this.didAnswer = didAnswer;
+        this.currentPoints = currentPoints;
+        this.isLostStreak = isLostStreak;
+        this.streak = streak;
     }
 
     addPlayer() {

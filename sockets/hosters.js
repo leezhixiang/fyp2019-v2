@@ -22,13 +22,13 @@ const hosterRoutes = (socket, hasToken) => {
                         console.log(err);
                         return;
                     };
-                    console.log(`[disconenct] hoster report was deleted`);
+                    console.log(`[@hoster disconenct] mongoDB responses success`);
                 });
             };
-            console.log(`[disconnect] ${hoster.socketId} hoster has left room ${hoster.gameId}`);
+            console.log(`[@hoster disconenct] ${hoster.socketId} hoster has left room ${hoster.gameId}`);
             // show hoster list
             const hosters = Hoster.getHosters();
-            console.log(`[disconnect] hoster list:`);
+            console.log(`[@hoster disconenct] hoster list:`);
             console.log(hosters.map((hoster) => {
                 return { socketId: hoster.socketId, name: hoster.name }
             }));
@@ -43,7 +43,7 @@ const hosterRoutes = (socket, hasToken) => {
                     console.log(err);
                     return;
                 };
-                console.log(`[disconenct] all players report were deleted`);
+                console.log(`[@player disconenct] mongoDB responses success`);
             });
         };
     });
@@ -83,7 +83,7 @@ const hosterRoutes = (socket, hasToken) => {
                         console.log(err);
                         return;
                     };
-                    console.log(`[host-game] hoster report was created`);
+                    console.log(`[@hoster host-game] mongoDB responses success`);
                 });
                 // save to memory
                 hoster.shuffledQuestionIds = quiz.questions.sort(() => Math.random() - .5).map((q) => q._id);
@@ -93,14 +93,14 @@ const hosterRoutes = (socket, hasToken) => {
 
         // show hoster list
         const hosters = Hoster.getHosters();
-        console.log(`[host-game] hoster list:`);
+        console.log(`[@hoster host-game] hoster list:`);
         console.log(hosters.map((hoster) => {
             return { socketId: hoster.socketId, name: hoster.name }
         }));
 
         // join hoster to room
         socket.join(hoster.gameId);
-        console.log(`[host-game] ${hoster.socketId} hoster created new room ${hoster.gameId}`);
+        console.log(`[@hoster host-game] ${hoster.socketId} hoster created new room ${hoster.gameId}`);
 
         // response to hoster
         callback({
@@ -116,7 +116,7 @@ const hosterRoutes = (socket, hasToken) => {
         if (!hoster) return;
 
         if (typeof(btnState) !== 'boolean') {
-            console.log('Something went wrong!');
+            console.log('[@hoster next-question] Something went wrong!');
             return;
         };
 
@@ -143,6 +143,16 @@ const hosterRoutes = (socket, hasToken) => {
                     hoster.isGameOver = true;
                     Hoster.updateHoster(hoster);
 
+                    // should be calculated in advanced to prevent undefined
+                    // calculate scoreboard
+                    const players = Player.getPlayersByGameId(hoster.gameId);
+                    const scoreBoard = players.map((player) => {
+                        const scorer = {}
+                        scorer.name = player.name
+                        scorer.points = player.points
+                        return scorer
+                    }).sort((a, b) => b.points - a.points).splice(0, 5);
+
                     const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
                     if (hasToken === true && onlinePlayers.length > 0) {
                         // calculate game accuracy
@@ -165,16 +175,6 @@ const hosterRoutes = (socket, hasToken) => {
                             return results
                         });
 
-                        // calculate scoreboard
-                        const players = Player.getPlayersByGameId(hoster.gameId);
-                        const scoreBoard = players.map((player) => {
-                                const scorer = {}
-                                scorer.name = player.name
-                                scorer.points = player.points
-                                return scorer
-                            }).sort((a, b) => { b.points - a.points })
-                            .splice(0, 5);
-
                         // save to mongoDB
                         HosterReport.findOneAndUpdate({ "socket_id": socket.id }, {
                             $set: { "accuracy": gameAccuracy, "scoreboard": scoreBoard, "player_results": playersResults }
@@ -183,7 +183,7 @@ const hosterRoutes = (socket, hasToken) => {
                                 console.log(err);
                                 return;
                             };
-                            console.log(`[scoreboard] hoster report was updated`);
+                            console.log(`[@hoster next-question] mongoDB responses success`);
                         });
                         PlayerReport.updateMany({ "game_id": hoster.gameId }, {
                             $set: { "scoreboard": scoreBoard }
@@ -192,7 +192,7 @@ const hosterRoutes = (socket, hasToken) => {
                                 console.log(err);
                                 return;
                             };
-                            console.log(`[scoreboard] player report was updated`);
+                            console.log(`[@player next-question] mongoDB responses success`);
                         });
                     };
 
@@ -299,7 +299,7 @@ const hosterRoutes = (socket, hasToken) => {
                             console.log(err);
                             return;
                         };
-                        console.log(`[accuracy] hoster report was updated`);
+                        console.log(`[@hoster next-question] mongoDB responses success`);
                     });
 
                 PlayerReport.updateMany({ "game_id": hoster.gameId }, {
@@ -324,7 +324,7 @@ const hosterRoutes = (socket, hasToken) => {
                             console.log(err);
                             return;
                         };
-                        console.log(`[accuracy] player report was updated`);
+                        console.log(`[@player next-question] mongoDB responses success`);
                     });
             };
 
@@ -332,22 +332,13 @@ const hosterRoutes = (socket, hasToken) => {
             const players = Player.getPlayersByGameId(hoster.gameId);
             const scoreBoard = players.map((player) => {
                 return {
-                    socketId: player.socketId,
                     name: player.name,
                     points: player.points,
                 };
-            }).sort((a, b) => b.points - a.points);
+            }).sort((a, b) => b.points - a.points).splice(0, 5);
 
-            // splice a top 5 scoreboard
-            const top5ScoreBoard = scoreBoard.splice(0, 5).map((player) => {
-                return {
-                    name: player.name,
-                    points: player.points
-                };
-            });
-
-            console.log(`[@player player-answer] top 5 scoreboard:`);
-            console.log(top5ScoreBoard);
+            console.log(`[@hoster next-question] top 5 scoreboard:`);
+            console.log(scoreBoard);
 
             // response to players
             socket.to(hoster.gameId).emit('get-question-results');
@@ -356,7 +347,8 @@ const hosterRoutes = (socket, hasToken) => {
                 nextQuestion: false,
                 isGameOver: hoster.isGameOver,
                 nextQuestionData: {
-                    summary: hoster.summary
+                    summary: hoster.summary,
+                    scoreBoard
                 }
             });
         };
@@ -367,7 +359,7 @@ const hosterRoutes = (socket, hasToken) => {
         if (!hoster) return;
 
         if (typeof(timeLeft) !== 'number') {
-            console.log('Something went wrong!');
+            console.log('[@hoster time-left] Something went wrong!');
             return;
         };
 

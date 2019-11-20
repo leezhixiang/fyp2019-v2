@@ -112,7 +112,7 @@ window.onload = () => {
                 console.log(`[next-button] next question`);
 
             } else if (nextQuestion === false && isGameOver === false) {
-                const { summary } = nextQuestionData;
+                const { summary, scoreBoard } = nextQuestionData;
 
                 document.querySelector("#displayQuestion").classList.add("hidden");
                 document.querySelector("#summary").classList.remove("hidden");
@@ -123,7 +123,7 @@ window.onload = () => {
 
                 document.querySelector('#nextBtn').setAttribute('data-state', true)
 
-                console.log(`[next-button] show summary`);
+                console.log(scoreBoard);
 
             } else if (nextQuestion === false && isGameOver === true) {
                 const { scoreBoard } = nextQuestionData;
