@@ -50,7 +50,7 @@ window.onload = () => {
         })
     })
 
-    let result = false;
+    let lastResult;
 
     socket.on('player-next-question', (data) => {
 
@@ -59,22 +59,24 @@ window.onload = () => {
         const { questionIndex, questionLength, choicesId } = data
 
         if (questionIndex > 1) {
+            // player who joined after game starts
             document.querySelector("#waitingNext").classList.add("hidden");
         } else {
+            // player who joined before game starts
             document.querySelector("#waitingStart").classList.add("hidden");
         }
 
-        if (result === true) {
+        if (lastResult === true) {
+            // player who answered correct
             document.querySelector("#correct").classList.add("hidden");
-        } else if (result === false) {
+        } else if (lastResult === false) {
+            // player who answered wrong
             document.querySelector("#wrong").classList.add("hidden");
         } else {
+            // player who did not attempt
             document.querySelector("#wrong").classList.add("hidden");
         }
         document.querySelector("#choices").classList.remove("hidden");
-
-        // reset to false
-        result = 0;
 
         document.querySelectorAll(".choice").forEach((choice) => {
             choice.disabled = false
@@ -100,31 +102,43 @@ window.onload = () => {
 
             const choiceId = choice.getAttribute("data-id");
 
-            socket.emit('player-answer', choiceId, (data) => {
-                // get results from server, either true or false
-                result = data;
-                console.log(`[player-answer] your answer is ${result}`);
-            })
+            // send answer to server
+            socket.emit('player-answer', choiceId)
         })
     })
 
-    socket.on('open-results', () => {
-        if (result === true) {
-            document.querySelector("#waitingOthers").classList.add("hidden");
-            document.querySelector("#correct").classList.remove("hidden");
-        } else if (result === false) {
-            document.querySelector("#waitingOthers").classList.add("hidden");
-            document.querySelector("#wrong").classList.remove("hidden");
-        } else {
-            document.querySelector("#choices").classList.add("hidden");
-            document.querySelector("#wrong").classList.remove("hidden");
-        }
-        console.log(`[open-results] see results`)
+    socket.on('get-question-results', () => {
+        console.log('get results');
+
+        socket.emit('question-results', (data) => {
+            // get results from server, either true or false
+            const { answerResult, didAnswer, points, rank } = data;
+            console.log(data);
+            console.log(`[player-answer] your answer is ${answerResult}`);
+
+            if (answerResult === true && didAnswer === true) {
+                document.querySelector("#waitingOthers").classList.add("hidden");
+                document.querySelector("#correct").classList.remove("hidden");
+                console.log(points, rank);
+
+            } else if (answerResult === false && didAnswer === true) {
+                document.querySelector("#waitingOthers").classList.add("hidden");
+                document.querySelector("#wrong").classList.remove("hidden");
+                console.log(points, rank);
+
+            } else if (answerResult === false && didAnswer === false) {
+                // player who did not attempt
+                document.querySelector("#choices").classList.add("hidden");
+                document.querySelector("#wrong").classList.remove("hidden");
+            };
+            // save for next question reference
+            lastResult = answerResult;
+        });
     })
 
     socket.on('player-game-over', () => {
-        socket.emit('get-overall-result', function(data) {
-            const { points, correct, incorrect, unattempted } = data
+        socket.emit('get-overall-results', function(data) {
+            const { points, rank, correct, incorrect, unattempted } = data
 
             document.querySelector("#playGame").remove();
             document.querySelector("#gameOver").classList.remove("hidden");
@@ -132,9 +146,8 @@ window.onload = () => {
             console.log(`[game-over] game has over`);
             console.log(`[game-over]`);
             console.table(data);
-
-        })
-    })
+        });
+    });
 
     socket.on('hoster-disconnect', () => {
         window.location.reload();

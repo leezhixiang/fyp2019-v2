@@ -5,16 +5,22 @@ module.exports = class Player {
         socketId,
         name,
         gameId,
+        points = 0,
+        rank = 0,
         correct = 0,
         incorrect = 0,
-        points = 0
+        answerResult = undefined,
+        didAnswer = undefined
     ) {
         this.socketId = socketId;
         this.name = name;
         this.gameId = gameId;
+        this.points = points;
+        this.rank = rank;
         this.correct = correct;
         this.incorrect = incorrect;
-        this.points = points;
+        this.answerResult = answerResult;
+        this.didAnswer = didAnswer
     }
 
     addPlayer() {

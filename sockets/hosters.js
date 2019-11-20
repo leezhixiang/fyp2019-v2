@@ -143,16 +143,6 @@ const hosterRoutes = (socket, hasToken) => {
                     hoster.isGameOver = true;
                     Hoster.updateHoster(hoster);
 
-                    // calculate scoreboard
-                    const players = Player.getPlayersByGameId(hoster.gameId);
-                    const scoreBoard = players.map((player) => {
-                            const scorer = {}
-                            scorer.name = player.name
-                            scorer.points = player.points
-                            return scorer
-                        }).sort((a, b) => { b.points - a.points })
-                        .splice(0, 5);
-
                     const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
                     if (hasToken === true && onlinePlayers.length > 0) {
                         // calculate game accuracy
@@ -174,6 +164,16 @@ const hosterRoutes = (socket, hasToken) => {
                             results.accuracy = Math.floor((player.correct / (player.correct + player.incorrect + results.unattempted) * 100));
                             return results
                         });
+
+                        // calculate scoreboard
+                        const players = Player.getPlayersByGameId(hoster.gameId);
+                        const scoreBoard = players.map((player) => {
+                                const scorer = {}
+                                scorer.name = player.name
+                                scorer.points = player.points
+                                return scorer
+                            }).sort((a, b) => { b.points - a.points })
+                            .splice(0, 5);
 
                         // save to mongoDB
                         HosterReport.findOneAndUpdate({ "socket_id": socket.id }, {
@@ -208,8 +208,8 @@ const hosterRoutes = (socket, hasToken) => {
                     });
                 };
 
-                const shuffledQuestion = true;
-                const shuffledChoices = true;
+                const shuffledQuestion = false;
+                const shuffledChoices = false;
 
                 // shuffle questions
                 if (shuffledQuestion === true) {
@@ -275,31 +275,6 @@ const hosterRoutes = (socket, hasToken) => {
                 const noAnsAccuracy = Math.floor(((hoster.receivedPlayers.length - hoster.answeredPlayers.length) / hoster.receivedPlayers.length) * 100);
 
                 // save to mongoDB
-                PlayerReport.updateMany({ "game_id": hoster.gameId }, {
-                        $set: {
-                            "questions.$[q].choices.$[c1].accuracy": choicesAccuracy.c1,
-                            "questions.$[q].choices.$[c2].accuracy": choicesAccuracy.c2,
-                            "questions.$[q].choices.$[c3].accuracy": choicesAccuracy.c3,
-                            "questions.$[q].choices.$[c4].accuracy": choicesAccuracy.c4
-                        }
-                    }, {
-                        arrayFilters: [
-                            { "q._id": hoster.question._id },
-                            { "c1._id": hoster.question.choices[0]._id },
-                            { "c2._id": hoster.question.choices[1]._id },
-                            { "c3._id": hoster.question.choices[2]._id },
-                            { "c4._id": hoster.question.choices[3]._id }
-                        ],
-                        upsert: true
-                    },
-                    (err, data) => {
-                        if (err) {
-                            console.log(err);
-                            return;
-                        };
-                        console.log(`[accuracy] player report was updated`);
-                    });
-
                 HosterReport.findOneAndUpdate({ "socket_id": socket.id }, {
                         $set: {
                             "questions.$[q].accuracy": questionAccuracy,
@@ -326,10 +301,56 @@ const hosterRoutes = (socket, hasToken) => {
                         };
                         console.log(`[accuracy] hoster report was updated`);
                     });
+
+                PlayerReport.updateMany({ "game_id": hoster.gameId }, {
+                        $set: {
+                            "questions.$[q].choices.$[c1].accuracy": choicesAccuracy.c1,
+                            "questions.$[q].choices.$[c2].accuracy": choicesAccuracy.c2,
+                            "questions.$[q].choices.$[c3].accuracy": choicesAccuracy.c3,
+                            "questions.$[q].choices.$[c4].accuracy": choicesAccuracy.c4
+                        }
+                    }, {
+                        arrayFilters: [
+                            { "q._id": hoster.question._id },
+                            { "c1._id": hoster.question.choices[0]._id },
+                            { "c2._id": hoster.question.choices[1]._id },
+                            { "c3._id": hoster.question.choices[2]._id },
+                            { "c4._id": hoster.question.choices[3]._id }
+                        ],
+                        upsert: true
+                    },
+                    (err, data) => {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        };
+                        console.log(`[accuracy] player report was updated`);
+                    });
             };
 
+            // calculate scoreboard among all players
+            const players = Player.getPlayersByGameId(hoster.gameId);
+            const scoreBoard = players.map((player) => {
+                return {
+                    socketId: player.socketId,
+                    name: player.name,
+                    points: player.points,
+                };
+            }).sort((a, b) => b.points - a.points);
+
+            // splice a top 5 scoreboard
+            const top5ScoreBoard = scoreBoard.splice(0, 5).map((player) => {
+                return {
+                    name: player.name,
+                    points: player.points
+                };
+            });
+
+            console.log(`[@player player-answer] top 5 scoreboard:`);
+            console.log(top5ScoreBoard);
+
             // response to players
-            socket.to(hoster.gameId).emit('open-results');
+            socket.to(hoster.gameId).emit('get-question-results');
             // response to hoster
             callback({
                 nextQuestion: false,
