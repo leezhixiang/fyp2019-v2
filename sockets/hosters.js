@@ -47,6 +47,7 @@ const hosterRoutes = (socket, hasToken) => {
             });
         };
     });
+
     socket.on('host-game', (data, callback) => {
         const { quizId } = data;
         if (!quizId) {
@@ -89,15 +90,18 @@ const hosterRoutes = (socket, hasToken) => {
                 Hoster.updateHoster(hoster);
             });
         };
+
         // show hoster list
         const hosters = Hoster.getHosters();
         console.log(`[host-game] hoster list:`);
         console.log(hosters.map((hoster) => {
             return { socketId: hoster.socketId, name: hoster.name }
         }));
+
         // join hoster to room
         socket.join(hoster.gameId);
         console.log(`[host-game] ${hoster.socketId} hoster created new room ${hoster.gameId}`);
+
         // response to hoster
         callback({
             error: null,
@@ -106,6 +110,7 @@ const hosterRoutes = (socket, hasToken) => {
             gameId
         });
     });
+
     socket.on('next-question', (btnState, callback) => {
         const hoster = Hoster.getHosterById(socket.id);
         if (!hoster) return;
@@ -114,6 +119,7 @@ const hosterRoutes = (socket, hasToken) => {
             console.log('Something went wrong!');
             return;
         };
+
         if (btnState === true) {
             // initialization
             hoster.isGameLive = true;
@@ -123,17 +129,20 @@ const hosterRoutes = (socket, hasToken) => {
             hoster.receivedPlayers = [];
             hoster.summary = { c1: 0, c2: 0, c3: 0, c4: 0 };
             Hoster.updateHoster(hoster);
+
             // get quizzes from mongoDB
             Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
                 if (err) {
                     console.log(err);
                     return;
                 };
+
                 // game over
                 if (hoster.questionIndex == quiz.questions.length) {
                     // initialization
                     hoster.isGameOver = true;
                     Hoster.updateHoster(hoster);
+
                     // calculate scoreboard
                     const players = Player.getPlayersByGameId(hoster.gameId);
                     const scoreBoard = players.map((player) => {
@@ -154,6 +163,7 @@ const hosterRoutes = (socket, hasToken) => {
                         const totalUnattempted = players.map((player) => hoster.questionLength - player.correct - player.incorrect)
                             .reduce((accumulator, currentValue) => accumulator + currentValue);
                         const gameAccuracy = Math.floor((totalCorrect / (totalCorrect + totalIncorrect + totalUnattempted) * 100));
+
                         // calculate player results
                         const playersResults = players.map((player) => {
                             const results = {}
@@ -164,6 +174,7 @@ const hosterRoutes = (socket, hasToken) => {
                             results.accuracy = Math.floor((player.correct / (player.correct + player.incorrect + results.unattempted) * 100));
                             return results
                         });
+
                         // save to mongoDB
                         HosterReport.findOneAndUpdate({ "socket_id": socket.id }, {
                             $set: { "accuracy": gameAccuracy, "scoreboard": scoreBoard, "player_results": playersResults }
@@ -184,32 +195,39 @@ const hosterRoutes = (socket, hasToken) => {
                             console.log(`[scoreboard] player report was updated`);
                         });
                     };
+
                     // response to players
                     socket.to(hoster.gameId).emit('player-game-over');
                     // response to hoster
                     return callback({
-                        nextQuestion: 0,
+                        nextQuestion: false,
+                        isGameOver: hoster.isGameOver,
                         nextQuestionData: {
                             scoreBoard
                         }
                     });
                 };
-                // next question
+
                 const shuffledQuestion = true;
                 const shuffledChoices = true;
+
                 // shuffle questions
                 if (shuffledQuestion === true) {
                     quiz.questions.sort((a, b) => {
                         return hoster.shuffledQuestionIds.indexOf(a._id) - hoster.shuffledQuestionIds.indexOf(b._id);
                     });
                 };
+                // next question
                 hoster.question = (quiz.questions[hoster.questionIndex]);
+
                 // shuffle choices
                 if (shuffledChoices === true) {
                     hoster.question.choices.sort(() => Math.random() - .5);
                 };
+
                 hoster.questionLength = quiz.questions.length;
                 Hoster.updateHoster(hoster);
+
                 // response to players
                 const choicesId = hoster.question.choices.map((choice) => choice._id);
                 socket.to(hoster.gameId).emit('player-next-question', {
@@ -220,12 +238,14 @@ const hosterRoutes = (socket, hasToken) => {
                 // response to hoster
                 callback({
                     nextQuestion: true,
+                    isGameOver: hoster.isGameOver,
                     nextQuestionData: {
                         question: hoster.question,
                         gameId: hoster.gameId
                     }
                 });
             });
+
         } else if (btnState === false) {
             const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
             if (hasToken === true && onlinePlayers.length > 0) {
@@ -233,7 +253,6 @@ const hosterRoutes = (socket, hasToken) => {
                 calcQuestionAccuracy = () => {
                     const choicesSummary = [];
                     const keys = Object.keys(hoster.summary);
-
                     hoster.question.choices.forEach((choice, index) => {
                         if (choice.is_correct === true) {
                             choicesSummary.push(hoster.summary[keys[index]]);
@@ -243,16 +262,18 @@ const hosterRoutes = (socket, hasToken) => {
                     return Math.floor((totalChoicesSummary / hoster.receivedPlayers.length) * 100);
                 };
                 const questionAccuracy = calcQuestionAccuracy();
+
                 // calculate choice accuracy
                 calcChoiceAccuracy = (totalChoices, totalPlayers) => {
                     return Math.floor((totalChoices / totalPlayers) * 100);
-                }
+                };
                 const choicesAccuracy = {};
                 choicesAccuracy.c1 = calcChoiceAccuracy(hoster.summary.c1, hoster.receivedPlayers.length);
                 choicesAccuracy.c2 = calcChoiceAccuracy(hoster.summary.c2, hoster.receivedPlayers.length);
                 choicesAccuracy.c3 = calcChoiceAccuracy(hoster.summary.c3, hoster.receivedPlayers.length);
                 choicesAccuracy.c4 = calcChoiceAccuracy(hoster.summary.c4, hoster.receivedPlayers.length);
                 const noAnsAccuracy = Math.floor(((hoster.receivedPlayers.length - hoster.answeredPlayers.length) / hoster.receivedPlayers.length) * 100);
+
                 // save to mongoDB
                 PlayerReport.updateMany({ "game_id": hoster.gameId }, {
                         $set: {
@@ -278,6 +299,7 @@ const hosterRoutes = (socket, hasToken) => {
                         };
                         console.log(`[accuracy] player report was updated`);
                     });
+
                 HosterReport.findOneAndUpdate({ "socket_id": socket.id }, {
                         $set: {
                             "questions.$[q].accuracy": questionAccuracy,
@@ -305,17 +327,20 @@ const hosterRoutes = (socket, hasToken) => {
                         console.log(`[accuracy] hoster report was updated`);
                     });
             };
+
             // response to players
             socket.to(hoster.gameId).emit('open-results');
             // response to hoster
             callback({
                 nextQuestion: false,
+                isGameOver: hoster.isGameOver,
                 nextQuestionData: {
                     summary: hoster.summary
                 }
             });
         };
     });
+
     socket.on('time-left', (timeLeft) => {
         const hoster = Hoster.getHosterById(socket.id);
         if (!hoster) return;

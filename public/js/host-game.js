@@ -87,9 +87,9 @@ window.onload = () => {
         const btnState = ((document.querySelector('#nextBtn').getAttribute("data-state")) == 'true')
 
         socket.emit('next-question', btnState, (data) => {
-            const { nextQuestion, nextQuestionData } = data;
+            const { nextQuestion, isGameOver, nextQuestionData } = data;
 
-            if (nextQuestion === true) {
+            if (nextQuestion === true && isGameOver === false) {
                 const { question, gameId } = nextQuestionData;
 
                 // change to next question
@@ -111,7 +111,7 @@ window.onload = () => {
 
                 console.log(`[next-button] next question`);
 
-            } else if (nextQuestion === false) {
+            } else if (nextQuestion === false && isGameOver === false) {
                 const { summary } = nextQuestionData;
 
                 document.querySelector("#displayQuestion").classList.add("hidden");
@@ -125,7 +125,7 @@ window.onload = () => {
 
                 console.log(`[next-button] show summary`);
 
-            } else {
+            } else if (nextQuestion === false && isGameOver === true) {
                 const { scoreBoard } = nextQuestionData;
 
                 document.querySelector("#hostGame").remove();

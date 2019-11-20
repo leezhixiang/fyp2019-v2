@@ -24,6 +24,7 @@ const playerRoutes = (socket, hasToken) => {
                 hoster.receivedPlayers = hoster.receivedPlayers.filter((receivedPlayer) => receivedPlayer != socket.id)
                 Hoster.updateHoster(hoster);
             };
+
             // remove from mongoDB
             if (hasToken === true && hoster && hoster.isGameOver === false) {
                 PlayerReport.findOneAndRemove({ socket_id: socket.id }, (err, data) => {
@@ -31,23 +32,28 @@ const playerRoutes = (socket, hasToken) => {
                         console.log(err);
                         return;
                     };
-                    console.log(`[disconenct] player report was deleted`);
+                    console.log(`[@player disconnection] player report was deleted from mongoDB`);
                 });
             };
-            console.log(`[disconnect] ${player.socketId} ${player.name} disconnected from room ${player.gameId}`);
+
+            console.log(`[@player disconnection] ${player.socketId} ${player.name} disconnected from room ${player.gameId}`);
+
             // show player list
             const players = Player.getPlayersByGameId(player.gameId);
-            console.log(`[disconnect] player list:`);
+            console.log(`[@player disconnection] player list:`);
             console.log(players.map((player) => {
                 return { socketId: player.socketId, name: player.name }
             }));
+
             // update names of lobby
             if (hoster && hoster.isGameLive === false) {
                 const players = Player.getPlayersByGameId(player.gameId);
                 const names = players.map((player) => player.name);
+
                 // response to hoster
                 io.to(`${hoster.socketId}`).emit('display-name', names);
-            }
+            };
+
             // validation of last question
             if (hoster && hoster.isGameLive === true && hoster.isGameOver === false && hoster.isQuestionLive === true) {
                 const totalAnsweredPlayers = hoster.answeredPlayers.length;
@@ -56,13 +62,15 @@ const playerRoutes = (socket, hasToken) => {
                 if (totalAnsweredPlayers == totalReceivedPlayers) {
                     hoster.isQuestionLive = false;
                     Hoster.updateHoster(hoster);
+
                     // response to hoster
                     io.to(hoster.socketId).emit('display-summary');
                     // response to player
                     io.in(hoster.gameId).emit('open-results');
-                    console.log('[last-question] all answered');
-                    console.log(`[last-question] answered players: ${hoster.answeredPlayers}`);
-                    console.log(`[last-question] received players: ${hoster.receivedPlayers}`);
+
+                    console.log('[@player disconnection] all players have answered');
+                    // console.log(`[last-question] answered players: ${hoster.answeredPlayers}`);
+                    // console.log(`[last-question] received players: ${hoster.receivedPlayers}`);
                 };
             };
         };
@@ -91,7 +99,7 @@ const playerRoutes = (socket, hasToken) => {
                     console.log(err);
                     return;
                 };
-                console.log(`[join-game] quiz was updated`);
+                console.log(`[@player game joint] plays number was updated to mongoDB`);
             });
             if (hasToken === true) {
                 Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
@@ -109,23 +117,27 @@ const playerRoutes = (socket, hasToken) => {
                         questions: quiz.questions
                     });
                     playerReport.save()
-                    console.log(`[join-game] player report was created`);
+                    console.log(`[@player game joint] player report was saved to mongoDB`);
                 });
-            }
+            };
+
             // show player list
             const players = Player.getPlayersByGameId(player.gameId);
-            console.log(`[join-game] player list:`);
+            console.log(`[@player game joint] player list:`);
             console.log(players.map((player) => {
                 return { socketId: player.socketId, name: player.name }
             }));
+
             // join player to room
             socket.join(player.gameId);
-            console.log(`[join-game] ${player.socketId} ${player.name} joined room ${player.gameId}`);
+            console.log(`[@player game joint] ${player.socketId} ${player.name} joined room ${player.gameId}`);
+
             // response to hoster
             const names = players.map((player) => player.name);
             if (hoster.isGameLive === false) {
                 io.to(`${hoster.socketId}`).emit('display-name', names);
-            }
+            };
+
             // response to player
             callback({
                 error: null,
@@ -155,8 +167,9 @@ const playerRoutes = (socket, hasToken) => {
         if (hoster) {
             hoster.receivedPlayers.push(socket.id);
             Hoster.updateHoster(hoster);
-            console.log(`[receive-question] answered players: ${hoster.answeredPlayers}`)
-            console.log(`[receive-question] received players: ${hoster.receivedPlayers}`)
+
+            // console.log(`[@player question reception] answered players: ${hoster.answeredPlayers}`)
+            // console.log(`[@player question reception] received players: ${hoster.receivedPlayers}`)
         }
     })
 
@@ -169,16 +182,19 @@ const playerRoutes = (socket, hasToken) => {
             return choice._id;
         });
         if (choicesId.includes(choiceId) === false) {
-            console.log('Something went wrong!');
+            console.log('[@player answer submission] Something went wrong!');
             return;
         };
         if (hoster.isQuestionLive === true) {
             hoster.answeredPlayers.push(socket.id);
             Hoster.updateHoster(hoster);
-            // answer checking
-            const correctChoicesId = hoster.question.choices.filter(choice => choice.is_correct === true)
+
+            // correct choice ids
+            const correctChoicesId = hoster.question.choices
+                .filter(choice => choice.is_correct === true)
                 .map(correctChoice => correctChoice._id);
-            // true/false
+
+            // checking true/false
             const result = correctChoicesId.includes(choiceId)
 
             if (result === true) {
@@ -186,14 +202,18 @@ const playerRoutes = (socket, hasToken) => {
                 player.points += (100 + timeScore);
                 player.correct += 1;
                 Player.updatePlayer(player);
+
                 // response to player
-                callback(true)
+                callback(true);
+
             } else if (result === false) {
                 player.incorrect += 1;
                 Player.updatePlayer(player);
+
                 // response to player
-                callback(false)
+                callback(false);
             };
+
             // calculate summary
             hoster.question.choices.forEach((choice, index) => {
                 if (choice._id == choiceId) {
@@ -201,6 +221,7 @@ const playerRoutes = (socket, hasToken) => {
                     Hoster.updateHoster(hoster);
                 };
             });
+
             if (hasToken === true) {
                 // save to mongoDB
                 PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, { $set: { "questions.$[i].choices.$[j].is_answer": true } }, {
@@ -212,42 +233,60 @@ const playerRoutes = (socket, hasToken) => {
                             console.log(err);
                             return;
                         };
-                        console.log(`[player-answer] player report was updated`);
+                        console.log(`[@player answer submission] player answer was saved to mongoDB`);
                     });
             };
-            // calculate scoreboard
+
+            // calculate scoreboard among all players
             const players = Player.getPlayersByGameId(player.gameId);
             const scoreBoard = players.map((player) => {
-                    const scorer = {}
-                    scorer.name = player.name
-                    scorer.points = player.points
-                    return scorer
-                }).sort((a, b) => { b.points - a.points })
-                .splice(0, 5);
-            console.log(`[scoreboard]`);
-            console.log(scoreBoard);
-            // performance stats
+                return {
+                    socketId: player.socketId,
+                    name: player.name,
+                    points: player.points,
+                };
+            }).sort((a, b) => b.points - a.points);
+
+            // find current rank among all players
+            const currentRank = scoreBoard.findIndex((scorer) => scorer.socketId === socket.id);
+            console.log(`[@player answer submission] current rank: ${currentRank + 1}`);
+
+            // splice a top 5 scoreboard
+            const top5ScoreBoard = scoreBoard.splice(0, 5).map((player) => {
+                return {
+                    name: player.name,
+                    points: player.points
+                };
+            });
+            console.log(`[@player answer submission] top 5 scoreboard:`);
+            console.log(top5ScoreBoard);
+
+            // calculate performance statistics
             const unattepmted = (hoster.questionLength - player.correct - player.incorrect);
-            console.log(`[stats] points: ${player.points} correct: ${player.correct} incorrect: ${player.incorrect} unattempted: ${unattepmted}`);
+            console.log(`[@player answer submission] points: ${player.points} correct: ${player.correct} incorrect: ${player.incorrect} unattempted: ${unattepmted}`);
+
         } else if (hoster.isQuestionLive === false) {
             // answer is not allowed while question is not live
             callback(false);
         };
+
         const totalAnsweredPlayers = hoster.answeredPlayers.length;
         const totalReceivedPlayers = hoster.receivedPlayers.length;
         // validation of last question
         if (totalAnsweredPlayers == totalReceivedPlayers) {
             hoster.isQuestionLive = false;
             Hoster.updateHoster(hoster);
+
             // response to hoster
             io.to(hoster.socketId).emit('display-summary');
             // response to player
             io.in(hoster.gameId).emit('open-results');
-            console.log('[last-question] all answered');
-            console.log(`[last-question] answered players: ${hoster.answeredPlayers}`);
-            console.log(`[last-question] received players: ${hoster.receivedPlayers}`);
+
+            console.log(`[@player answer submission] all players have answered`);
+            // console.log(`[last-question] answered players: ${hoster.answeredPlayers}`);
+            // console.log(`[last-question] received players: ${hoster.receivedPlayers}`);
         };
-    })
+    });
 
     socket.on('get-overall-result', (callback) => {
         const player = Player.getPlayerById(socket.id);
@@ -255,6 +294,7 @@ const playerRoutes = (socket, hasToken) => {
         const hoster = Hoster.getHosterByGameId(player.gameId);
 
         const unattempted = (hoster.questionLength - player.correct - player.incorrect);
+
         // response to player
         callback({
             points: player.points,
@@ -262,6 +302,7 @@ const playerRoutes = (socket, hasToken) => {
             incorrect: player.incorrect,
             unattempted
         });
+
         if (hasToken === true) {
             // save to mongoDB
             PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, {
@@ -271,7 +312,7 @@ const playerRoutes = (socket, hasToken) => {
                     console.log(err);
                     return;
                 };
-                console.log(`[player-results] player report was updated`);
+                console.log(`[@player overall result generation] player results were saved in mongoDB`);
             });
         };
     })

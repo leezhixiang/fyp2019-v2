@@ -70,6 +70,15 @@ const PlayerReportSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    // game over
+    points: {
+        type: Number,
+        default: 0
+    },
+    rank: {
+        type: Number,
+        default: 0
+    },
     correct: {
         type: Number,
         default: 0
