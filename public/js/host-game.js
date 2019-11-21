@@ -20,36 +20,77 @@ window.onload = () => {
         console.log(`[socket-conn] token: ${data.hasToken}`);
     })
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const quizId = urlParams.get("quizId");
+    let settings = {};
 
-    socket.emit('host-game', { quizId }, (data) => {
-        const { error, message, isHosted, gameId } = data;
+    // click host game button
+    document.querySelector("#hostBtn").addEventListener("click", () => {
+        document.querySelectorAll("input[name='settings']").forEach((setting, index) => {
+            switch (index) {
+                case 0:
+                    settings.suffleQs = setting.checked;
+                    break;
+                case 1:
+                    settings.suffleAnsOpts = setting.checked;
+                    break;
+                case 2:
+                    settings.qTimer = setting.checked;
+                    break;
+                case 3:
+                    settings.autoMoveThroughQs = setting.checked;
+                    break;
+                default:
+                    // code block
+            };
+        });
 
-        if (isHosted === true) {
-            document.querySelector("#gameId").textContent = gameId;
-            console.log(`[host-game] ${message}`);
+        document.querySelector("#launch").remove();
+        document.querySelector("#lobby").classList.remove("hidden");
 
-        } else if (isHosted === false) {
-            console.log(`[host-game] ${message}`);
-            console.log(`[host-game] ${error}`);
-        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const quizId = urlParams.get("quizId");
+
+        socket.emit('host-game', {
+            quizId,
+            suffleQs: settings.suffleQs,
+            suffleAnsOpts: settings.suffleAnsOpts
+        }, (data) => {
+            const { error, message, isHosted, gameId } = data;
+
+            if (isHosted === true) {
+                document.querySelector("#gameId").textContent = gameId;
+                console.log(`[host-game] ${message}`);
+
+            } else if (isHosted === false) {
+                console.log(`[host-game] ${message}`);
+                console.log(`[host-game] ${error}`);
+            };
+        });
     });
 
+    let autoStartTimer = 0;
+
     socket.on('display-name', (names) => {
+        // setting: auto move through questions
+        if (settings.autoMoveThroughQs === true) {
+            // countdown timer
+            clearTimeout(autoStartTimer);
+            autoStartTimer = setTimeout(() => {
+                document.querySelector("#startBtn").click();
+            }, 10000);
+        };
+
         let html = "";
-
         names.forEach((name) => {
-            html += `<li>${name}</li>`
-        })
-
+            html += `<li>${name}</li>`;
+        });
         document.querySelector("#nameList").innerHTML = html;
         document.querySelector("#totalPlayers").textContent = names.length;
     });
 
     let counter = 0;
-    let interval = 0;
+    let questionTimer = 0;
 
+    // start game to get 1st question
     document.querySelector("#startBtn").addEventListener("click", () => {
         const btnState = true;
 
@@ -74,7 +115,10 @@ window.onload = () => {
 
                 document.querySelector("#gameId").textContent = gameId;
 
-                displayTimer(question.timer, counter, interval);
+                // setting: question timer
+                if (settings.qTimer === true) {
+                    displayTimer(question.timer, counter, questionTimer);
+                };
 
                 document.querySelector('#nextBtn').setAttribute('data-state', false)
 
@@ -83,6 +127,7 @@ window.onload = () => {
         })
     })
 
+    // next question to get next events
     document.querySelector("#nextBtn").addEventListener("click", function() {
         const btnState = ((document.querySelector('#nextBtn').getAttribute("data-state")) == 'true')
 
@@ -105,7 +150,10 @@ window.onload = () => {
 
                 document.querySelector("#gameId").textContent = gameId;
 
-                displayTimer(question.timer, counter, interval);
+                // setting: question timer
+                if (settings.qTimer === true) {
+                    displayTimer(question.timer, counter, questionTimer);
+                };
 
                 document.querySelector('#nextBtn').setAttribute('data-state', false)
 
@@ -125,6 +173,14 @@ window.onload = () => {
 
                 console.log(scoreBoard);
 
+                // setting: auto move through questions
+                if (settings.autoMoveThroughQs === true) {
+                    // countdown timer
+                    setTimeout(() => {
+                        document.querySelector("#nextBtn").click();
+                    }, 5000);
+                };
+
             } else if (nextQuestion === false && isGameOver === true) {
                 const { scoreBoard } = nextQuestionData;
 
@@ -138,11 +194,12 @@ window.onload = () => {
         })
     })
 
+    // when all players have answered the question
     socket.on('display-summary', function() {
         document.querySelector("#nextBtn").click()
     })
 
-    displayTimer = (timer, counter, interval) => {
+    displayTimer = (timer, counter, questionTimer) => {
         convertSeconds = (s) => {
             const min = Math.floor(s / 60);
             const sec = s % 60;
@@ -155,7 +212,7 @@ window.onload = () => {
             document.querySelector('#timer').textContent = convertSeconds((timer - counter));
 
             if (counter == timer) {
-                clearInterval(interval);
+                clearInterval(questionTimer);
                 counter = 0;
                 document.querySelector("#nextBtn").click();
             }
@@ -165,10 +222,10 @@ window.onload = () => {
         socket.emit('time-left', timer);
         document.querySelector('#timer').textContent = convertSeconds((timer - counter));
 
-        interval = setInterval(timeIt, 1000);
+        questionTimer = setInterval(timeIt, 1000);
 
         document.querySelector("#nextBtn").addEventListener("click", () => {
-            clearInterval(interval);
+            clearInterval(questionTimer);
             counter = 0;
             document.querySelector('#timer').textContent = convertSeconds((timer - timer));
         })

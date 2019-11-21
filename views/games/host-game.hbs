@@ -1,4 +1,45 @@
-<div id="lobby" class="host-game">
+<div id="launch">
+    <button id="hostBtn">Host Game</button>
+
+    <h2>Question Settings</h2>
+
+    <div>
+        Shuffle questions
+        <label class="switch">
+            <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div>
+        Shuffle answer options
+        <label class="switch">
+            <input type="checkbox" name="settings" value="suffleAnsOpts" id="suffleAnsOpts">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <h2>Game Settings</h2>
+
+    <div>
+        Question Timer
+        <label class="switch">
+            <input type="checkbox" name="settings" value="qTimer" id="qTimer" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div>
+        Automatically move through questions
+        <label class="switch">
+            
+            <input type="checkbox" name="settings" value="autoMoveThroughQs" id="autoMoveThroughQs">
+            <span class="slider"></span>
+        </label>
+    </div>
+</div>
+
+<div id="lobby" class="host-game hidden">
     <div class="lobby-header">
         <p>Join at www.cls.com or CLS app with Game PIN:</p>
         <h1 id="gameId"></h1>

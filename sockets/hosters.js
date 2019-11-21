@@ -49,21 +49,28 @@ const hosterRoutes = (socket, hasToken) => {
     });
 
     socket.on('host-game', (data, callback) => {
-        const { quizId } = data;
-        if (!quizId) {
-            return callback({
-                error: 'quizId is not defined',
-                message: 'host game failed',
-                isHosted: false
-            });
+        const { quizId, suffleQs, suffleAnsOpts } = data;
+
+        if (!quizId || suffleQs === undefined || suffleAnsOpts === undefined) {
+            console.log('[@hoster host-game] Something went wrong!');
+            return;
         };
+
+        if (typeof(suffleQs) !== 'boolean' && typeof(suffleAnsOpts) !== 'boolean') {
+            console.log('[@hoster host-game] Something went wrong!');
+            return;
+        }
+
         passName = () => {
             if (hasToken === true) { return socket.request.user.name };
         };
+
         const gameId = Hoster.generateGameId();
+        const settings = { suffleQs, suffleAnsOpts };
         // save to memory
-        const hoster = new Hoster(socket.id, quizId, gameId, passName());
+        const hoster = new Hoster(socket.id, quizId, gameId, settings, passName());
         hoster.addHoster();
+
         // save to mongoDB
         if (hasToken === true) {
             Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
@@ -208,21 +215,21 @@ const hosterRoutes = (socket, hasToken) => {
                     });
                 };
 
-                const shuffledQuestion = false;
-                const shuffledChoices = false;
-
                 // shuffle questions
-                if (shuffledQuestion === true) {
+                if (hoster.settings.suffleQs === true) {
                     quiz.questions.sort((a, b) => {
                         return hoster.shuffledQuestionIds.indexOf(a._id) - hoster.shuffledQuestionIds.indexOf(b._id);
                     });
+                    console.log('[@player next-question] shuffled questions')
                 };
+
                 // next question
                 hoster.question = (quiz.questions[hoster.questionIndex]);
 
                 // shuffle choices
-                if (shuffledChoices === true) {
+                if (hoster.settings.suffleAnsOpts === true) {
                     hoster.question.choices.sort(() => Math.random() - .5);
+                    console.log('[@player next-question] shuffled answer options')
                 };
 
                 hoster.questionLength = quiz.questions.length;
@@ -234,7 +241,8 @@ const hosterRoutes = (socket, hasToken) => {
                     questionIndex: hoster.questionIndex + 1,
                     questionLength: quiz.questions.length,
                     choicesId
-                });
+                })
+
                 // response to hoster
                 callback({
                     nextQuestion: true,
@@ -243,8 +251,8 @@ const hosterRoutes = (socket, hasToken) => {
                         question: hoster.question,
                         gameId: hoster.gameId
                     }
-                });
-            });
+                })
+            })
 
         } else if (btnState === false) {
             const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);

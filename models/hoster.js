@@ -5,6 +5,7 @@ module.exports = class Hoster {
         socketId,
         quizId,
         gameId,
+        settings,
         name = undefined,
         isGameLive = false,
         isGameOver = false,
@@ -21,6 +22,7 @@ module.exports = class Hoster {
         this.socketId = socketId;
         this.quizId = quizId;
         this.gameId = gameId;
+        this.settings = settings;
         this.name = name;
         this.isGameLive = isGameLive;
         this.isGameOver = isGameOver;
