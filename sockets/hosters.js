@@ -51,26 +51,39 @@ const hosterRoutes = (socket, hasToken) => {
     socket.on('host-game', (data, callback) => {
         const { quizId, suffleQs, suffleAnsOpts } = data;
 
-        if (!quizId || suffleQs === undefined || suffleAnsOpts === undefined) {
+        if (!quizId) {
             console.log('[@hoster host-game] Something went wrong!');
             return;
         };
 
-        if (typeof(suffleQs) !== 'boolean' && typeof(suffleAnsOpts) !== 'boolean') {
-            console.log('[@hoster host-game] Something went wrong!');
-            return;
-        }
+        if (suffleQs !== undefined && suffleAnsOpts !== undefined) {
+            if (typeof(suffleQs) !== 'boolean' && typeof(suffleAnsOpts) !== 'boolean') {
+                console.log('[@hoster host-game] Something went wrong!');
+                return;
+            };
+        };
+
+        passSettings = () => {
+            if (suffleQs !== undefined && suffleAnsOpts !== undefined) {
+                console.log('[@hoster host-game] settings are defined')
+                return { suffleQs, suffleAnsOpts };
+
+            } else if ((suffleQs === undefined || suffleAnsOpts === undefined)) {
+                console.log('[@hoster host-game] either one of settings are undefined')
+                return undefined;
+            };
+        };
 
         passName = () => {
             if (hasToken === true) { return socket.request.user.name };
         };
 
         const gameId = Hoster.generateGameId();
-        const settings = { suffleQs, suffleAnsOpts };
-        // save to memory
-        const hoster = new Hoster(socket.id, quizId, gameId, settings, passName());
-        hoster.addHoster();
 
+        // save to memory
+        const hoster = new Hoster(socket.id, quizId, gameId, passSettings(), passName());
+        hoster.addHoster();
+        console.log(hoster);
         // save to mongoDB
         if (hasToken === true) {
             Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
