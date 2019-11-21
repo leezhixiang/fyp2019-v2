@@ -112,20 +112,17 @@ window.onload = () => {
         socket.emit('question-results', (data) => {
             // get results from server, either true or false
             const { answerResult, didAnswer, isLostStreak, streak, currentPoints, rank, nextScorer, differencePts } = data;
-            console.log(data);
-            console.log(`[player-answer] your answer is ${answerResult}`);
+            console.table(data);
 
             if (answerResult === true && didAnswer === true) {
                 document.querySelector("#waitingOthers").classList.add("hidden");
                 document.querySelector("#correct").classList.remove("hidden");
-                console.log(currentPoints, rank);
 
             } else if (answerResult === false && didAnswer === true) {
                 document.querySelector("#waitingOthers").classList.add("hidden");
                 document.querySelector("#wrong").classList.remove("hidden");
-                console.log(currentPoints, rank);
 
-            } else if (answerResult === false && didAnswer === false) {
+            } else if (didAnswer === false) {
                 // player who did not attempt
                 document.querySelector("#choices").classList.add("hidden");
                 document.querySelector("#wrong").classList.remove("hidden");

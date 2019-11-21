@@ -163,8 +163,10 @@ const playerRoutes = (socket, hasToken) => {
             Hoster.updateHoster(hoster);
         };
 
-        // reset to false, no answer after receives new question
+        // reset to false & 0 after receives new question, player did not answer will get these values
         player.didAnswer = false;
+        player.responseTime = 0;
+        player.currentPoints = 0;
         Player.updatePlayer(player);
     })
 
@@ -194,12 +196,17 @@ const playerRoutes = (socket, hasToken) => {
 
             if (result === true) {
                 const timeScore = Math.floor((hoster.timeLeft / hoster.question.timer) * 1000);
-                player.currentPoints = timeScore;
-
                 // previous answer result is true && toggled to 1000
-                if (player.answerResult === true && player.points >= 0) {
-                    //streak ++
-                    player.streak += 1;
+                if (player.answerResult === true && player.points >= 1000) {
+                    player.responseTime = hoster.question.timer - hoster.timeLeft;
+                    // gain streak
+                    player.isLostStreak = false;
+                    // maximum streak is 6
+                    if (player.streak < 6) {
+                        //streak ++
+                        player.streak += 1;
+                    }
+                    player.currentPoints = (timeScore + ((player.streak * 100) - 100));
                     // points (up to 1000 points) + bonus
                     player.points += (timeScore + ((player.streak * 100) - 100));
                     console.log(`bonus ${((player.streak * 100) - 100)}`)
@@ -208,14 +215,21 @@ const playerRoutes = (socket, hasToken) => {
                     player.answerResult = true;
                     player.didAnswer = true;
                     Player.updatePlayer(player);
-
+                    console.log(`[@player player-answer] answerResult: ${true}, streak ${player.streak}`)
+                    console.log(player)
                 } else {
+                    player.responseTime = hoster.question.timer - hoster.timeLeft;
+                    // gain streak
+                    player.isLostStreak = false;
+                    player.currentPoints = timeScore;
                     // points (up to 1000 points) 
                     player.points += timeScore;
                     player.correct += 1;
                     player.answerResult = true;
                     player.didAnswer = true;
                     Player.updatePlayer(player);
+                    console.log(`[@player player-answer] answerResult: ${true}, streak ${player.streak}`)
+                    console.log(player)
                 }
 
             } else if (result === false) {
@@ -226,10 +240,13 @@ const playerRoutes = (socket, hasToken) => {
                     player.streak = 0;
                     Player.updatePlayer(player);
                 }
+                player.responseTime = hoster.question.timer - hoster.timeLeft;
                 player.incorrect += 1;
                 player.answerResult = false;
                 player.didAnswer = true;
                 Player.updatePlayer(player);
+                console.log(`[@player player-answer] answerResult: ${false}, streak ${player.streak}`)
+                console.log(player)
             };
 
             // calculate answered choices summary for hoster
@@ -277,6 +294,21 @@ const playerRoutes = (socket, hasToken) => {
         const player = Player.getPlayerById(socket.id);
         const hoster = Hoster.getHosterByGameId(player.gameId);
 
+        // reset player who did not answer and having streak
+        if (player.currentPoints === 0 && player.streak > 0) {
+            // lost streak
+            player.isLostStreak = true;
+            player.streak = 0;
+            Player.updatePlayer(player);
+        }
+
+        let bonus = 0;
+        // calculate player bonus gained
+        if (player.currentPoints !== 0 && player.streak > 1) {
+            const timeScore = Math.floor(((hoster.question.timer - player.responseTime) / hoster.question.timer) * 1000);
+            bonus = (player.currentPoints - timeScore);
+        }
+
         // calculate scoreboard among all players
         const players = Player.getPlayersByGameId(player.gameId);
         const scoreBoard = players.map((player) => {
@@ -289,11 +321,15 @@ const playerRoutes = (socket, hasToken) => {
 
         // find current rank among all players
         const currentRank = scoreBoard.findIndex((scorer) => scorer.socketId === socket.id);
+        player.rank = currentRank + 1;
+        Player.updatePlayer(player);
+        console.log(`[@player player-answer] ${player.name}`)
+        console.log(`[@player player-answer] current rank: ${currentRank + 1}`);
 
+        // calculate previous distance
+        let previousScorerPts = 0;
         let previousScorerName = null;
         let differencePts = null;
-        let previousScorerPts = 0;
-
         if (currentRank > 0) {
             const previousScorer = scoreBoard[currentRank - 1];
             previousScorerName = previousScorer.name;
@@ -301,21 +337,23 @@ const playerRoutes = (socket, hasToken) => {
             differencePts = (previousScorerPts - player.points);
         }
 
-        player.rank = currentRank + 1;
-        Player.updatePlayer(player);
-        console.log(`[@player player-answer] ${player.name}`)
-        console.log(`[@player player-answer] current rank: ${currentRank + 1}`);
-
         // calculate performance statistics
         const unattepmted = (hoster.questionLength - player.correct - player.incorrect);
         console.log(`[@player player-answer] points: ${player.points} correct: ${player.correct} incorrect: ${player.incorrect} unattempted: ${unattepmted}`);
 
         callback({
-            answerResult: player.answerResult,
             didAnswer: player.didAnswer,
+            answerResult: player.answerResult,
+
+            responseTime: player.responseTime,
+
             isLostStreak: player.isLostStreak,
             streak: player.streak,
+            bonus,
+
             currentPoints: player.currentPoints,
+            points: player.points,
+
             rank: player.rank,
             previousScorerName,
             differencePts
