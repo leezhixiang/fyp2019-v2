@@ -241,7 +241,7 @@ const hosterRoutes = (socket, hasToken) => {
                     questionIndex: hoster.questionIndex + 1,
                     questionLength: quiz.questions.length,
                     choicesId
-                })
+                });
 
                 // response to hoster
                 callback({
@@ -251,8 +251,8 @@ const hosterRoutes = (socket, hasToken) => {
                         question: hoster.question,
                         gameId: hoster.gameId
                     }
-                })
-            })
+                });
+            });
 
         } else if (btnState === false) {
             const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);

@@ -5,7 +5,10 @@ module.exports = class Hoster {
         socketId,
         quizId,
         gameId,
-        settings,
+        settings = {
+            suffleQs: false,
+            suffleAnsOpts: false
+        },
         name = undefined,
         isGameLive = false,
         isGameOver = false,
