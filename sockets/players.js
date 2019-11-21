@@ -1,4 +1,5 @@
-const io = require('../models/socket').getIO()
+const io = require('../models/socket').getIO();
+const mongoose = require('mongoose');
 
 // data model
 const Hoster = require('../models/hoster');
@@ -174,14 +175,17 @@ const playerRoutes = (socket, hasToken) => {
         const player = Player.getPlayerById(socket.id);
         if (!player) return;
         const hoster = Hoster.getHosterByGameId(player.gameId);
+
         // Input Validation
         const choicesId = hoster.question.choices.map(choice => {
             return choice._id;
         });
+
         if (choicesId.includes(choiceId) === false) {
             console.log('[@player player-answer] Something went wrong!');
             return;
         };
+
         if (hoster.isQuestionLive === true) {
             hoster.answeredPlayers.push(socket.id);
             Hoster.updateHoster(hoster);
@@ -216,7 +220,7 @@ const playerRoutes = (socket, hasToken) => {
                     player.didAnswer = true;
                     Player.updatePlayer(player);
                     console.log(`[@player player-answer] answerResult: ${true}, streak ${player.streak}`)
-                    console.log(player)
+
                 } else {
                     player.responseTime = hoster.question.timer - hoster.timeLeft;
                     // gain streak
@@ -229,7 +233,6 @@ const playerRoutes = (socket, hasToken) => {
                     player.didAnswer = true;
                     Player.updatePlayer(player);
                     console.log(`[@player player-answer] answerResult: ${true}, streak ${player.streak}`)
-                    console.log(player)
                 }
 
             } else if (result === false) {
@@ -246,21 +249,31 @@ const playerRoutes = (socket, hasToken) => {
                 player.didAnswer = true;
                 Player.updatePlayer(player);
                 console.log(`[@player player-answer] answerResult: ${false}, streak ${player.streak}`)
-                console.log(player)
             };
 
-            // calculate answered choices summary for hoster
+            // calculate question results for hoster
             hoster.question.choices.forEach((choice, index) => {
-                if (choice._id == choiceId) {
-                    hoster.summary[Object.keys(hoster.summary)[index]] += 1;
+                if (mongoose.Types.ObjectId(choiceId).equals(choice._id)) {
+                    hoster.questionResults[Object.keys(hoster.questionResults)[index]] += 1;
                     Hoster.updateHoster(hoster);
+                    console.log('hi')
                 };
             });
 
             if (hasToken === true) {
+
                 // save to mongoDB
-                PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, { $set: { "questions.$[i].choices.$[j].is_answer": true } }, {
-                        arrayFilters: [{ "i._id": hoster.question._id }, { "j._id": choiceId }],
+                PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, {
+                        $set: {
+                            "questions.$[i].choices.$[j].is_answer": true,
+                            "questions.$[i].choices.$[j].response_time": player.responseTime
+                        }
+                    }, {
+                        arrayFilters: [{
+                            "i._id": hoster.question._id
+                        }, {
+                            "j._id": choiceId
+                        }],
                         upsert: true
                     },
                     (err, data) => {

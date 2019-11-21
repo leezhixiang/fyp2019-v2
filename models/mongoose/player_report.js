@@ -19,6 +19,10 @@ const ChoiceSchema = new mongoose.Schema({
     accuracy: {
         type: Number,
         default: 0
+    },
+    response_time: {
+        type: Number,
+        default: 0
     }
 })
 

@@ -6,8 +6,8 @@ module.exports = class Hoster {
         quizId,
         gameId,
         settings = {
-            suffleQs: false,
-            suffleAnsOpts: false
+            suffleQuestions: false,
+            suffleAnswerOptions: false
         },
         name = undefined,
         isGameLive = false,
@@ -20,7 +20,7 @@ module.exports = class Hoster {
         answeredPlayers = [],
         receivedPlayers = [],
         timeLeft = 0,
-        summary = { c1: 0, c2: 0, c3: 0, c4: 0 }
+        questionResults = { choice1: 0, choice2: 0, choice3: 0, choice4: 0 }
     ) {
         this.socketId = socketId;
         this.quizId = quizId;
@@ -37,7 +37,7 @@ module.exports = class Hoster {
         this.answeredPlayers = answeredPlayers;
         this.receivedPlayers = receivedPlayers;
         this.timeLeft = timeLeft;
-        this.summary = summary;
+        this.questionResults = questionResults;
     }
 
     addHoster() {

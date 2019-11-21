@@ -27,16 +27,16 @@ window.onload = () => {
         document.querySelectorAll("input[name='settings']").forEach((setting, index) => {
             switch (index) {
                 case 0:
-                    settings.suffleQs = setting.checked;
+                    settings.suffleQuestions = setting.checked;
                     break;
                 case 1:
-                    settings.suffleAnsOpts = setting.checked;
+                    settings.suffleAnswerOptions = setting.checked;
                     break;
                 case 2:
-                    settings.qTimer = setting.checked;
+                    settings.questionTimer = setting.checked;
                     break;
                 case 3:
-                    settings.autoMoveThroughQs = setting.checked;
+                    settings.autoMoveThroughQuestions = setting.checked;
                     break;
                 default:
                     // code block
@@ -51,8 +51,8 @@ window.onload = () => {
 
         socket.emit('host-game', {
             quizId,
-            suffleQs: settings.suffleQs,
-            suffleAnsOpts: settings.suffleAnsOpts
+            suffleQuestions: settings.suffleQuestions,
+            suffleAnswerOptions: settings.suffleAnswerOptions
         }, (data) => {
             const { error, message, isHosted, gameId } = data;
 
@@ -71,12 +71,12 @@ window.onload = () => {
 
     socket.on('display-name', (names) => {
         // setting: auto move through questions
-        if (settings.autoMoveThroughQs === true) {
+        if (settings.autoMoveThroughQuestions === true) {
             // countdown timer
             clearTimeout(autoStartTimer);
             autoStartTimer = setTimeout(() => {
                 document.querySelector("#startBtn").click();
-            }, 10000);
+            }, 15000);
         };
 
         let html = "";
@@ -116,7 +116,7 @@ window.onload = () => {
                 document.querySelector("#gameId").textContent = gameId;
 
                 // setting: question timer
-                if (settings.qTimer === true) {
+                if (settings.questionTimer === true) {
                     displayTimer(question.timer, counter, questionTimer);
                 };
 
@@ -151,7 +151,7 @@ window.onload = () => {
                 document.querySelector("#gameId").textContent = gameId;
 
                 // setting: question timer
-                if (settings.qTimer === true) {
+                if (settings.questionTimer === true) {
                     displayTimer(question.timer, counter, questionTimer);
                 };
 
@@ -160,21 +160,21 @@ window.onload = () => {
                 console.log(`[next-button] next question`);
 
             } else if (nextQuestion === false && isGameOver === false) {
-                const { summary, scoreBoard } = nextQuestionData;
+                const { questionResults, scoreBoard } = nextQuestionData;
 
                 document.querySelector("#displayQuestion").classList.add("hidden");
                 document.querySelector("#summary").classList.remove("hidden");
 
                 document.querySelectorAll(".total-chooses").forEach((totalChooses, index) => {
-                    totalChooses.textContent = summary[Object.keys(summary)[index]];
+                    totalChooses.textContent = questionResults[Object.keys(questionResults)[index]];
                 })
 
                 document.querySelector('#nextBtn').setAttribute('data-state', true)
-
+                console.log(questionResults);
                 console.log(scoreBoard);
 
                 // setting: auto move through questions
-                if (settings.autoMoveThroughQs === true) {
+                if (settings.autoMoveThroughQuestions === true) {
                     // countdown timer
                     setTimeout(() => {
                         document.querySelector("#nextBtn").click();
@@ -239,35 +239,3 @@ window.onload = () => {
         })
     })
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-// socket.emit('next-question', btnState, (data) => {
-//     const { nextQuestion, nextQuestionData } = data;
-
-//     if (nextQuestion === true) {
-//         // change to next question
-//         document.querySelector('#lobby').classList.add("hidden");
-//         document.querySelector('#hostGame').classList.remove("hidden");
-
-//     } else if (nextQuestion === false) {
-//         // change to statistic
-//         document.querySelector('#lobby').classList.add("hidden");
-//         document.querySelector('#hostGame').classList.remove("hidden");
-
-//     } else {
-//         // change to game over
-//         document.querySelector('#lobby').classList.add("hidden");
-//         document.querySelector('#hostGame').classList.remove("hidden");
-//     }
-// })

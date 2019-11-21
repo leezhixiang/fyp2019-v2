@@ -36,6 +36,10 @@ const ChoiceSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
+    numPlayers: {
+        type: Number,
+        default: 0
+    },
     accuracy: {
         type: Number,
         default: 0
@@ -54,6 +58,10 @@ const QuestionSchema = new mongoose.Schema({
     },
     choices: {
         type: [ChoiceSchema]
+    },
+    numNoAnsPlayers: {
+        type: Number,
+        default: 0
     },
     noAnsAccuracy: {
         type: Number,
