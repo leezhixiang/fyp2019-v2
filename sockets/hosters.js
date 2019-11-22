@@ -255,7 +255,7 @@ const hosterRoutes = (socket, hasToken) => {
                     questionLength: quiz.questions.length,
                     choicesId
                 });
-
+                console.log(hoster.question);
                 // response to hoster
                 callback({
                     nextQuestion: true,
