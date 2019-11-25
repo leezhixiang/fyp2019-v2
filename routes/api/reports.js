@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 // data model
 const HosterReport = require('../../models/mongoose/hoster_report');
 const PlayerReport = require('../../models/mongoose/player_report');
@@ -21,13 +22,24 @@ router.get('/hoster', (req, res) => {
 
 // @GET /api/reports/hoster/:reportId
 router.get('/hoster/:reportId', (req, res) => {
-    HosterReport.find({ "_id": req.params.reportId })
+    HosterReport.findOne({ "_id": req.params.reportId })
         .populate({
             path: 'hoster',
             select: 'name'
         })
         .then(hosterReport => {
-            res.status(200).json(hosterReport)
+            PlayerReport.find({ "hoster_report_id": hosterReport._id })
+                .populate({
+                    path: 'player',
+                    select: 'name'
+                })
+                .then(playerReport => {
+                    console.log(playerReport);
+                    res.status(200).json({
+                        hosterReport,
+                        playerReport
+                    })
+                })
         })
         .catch(err => {
             res.status(500).json(err);
@@ -51,7 +63,7 @@ router.get('/player', (req, res) => {
 
 // @GET /api/reports/player/:reportId
 router.get('/player/:reportId', (req, res) => {
-    PlayerReport.find({ "_id": req.params.reportId })
+    PlayerReport.findOne({ "_id": req.params.reportId })
         .populate({
             path: 'player',
             select: 'name'

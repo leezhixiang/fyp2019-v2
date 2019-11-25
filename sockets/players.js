@@ -102,17 +102,23 @@ const playerRoutes = (socket, hasToken) => {
                         console.log(err);
                         return;
                     };
-                    // save to mongoDB
-                    const playerReport = new PlayerReport({
-                        socket_id: socket.id,
-                        game_id: gameId,
-                        player: socket.request.user._id,
-                        game_name: quiz.title,
-                        hoster_name: hoster.name,
-                        questions: quiz.questions
-                    });
-                    playerReport.save()
-                    console.log(`[@player join-game] mongoDB responses success`);
+
+                    HosterReport.findOne({ game_id: hoster.gameId })
+                        .select('_id')
+                        .then(hosterReport => {
+                            // save to mongoDB
+                            const playerReport = new PlayerReport({
+                                socket_id: socket.id,
+                                game_id: gameId,
+                                player: socket.request.user._id,
+                                game_name: quiz.title,
+                                hoster_name: hoster.name,
+                                hoster_report_id: hosterReport._id,
+                                questions: quiz.questions
+                            });
+                            playerReport.save()
+                            console.log(`[@player join-game] mongoDB responses success`);
+                        });
                 });
             };
 

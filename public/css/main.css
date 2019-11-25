@@ -79,3 +79,27 @@ input:checked+.slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+
+/*favorite icon*/
+
+.icon {
+    font-size: 20px;
+    color: rgba(0, 0, 0, .5);
+    padding: 8px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+i:hover {
+    opacity: 0.8;
+}
+
+i:active {
+    transform: scale(0.93, 0.93) translateY(2px);
+    transition: all .32s ease;
+}
+
+.active {
+    color: #F5CC27 !important;
+}

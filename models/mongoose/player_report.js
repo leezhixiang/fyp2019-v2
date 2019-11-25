@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const User = require('./user')
 const Quiz = require('./quiz')
+const HosterReport = require('./hoster_report')
 
 const ChoiceSchema = new mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -72,6 +73,11 @@ const PlayerReportSchema = new mongoose.Schema({
     },
     hoster_name: {
         type: String,
+        required: true
+    },
+    hoster_report_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'HosterReport',
         required: true
     },
     // game over

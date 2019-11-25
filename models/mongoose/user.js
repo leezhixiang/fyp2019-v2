@@ -14,15 +14,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    },
-    favorites: [{
-        type: mongoose.Schema.ObjectId,
-        ref: 'Quiz'
-    }],
-    shared: [{
-        type: mongoose.Schema.ObjectId,
-        ref: 'Quiz'
-    }]
+    }
 })
 
 module.exports = mongoose.model('User', UserSchema, 'users')

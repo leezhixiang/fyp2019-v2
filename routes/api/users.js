@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+
 // data model
 const User = require('../../models/mongoose/user');
 
@@ -32,7 +33,7 @@ router.post('/register', (req, res) => {
             if (user) {
                 return res.status(400).json({
                     message: 'register failed',
-                    err: 'user account is already exists',
+                    err: 'user account already exists',
                     isRegistered: false
                 });
             } else {
@@ -59,7 +60,7 @@ router.post('/register', (req, res) => {
                                 console.log(err);
                                 res.status(400).json({
                                     message: 'register failed',
-                                    err,
+                                    err: err.message,
                                     isRegistered: false,
                                 });
                             });
@@ -71,7 +72,7 @@ router.post('/register', (req, res) => {
             console.log(err);
             res.status(400).json({
                 message: 'register failed',
-                err,
+                err: err.message,
                 isRegistered: false,
             });
         });
@@ -128,7 +129,7 @@ router.post('/login', (req, res) => {
                         console.log(err)
                         res.status(400).json({
                             message: 'login failed',
-                            err,
+                            err: err.message,
                             isLogged: false
                         });
                     });
@@ -138,7 +139,7 @@ router.post('/login', (req, res) => {
             console.log(err);
             res.status(400).json({
                 message: 'login failed',
-                err,
+                err: err.message,
                 isLogged: false
             });
         });

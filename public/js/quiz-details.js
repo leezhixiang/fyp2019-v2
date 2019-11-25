@@ -30,6 +30,12 @@ window.onload = () => {
                     </div>
                     <div> 
                         <button onclick="window.location.href='http://localhost:3000/games/host-game?quizId=${quizId}'">Multiple Choice</button>
+                    <div class="icon">
+                    	<i class="fa fa-star-o" id="favBtn"></i>
+                    </div>
+                    <div class="icon">
+                        <i class="fa fa-share" id="shareBtn"></i>
+                    </div>
                     </div>
                     <p>Sample Questions</p>`
 
@@ -48,8 +54,31 @@ window.onload = () => {
             })
 
             document.querySelector('#quizDetails').innerHTML = html;
+
+            document.querySelector("#favBtn").addEventListener("click", () => {
+                if (document.querySelector("#favBtn").classList.contains("fa-star")) {
+                    setTimeout(() => {
+                        document.querySelector("#favBtn").classList.remove("active");
+                        document.querySelector("#favBtn").classList.remove('fa-star')
+                        document.querySelector("#favBtn").classList.add('fa-star-o')
+                    }, 15)
+                } else {
+                    setTimeout(() => {
+                        document.querySelector("#favBtn").classList.add('active')
+                        document.querySelector("#favBtn").classList.remove('fa-star-o')
+                        document.querySelector("#favBtn").classList.add('fa-star')
+                    }, 150)
+                };
+            });
+
+            document.querySelector("#shareBtn").addEventListener("click", () => {
+
+            });
         })
         .catch((err) => {
             console.log(err)
         })
+
+
+
 }
