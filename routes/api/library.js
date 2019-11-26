@@ -5,7 +5,9 @@ const User = require('../../models/mongoose/user');
 const Favorite = require('../../models/mongoose/favorite');
 const Share = require('../../models/mongoose/share');
 
-// @GET /api/library/favorites/
+// @route   GET /api/library/favorites/
+// @desc    get all favorites
+// @access  private
 router.get("/favorites", (req, res) => {
     Favorite.find({ "user_id": req.payload.userData._id })
         .select('quiz_id')
@@ -18,7 +20,9 @@ router.get("/favorites", (req, res) => {
         });
 });
 
-// @POST /api/library/favorites/ 
+// @route   POST /api/library/favorites/ 
+// @desc    favorite quiz
+// @access  private
 router.post("/favorites", (req, res) => {
     Favorite.findOne({ user_id: req.payload.userData._id, quiz_id: req.body.quizId })
         .then((favorite) => {
@@ -52,7 +56,9 @@ router.post("/favorites", (req, res) => {
         })
 });
 
-// @DELETE /api/library/favorites/:quizId
+// @route   DELETE /api/library/favorites/:quizId
+// @desc    unfavorite quiz
+// @access  private
 router.delete("/favorites/:quizId", (req, res) => {
     Favorite.findOneAndDelete({ user_id: req.payload.userData._id, quiz_id: req.params.quizId })
         .then((favorite) => {
@@ -72,7 +78,9 @@ router.delete("/favorites/:quizId", (req, res) => {
         });
 });
 
-// @GET /api/library/shared/
+// @route   GET /api/library/shared/
+// @desc    get shared quizzes
+// @access  private
 router.get("/shared", (req, res) => {
     Share.find({ "user_id": req.payload.userData._id })
         .select('quiz_id')
@@ -86,7 +94,9 @@ router.get("/shared", (req, res) => {
         });
 });
 
-// @POST /api/library/shared/
+// @route   POST /api/library/shared/
+// @desc    share quiz
+// @access  private
 router.post("/shared/", (req, res) => {
     User.findOne({ email: req.body.email })
         .then((user) => {
@@ -121,7 +131,9 @@ router.post("/shared/", (req, res) => {
         })
 });
 
-// @DELETE /api/library/shared/:quizId
+// @route   DELETE /api/library/shared/:quizId
+// @desc    delete shared quiz
+// @access  private
 router.delete("/shared/:quizId", (req, res) => {
     Share.findOneAndDelete({ user_id: req.payload.userData._id, quiz_id: req.params.quizId })
         .then((share) => {

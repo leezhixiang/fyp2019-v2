@@ -12,4 +12,30 @@ window.onload = () => {
         localStorage.removeItem('auth_token');
         window.location.href = "http://localhost:3000/";
     })
+
+    // get player reports
+    fetch(`http://localhost:3000/api/reports/player`, {
+            headers: {
+                'authorization': `Bearer ${token}`,
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((reports) => {
+            console.log(reports);
+        });
+
+    // get hoster reports
+    fetch(`http://localhost:3000/api/reports/hoster`, {
+            headers: {
+                'authorization': `Bearer ${token}`,
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((reports) => {
+            console.log(reports);
+        });
 }

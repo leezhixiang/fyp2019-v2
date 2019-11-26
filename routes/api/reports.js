@@ -5,7 +5,9 @@ const router = express.Router();
 const HosterReport = require('../../models/mongoose/hoster_report');
 const PlayerReport = require('../../models/mongoose/player_report');
 
-// @GET /api/reports/hoster/
+// @route   GET /api/reports/hoster/
+// @desc    fetch all hoster reports
+// @access  private
 router.get('/hoster', (req, res) => {
     HosterReport.find({ "hoster": req.payload.userData._id })
         .populate({
@@ -20,7 +22,9 @@ router.get('/hoster', (req, res) => {
         });
 });
 
-// @GET /api/reports/hoster/:reportId
+// @route   GET /api/reports/hoster/:reportId
+// @desc    get hoster report
+// @access  private
 router.get('/hoster/:reportId', (req, res) => {
     HosterReport.findOne({ "_id": req.params.reportId })
         .populate({
@@ -46,14 +50,18 @@ router.get('/hoster/:reportId', (req, res) => {
         });
 });
 
-// @GET /api/reports/player/
+// @route   GET /api/reports/player/
+// @desc    fetch all player reports
+// @access  private
 router.get('/player', (req, res) => {
+    console.log(req.payload.userData)
     PlayerReport.find({ "player": req.payload.userData._id })
         .populate({
             path: 'player',
             select: 'name'
         })
         .then(playerReport => {
+            console.log(playerReport)
             res.status(200).json(playerReport)
         })
         .catch(err => {
@@ -61,7 +69,9 @@ router.get('/player', (req, res) => {
         });
 })
 
-// @GET /api/reports/player/:reportId
+// @route   GET /api/reports/player/:reportId
+// @desc    get player report
+// @access  private
 router.get('/player/:reportId', (req, res) => {
     PlayerReport.findOne({ "_id": req.params.reportId })
         .populate({

@@ -13,4 +13,30 @@ window.onload = () => {
         localStorage.removeItem('auth_token');
         window.location.href = "http://localhost:3000/";
     })
+
+    // get favorite quizzes
+    fetch(`http://localhost:3000/api/library/favorites`, {
+            headers: {
+                'authorization': `Bearer ${token}`,
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((favorites) => {
+            console.log(favorites);
+        });
+
+    // get shared quizzes
+    fetch(`http://localhost:3000/api/library/shared`, {
+            headers: {
+                'authorization': `Bearer ${token}`,
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((shared) => {
+            console.log(shared);
+        });
 }

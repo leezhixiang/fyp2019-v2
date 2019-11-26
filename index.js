@@ -51,6 +51,7 @@ app.use(require('./routes/quizzes'));
 app.use('/reports', require('./routes/reports'));
 app.use('/games', require('./routes/games'));
 app.use('/users', require('./routes/users'));
+app.use('/classes', require('./routes/classes'));
 
 // handle unspecified routes
 app.use(errorController.get404);

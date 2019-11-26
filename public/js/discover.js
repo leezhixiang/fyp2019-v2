@@ -13,18 +13,13 @@ window.onload = () => {
 
     // socket.io connection
     const passToken = (token) => {
-        if (token) {
-            return { query: `auth_token=${token}` }
-        };
+        if (token) { return { query: `auth_token=${token}` } };
     };
-
     const notificationSocket = io('/notification', passToken(token));
-
     // connection failed
     notificationSocket.on('error', (err) => {
         throw new Error(err.message);
     });
-
     // connection successful
     notificationSocket.on('socket-conn', (data) => {
         console.log(`[socket-conn] ${data.message}`);
