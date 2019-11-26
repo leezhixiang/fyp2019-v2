@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const Quiz = require('./quiz')
+const Class = require('./class')
 
 const UserSchema = new mongoose.Schema({
     name: {

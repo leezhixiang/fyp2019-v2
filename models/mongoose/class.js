@@ -21,7 +21,7 @@ const ClassSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    member: [{
+    members: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }]

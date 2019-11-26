@@ -6,7 +6,9 @@ const mongoose = require('mongoose')
 const User = require('../../models/mongoose/user');
 const Class = require('../../models/mongoose/class');
 
-// @GET /api/classes/
+// @route   GET /api/classes/
+// @desc    view classes
+// @access  private
 router.get("/", (req, res) => {
     Class
         .find({ admin: req.payload.userData._id })
@@ -19,7 +21,9 @@ router.get("/", (req, res) => {
         });
 });
 
-// @GET /api/classes/:classId
+// @route   GET /api/classes/:classId
+// @desc    view class
+// @access  private
 router.get("/:classId", (req, res) => {
     Class.findOne({ _id: req.params.classId, admin: req.payload.userData._id })
         .populate('admin', 'name')
@@ -31,7 +35,9 @@ router.get("/:classId", (req, res) => {
         });
 });
 
-// @POST /api/classes/
+// @route   POST /api/classes/
+// @desc    create class
+// @access  private
 router.post("/", (req, res) => {
     if (!req.body.name) {
         return res.status(400).json({
@@ -81,12 +87,58 @@ router.post("/", (req, res) => {
         });
 });
 
-// @PATCH /api/classes/:classId
+// @route   PATCH /api/classes/:classId
+// @desc    edit class
+// @access  private, admin only
 router.patch("/:classId", (req, res) => {
+    if (!req.body.name) {
+        return res.status(400).json({
+            message: 'update failed',
+            err,
+            isUpdated: false,
+        });
+    }
 
+    const updateSetOps = {};
+    const updateUnsetOps = {};
+    for (const key in req.body) {
+        if (req.body[key]) {
+            updateSetOps[key] = req.body[key];
+        };
+        if (req.body[key] === "") {
+            updateUnsetOps[key] = req.body[key];
+        };
+    };
+
+    Class
+        .updateOne({
+            _id: req.params.classId,
+            admin: req.payload.userData._id
+        }, {
+            $set: updateSetOps,
+            $unset: updateUnsetOps
+        }, {
+            upsert: true
+        })
+        .then((myClass) => {
+            res.status(200).json({
+                message: 'update successful',
+                myClass,
+                isUpdated: true
+            });
+        }).catch(err => {
+            console.log(err);
+            res.status(400).json({
+                message: 'update failed',
+                err,
+                isUpdated: false,
+            });
+        })
 });
 
-// @DELETE /api/classes/:classId
+// @route   DELETE /api/classes/:classId
+// @desc    delete class
+// @access  private, admin only
 router.delete("/:classId", (req, res) => {
     Class.findOneAndDelete({ _id: req.params.classId, admin: req.payload.userData._id })
         .then((myClass) => {
