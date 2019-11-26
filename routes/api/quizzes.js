@@ -42,7 +42,7 @@ router.get('/:quizId', checkAuthWithoutToken, function(req, res) {
     } else {
         const promises = [
             // Call .exec() on each query without a callback to return its promise.
-            Quiz.findById(req.params.quizId).exec(),
+            Quiz.findById(req.params.quizId).populate('creator', 'name').exec(),
             Favorite.findOne({ user_id: req.payload.userData._id, quiz_id: req.params.quizId }).exec()
         ];
 

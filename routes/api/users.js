@@ -38,7 +38,6 @@ router.post('/register', (req, res) => {
                 });
             } else {
                 const newUser = new User({
-                    _id: mongoose.Types.ObjectId(),
                     name: `${first_name} ${last_name}`,
                     email,
                     password

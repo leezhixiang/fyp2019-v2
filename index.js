@@ -10,6 +10,7 @@ const userRoutes = require('./routes/api/users');
 const quizRoutes = require('./routes/api/quizzes');
 const libraryRoutes = require('./routes/api/library');
 const reportRoutes = require('./routes/api/reports');
+const classRoutes = require('./routes/api/classes');
 const errorController = require('./controllers/error');
 
 const app = express();
@@ -41,6 +42,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/library', checkAuth, libraryRoutes);
 app.use('/api/reports', checkAuth, reportRoutes);
+app.use('/api/classes', checkAuth, classRoutes);
 
 // routes
 app.use(require('./routes/quizzes'));
