@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 // data model
 const Hoster = require('../models/hoster');
 const Player = require('../models/player');
-const User = require('../models/user');
+const OnlineUser = require('../models/user');
 
 const Quiz = require('../models/mongoose/quiz');
 const HosterReport = require('../models/mongoose/hoster_report');
@@ -25,14 +25,14 @@ const notificationRoutes = (socket, hasToken) => {
                 classIds = classes.map(myClass => myClass.class_id);
 
                 // join user to room based on class id
-                classIds.forEach((classId) => {
-                    socket.join(classId);
-                });
+                // classIds.forEach((classId) => {
+                //     socket.join(classId);
+                // });
 
-                const user = new User(socket.id, userId, email, classIds);
+                const user = new OnlineUser(socket.id, userId, email, classIds);
 
                 user.addUser();
-                const users = User.getUsers();
+                const users = OnlineUser.getUsers();
                 console.log(users);
 
                 socket.to('68woir').emit('notifications', "let's play a game");
@@ -82,8 +82,8 @@ const notificationRoutes = (socket, hasToken) => {
 
     socket.on('disconnect', (callback) => {
         if (hasToken) {
-            User.removeUser(socket.id);
-            const users = User.getUsers();
+            OnlineUser.removeUser(socket.id);
+            const users = OnlineUser.getUsers();
             console.log(users);
         }
     });

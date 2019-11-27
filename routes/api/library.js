@@ -1,9 +1,16 @@
 const express = require('express');
 const router = express.Router();
+
+const notification_io = require('../../models/socket');
+
 // data model
+const OnlineUser = require('../../models/user');
+
+const Quiz = require('../../models/mongoose/quiz');
 const User = require('../../models/mongoose/user');
 const Favorite = require('../../models/mongoose/favorite');
 const Share = require('../../models/mongoose/share');
+const Notification = require('../../models/mongoose/notification');
 
 // @route   GET /api/library/favorites/
 // @desc    get all favorites
@@ -101,25 +108,60 @@ router.post("/shared/", (req, res) => {
     User.findOne({ email: req.body.email })
         .then((user) => {
             if (!user) {
-                res.status(400).json({
+                return res.status(403).json({
                     message: 'share failed',
                     err: 'user account does not exist',
                     isShared: false
                 });
-            } else {
-                const share = new Share({
-                    user_id: user._id,
-                    quiz_id: req.body.quizId
-                });
-                share.save()
-                    .then((share) => {
-                        res.status(200).json({
-                            message: 'share successful',
-                            share,
-                            isShared: true,
-                        });
+            };
+
+            const share = new Share({
+                user_id: user._id,
+                quiz_id: req.body.quizId
+            });
+
+            share.save()
+                .then((share) => {
+                    res.status(200).json({
+                        message: 'share successful',
+                        share,
+                        isShared: true,
                     });
-            }
+                });
+
+            Quiz.findById(req.body.quizId)
+                .select('title')
+                .then(quiz => {
+                    // save notification to the recipient
+                    const notification = new Notification({
+                        recipient_id: user._id,
+                        sender_id: req.payload.userData._id,
+                        type: 'SHARE QUIZ',
+                        content: `${req.payload.userData.name} shared you a quiz: "${quiz.title}"`,
+                        isRead: false
+                    });
+
+                    notification.save((err) => {
+                        if (err) {
+                            console.log(err);
+                            return;
+                        };
+                        console.log(`[@hoster host-game] mongoDB responses success`);
+                    });
+
+                    // send notification to all members in class
+                    const users = OnlineUser.getUsers();
+
+                    const onlineUsers = users.filter(u => u.userId.equals(user._id));
+
+                    onlineUsers.forEach((onlineUser) => {
+                        // sending to individual socketid (private message)
+                        notification_io.getNotificationIO().to(`${onlineUser.socketId}`).emit('new-notification', notification.content);
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         })
         .catch((err) => {
             console.log(err);

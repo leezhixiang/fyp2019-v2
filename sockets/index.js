@@ -1,7 +1,9 @@
-const io = require('../models/socket').getIO();
-const notification_io = require('../models/socket').getNotificationIO();
+const io = require('../models/socket');
+const notification_io = require('../models/socket');
+
 // middleware
 const socketAuth = require('../middleware/socket-auth');
+
 // routes
 const hosterRoutes = require('./hosters');
 const playerRoutes = require('./players');
@@ -9,11 +11,11 @@ const notificationRoutes = require('./notifications');
 
 module.exports = () => {
     // using middleware
-    io.use(socketAuth);
+    io.getIO().use(socketAuth);
     // using middleware
-    notification_io.use(socketAuth);
+    notification_io.getNotificationIO().use(socketAuth);
 
-    io.on('connection', (socket) => {
+    io.getIO().on('connection', (socket) => {
         const hasToken = socket.request.user.logged_in;
         // now you can access user info through socket.request.user
         // socket.request.user.logged_in will be set to true if the user was authenticated
@@ -26,7 +28,7 @@ module.exports = () => {
         playerRoutes(socket, hasToken);
     });
 
-    notification_io.on('connection', (socket) => {
+    notification_io.getNotificationIO().on('connection', (socket) => {
         const hasToken = socket.request.user.logged_in;
         // now you can access user info through socket.request.user
         // socket.request.user.logged_in will be set to true if the user was authenticated

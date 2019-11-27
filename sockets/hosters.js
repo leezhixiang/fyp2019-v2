@@ -1,10 +1,10 @@
-const io = require('../models/socket').getIO();
-const notification_io = require('../models/socket').getNotificationIO();
+const io = require('../models/socket');
+const notification_io = require('../models/socket');
 
 // data model
 const Hoster = require('../models/hoster');
 const Player = require('../models/player');
-const User = require('../models/user');
+const OnlineUser = require('../models/user');
 
 const Quiz = require('../models/mongoose/quiz');
 const HosterReport = require('../models/mongoose/hoster_report');
@@ -142,15 +142,13 @@ const hosterRoutes = (socket, hasToken) => {
                             });
 
                             // send notification to all members in class
-                            const users = User.getUsers();
+                            const users = OnlineUser.getUsers();
 
                             const onlineUsers = users.filter(user => user.userId.equals(memberId));
 
-                            console.log(onlineUsers);
-
                             onlineUsers.forEach((onlineUser) => {
                                 // sending to individual socketid (private message)
-                                notification_io.to(`${onlineUser.socketId}`).emit('new-notification', notification.content);
+                                notification_io.getNotificationIO().to(`${onlineUser.socketId}`).emit('new-notification', notification.content);
                             });
                         });
                     })
