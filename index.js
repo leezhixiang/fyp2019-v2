@@ -47,7 +47,7 @@ app.use('/api/members', checkAuth, memberRoutes);
 app.use('/api/classes', checkAuth, classRoutes);
 
 // routes
-app.use(require('./routes/quizzes'));
+app.use('/', require('./routes/quizzes'));
 app.use('/reports', require('./routes/reports'));
 app.use('/games', require('./routes/games'));
 app.use('/users', require('./routes/users'));
