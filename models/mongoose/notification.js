@@ -9,18 +9,13 @@ const NotificationSchema = new mongoose.Schema({
     },
     sender_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User'
     },
     type: {
         type: String,
         required: true
     },
     content: {
-        type: String,
-        required: true
-    },
-    url: {
         type: String,
         required: true
     },

@@ -70,7 +70,7 @@ const playerRoutes = (socket, hasToken) => {
             };
         };
     });
-    socket.on('join-game', function(data, callback) {
+    socket.on('join-game', (data, callback) => {
         const { name, gameId } = data
 
         if (!name || !gameId) {

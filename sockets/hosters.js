@@ -1,11 +1,16 @@
 const io = require('../models/socket').getIO();
+const notification_io = require('../models/socket').getNotificationIO();
 
 // data model
 const Hoster = require('../models/hoster');
 const Player = require('../models/player');
+const User = require('../models/user');
+
 const Quiz = require('../models/mongoose/quiz');
 const HosterReport = require('../models/mongoose/hoster_report');
 const PlayerReport = require('../models/mongoose/player_report');
+const Notification = require('../models/mongoose/notification');
+const Class = require('../models/mongoose/class');
 
 const hosterRoutes = (socket, hasToken) => {
 
@@ -108,6 +113,50 @@ const hosterRoutes = (socket, hasToken) => {
                 // save to memory
                 hoster.shuffledQuestionIds = quiz.questions.sort(() => Math.random() - .5).map((q) => q._id);
                 Hoster.updateHoster(hoster);
+            });
+
+            const assignClassIds = ['kdihc9', 'w0lihw'];
+            assignClassIds.forEach(classId => {
+                // find class which hoster wants to assign to
+                Class.findOne({ class_id: classId })
+                    .select('members')
+                    .then(myClass => {
+                        const memberIds = myClass.members;
+
+                        memberIds.forEach((memberId) => {
+                            // save notification to all members in class
+                            const notification = new Notification({
+                                recipient_id: memberId,
+                                sender_id: socket.request.user._id,
+                                type: 'HOST GAME',
+                                content: `${hoster.name} assigned you to play game. (Game Code: ${hoster.gameId})`,
+                                isRead: false
+                            });
+
+                            notification.save((err) => {
+                                if (err) {
+                                    console.log(err);
+                                    return;
+                                };
+                                console.log(`[@hoster host-game] mongoDB responses success`);
+                            });
+
+                            // send notification to all members in class
+                            const users = User.getUsers();
+
+                            const onlineUsers = users.filter(user => user.userId.equals(memberId));
+
+                            console.log(onlineUsers);
+
+                            onlineUsers.forEach((onlineUser) => {
+                                // sending to individual socketid (private message)
+                                notification_io.to(`${onlineUser.socketId}`).emit('new-notification', notification.content);
+                            });
+                        });
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
             });
         };
 

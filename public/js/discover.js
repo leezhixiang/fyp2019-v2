@@ -26,16 +26,23 @@ window.onload = () => {
         console.log(`[socket-conn] token: ${data.hasToken}`);
     })
 
-    // get notification from server
-    notificationSocket.on('notifications', function(data) {
-        console.log(data);
+    // get total notifications from server
+    notificationSocket.on('total-notifications', (number) => {
+        console.log(number);
     });
 
-    // mark all as read
     document.querySelectorAll('.notification').forEach((notification, index) => {
         notification.addEventListener('click', () => {
-            notificationSocket.emit('read-notification');
+            // mark all as read
+            notificationSocket.emit('read-notification', (notifications) => {
+                console.log(notifications);
+            });
         });
+    });
+
+    // get new notifications from server
+    notificationSocket.on('new-notification', (content) => {
+        console.log(content);
     });
 
     // get quizzes from api
