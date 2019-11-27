@@ -12,8 +12,6 @@ const notificationRoutes = require('./notifications');
 module.exports = () => {
     // using middleware
     io.getIO().use(socketAuth);
-    // using middleware
-    notification_io.getNotificationIO().use(socketAuth);
 
     io.getIO().on('connection', (socket) => {
         const hasToken = socket.request.user.logged_in;
@@ -27,6 +25,9 @@ module.exports = () => {
         hosterRoutes(socket, hasToken);
         playerRoutes(socket, hasToken);
     });
+
+    // using middleware
+    notification_io.getNotificationIO().use(socketAuth);
 
     notification_io.getNotificationIO().on('connection', (socket) => {
         const hasToken = socket.request.user.logged_in;

@@ -1,15 +1,9 @@
-const io = require('../models/socket').getIO();
-const notification_io = require('../models/socket').getNotificationIO();
-const mongoose = require('mongoose');
+const io = require('../models/socket');
+const notification_io = require('../models/socket');
 
 // data model
-const Hoster = require('../models/hoster');
-const Player = require('../models/player');
 const OnlineUser = require('../models/user');
 
-const Quiz = require('../models/mongoose/quiz');
-const HosterReport = require('../models/mongoose/hoster_report');
-const PlayerReport = require('../models/mongoose/player_report');
 const Class = require('../models/mongoose/class');
 const Notification = require('../models/mongoose/notification');
 
@@ -18,7 +12,7 @@ const notificationRoutes = (socket, hasToken) => {
     const email = socket.request.user.email;
 
     if (hasToken) {
-        // find classes which is user currently in
+        // find classes which are user currently in
         Class.find({ members: { "$in": [userId] } })
             .select('class_id')
             .then(classes => {
@@ -87,9 +81,6 @@ const notificationRoutes = (socket, hasToken) => {
             console.log(users);
         }
     });
-
-    // disconnect class after being removed or exit from class
-    socket.on('disconnect-class', (callback) => {});
 };
 
 module.exports = notificationRoutes;
