@@ -5,6 +5,7 @@ const notification_io = require('../models/socket');
 const Hoster = require('../models/hoster');
 const Player = require('../models/player');
 const OnlineUser = require('../models/user');
+
 const Quiz = require('../models/mongoose/quiz');
 const HosterReport = require('../models/mongoose/hoster_report');
 const PlayerReport = require('../models/mongoose/player_report');
@@ -15,9 +16,11 @@ exports.disconnect = (socket, hasToken) => {
     socket.on('disconnect', () => {
         const hoster = Hoster.getHosterById(socket.id);
         if (!hoster) return;
+
         if (hoster) {
             // remove from memory
             Hoster.removeHoster(socket.id);
+
             // remove from mongoDB
             if (hasToken === true && hoster && hoster.isGameOver === false) {
                 HosterReport.deleteOne({ socket_id: socket.id }, (err, data) => {
@@ -28,33 +31,37 @@ exports.disconnect = (socket, hasToken) => {
                     console.log(`[@hoster disconenct] mongoDB responses success`);
                 });
             };
+
             console.log(`[@hoster disconenct] ${hoster.socketId} hoster has left room ${hoster.gameId}`);
+
             // show hoster list
             const hosters = Hoster.getHosters();
             console.log(`[@hoster disconenct] hoster list:`);
             console.log(hosters.map((hoster) => {
                 return { socketId: hoster.socketId, name: hoster.name }
             }));
+
             // response to players
             socket.to(hoster.gameId).emit('hoster-disconnect');
         };
+
         const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
+
         // remove from mongoDB
         if (hasToken === true && onlinePlayers.length > 0 && hoster && hoster.isGameOver === false) {
-            PlayerReport.deleteMany({ game_id: hoster.gameId }, (err, data) => {
-                if (err) {
+            PlayerReport.deleteMany({ game_id: hoster.gameId })
+                .then(() => {
+                    console.log(`[@player disconenct] mongoDB responses success`);
+                }).catch(err => {
                     console.log(err);
-                    return;
-                };
-                console.log(`[@player disconenct] mongoDB responses success`);
-            });
+                });
         };
     });
 };
 
 exports.hostGame = (socket, hasToken) => {
     socket.on('host-game', (data, callback) => {
-        const { quizId, suffleQuestions, suffleAnswerOptions } = data;
+        const { quizId, suffleQuestions, suffleAnswerOptions, assignClassIds } = data;
 
         if (!quizId) {
             console.log('[@hoster host-game] Something went wrong!');
@@ -66,6 +73,11 @@ exports.hostGame = (socket, hasToken) => {
                 console.log('[@hoster host-game] Something went wrong!');
                 return;
             };
+        };
+
+        if (assignClassIds === undefined) {
+            console.log('[@hoster host-game] Something went wrong!');
+            return;
         };
 
         passSettings = () => {
@@ -92,11 +104,13 @@ exports.hostGame = (socket, hasToken) => {
 
         // save to mongoDB
         if (hasToken === true) {
+
             Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
                 if (err) {
                     console.log(err);
                     return;
                 };
+
                 const hosterReport = new HosterReport({
                     socket_id: socket.id,
                     game_id: hoster.gameId,
@@ -104,59 +118,63 @@ exports.hostGame = (socket, hasToken) => {
                     game_name: quiz.title,
                     questions: quiz.questions
                 });
-                hosterReport.save((err) => {
-                    if (err) {
+
+                hosterReport.save()
+                    .then(() => {
+                        console.log(`[@hoster host-game] mongoDB responses success`);
+                    }).catch(err => {
                         console.log(err);
-                        return;
-                    };
-                    console.log(`[@hoster host-game] mongoDB responses success`);
-                });
+                    });
+
                 // save to memory
                 hoster.shuffledQuestionIds = quiz.questions.sort(() => Math.random() - .5).map((q) => q._id);
                 Hoster.updateHoster(hoster);
             });
 
-            const assignClassIds = ['kdihc9', 'w0lihw'];
-            assignClassIds.forEach(classId => {
-                // find class which hoster wants to assign to
-                Class.findOne({ class_id: classId })
-                    .select('members')
-                    .then(myClass => {
-                        const memberIds = myClass.members;
+            // assigned classes
+            if (assignClassIds.length > 0) {
+                console.log('ass class');
+                assignClassIds.forEach(classId => {
+                    // find class which hoster wants to assign to
+                    Class.findOne({ class_id: classId })
+                        .select('members')
+                        .then(myClass => {
+                            const memberIds = myClass.members;
 
-                        memberIds.forEach((memberId) => {
-                            // save notification to all members in class
-                            const notification = new Notification({
-                                recipient_id: memberId,
-                                sender_id: socket.request.user._id,
-                                type: 'HOST GAME',
-                                content: `${hoster.name} assigned you to play game. (Game Code: ${hoster.gameId})`,
-                                isRead: false
+                            memberIds.forEach((memberId) => {
+                                // save notification to all members in class
+                                const notification = new Notification({
+                                    recipient_id: memberId,
+                                    sender_id: socket.request.user._id,
+                                    type: 'HOST GAME',
+                                    content: `${hoster.name} assigned you to play game. (Game Code: ${hoster.gameId})`,
+                                    isRead: false
+                                });
+
+                                notification.save()
+                                    .then(() => {
+                                        console.log(`[@hoster host-game] mongoDB responses success`);
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                    })
+
+                                // send notification to all members in class
+                                const users = OnlineUser.getUsers();
+
+                                const onlineUsers = users.filter(user => user.userId.equals(memberId));
+
+                                onlineUsers.forEach((onlineUser) => {
+                                    // sending to individual socketid (private message)
+                                    notification_io.getNotificationIO().to(`${onlineUser.socketId}`).emit('new-notification', notification.content);
+                                });
                             });
-
-                            notification.save((err) => {
-                                if (err) {
-                                    console.log(err);
-                                    return;
-                                };
-                                console.log(`[@hoster host-game] mongoDB responses success`);
-                            });
-
-                            // send notification to all members in class
-                            const users = OnlineUser.getUsers();
-
-                            const onlineUsers = users.filter(user => user.userId.equals(memberId));
-
-                            onlineUsers.forEach((onlineUser) => {
-                                // sending to individual socketid (private message)
-                                notification_io.getNotificationIO().to(`${onlineUser.socketId}`).emit('new-notification', notification.content);
-                            });
+                        })
+                        .catch(err => {
+                            console.log(err);
                         });
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
-            });
+                });
+            };
         };
 
         // show hoster list
@@ -225,6 +243,7 @@ exports.nextQuestion = (socket, hasToken) => {
                     }).sort((a, b) => b.points - a.points).splice(0, 5);
 
                     const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
+
                     if (hasToken === true && onlinePlayers.length > 0) {
                         // calculate game accuracy
                         const totalCorrect = players.map((player) => player.correct)
@@ -247,28 +266,30 @@ exports.nextQuestion = (socket, hasToken) => {
                         });
 
                         // save to mongoDB
-                        HosterReport.findOneAndUpdate({ "socket_id": socket.id }, {
-                            $set: { "accuracy": gameAccuracy, "scoreboard": scoreBoard, "player_results": playersResults }
-                        }, { upsert: true }, (err, data) => {
-                            if (err) {
+                        HosterReport.updateOne({ "socket_id": socket.id }, {
+                                $set: { "accuracy": gameAccuracy, "scoreboard": scoreBoard, "player_results": playersResults }
+                            }, { upsert: true })
+                            .then(() => {
+                                console.log(`[@hoster next-question] mongoDB responses success`);
+                            })
+                            .catch(err => {
                                 console.log(err);
-                                return;
-                            };
-                            console.log(`[@hoster next-question] mongoDB responses success`);
-                        });
+                            })
+
                         PlayerReport.updateMany({ "game_id": hoster.gameId }, {
-                            $set: { "scoreboard": scoreBoard }
-                        }, { upsert: true }, (err, data) => {
-                            if (err) {
+                                $set: { "scoreboard": scoreBoard }
+                            }, { upsert: true })
+                            .then(() => {
+                                console.log(`[@player next-question] mongoDB responses success`);
+                            })
+                            .catch(err => {
                                 console.log(err);
-                                return;
-                            };
-                            console.log(`[@player next-question] mongoDB responses success`);
-                        });
+                            });
                     };
 
                     // response to players
                     socket.to(hoster.gameId).emit('player-game-over');
+
                     // response to hoster
                     return callback({
                         nextQuestion: false,
@@ -284,6 +305,7 @@ exports.nextQuestion = (socket, hasToken) => {
                     quiz.questions.sort((a, b) => {
                         return hoster.shuffledQuestionIds.indexOf(a._id) - hoster.shuffledQuestionIds.indexOf(b._id);
                     });
+
                     console.log('[@player next-question] shuffled questions')
                 };
 
@@ -293,6 +315,7 @@ exports.nextQuestion = (socket, hasToken) => {
                 // shuffle choices
                 if (hoster.settings.suffleAnswerOptions === true) {
                     hoster.question.choices.sort(() => Math.random() - .5);
+
                     console.log('[@player next-question] shuffled answer options')
                 };
 
@@ -306,7 +329,9 @@ exports.nextQuestion = (socket, hasToken) => {
                     questionLength: quiz.questions.length,
                     choicesId
                 });
-                console.log(hoster.question);
+
+                // console.log(hoster.question);
+
                 // response to hoster
                 callback({
                     nextQuestion: true,
@@ -319,8 +344,8 @@ exports.nextQuestion = (socket, hasToken) => {
             });
 
         } else if (btnState === false) {
-
             const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
+
             if (hasToken === true && onlinePlayers.length > 0) {
 
                 // calculate question results accuracy
@@ -331,6 +356,7 @@ exports.nextQuestion = (socket, hasToken) => {
                         choiceResults.push(hoster.questionResults[keys[index]]);
                     };
                 });
+
                 const totalChoiceResults = choiceResults.reduce((accumulator, currentValue) => accumulator + currentValue);
                 const questionResultsAccuracy = Math.floor((totalChoiceResults / hoster.receivedPlayers.length) * 100);
 
@@ -348,41 +374,35 @@ exports.nextQuestion = (socket, hasToken) => {
 
                 // save to mongoDB
                 HosterReport.findOneAndUpdate({ "socket_id": socket.id }, {
-                        $set: {
-                            "questions.$[question].accuracy": questionResultsAccuracy,
+                    $set: {
+                        "questions.$[question].accuracy": questionResultsAccuracy,
 
-                            "questions.$[question].choices.$[choice1].numPlayers": hoster.questionResults.choice1,
-                            "questions.$[question].choices.$[choice1].accuracy": choicesAccuracy.choice1,
+                        "questions.$[question].choices.$[choice1].numPlayers": hoster.questionResults.choice1,
+                        "questions.$[question].choices.$[choice1].accuracy": choicesAccuracy.choice1,
 
-                            "questions.$[question].choices.$[choice2].numPlayers": hoster.questionResults.choice2,
-                            "questions.$[question].choices.$[choice2].accuracy": choicesAccuracy.choice2,
+                        "questions.$[question].choices.$[choice2].numPlayers": hoster.questionResults.choice2,
+                        "questions.$[question].choices.$[choice2].accuracy": choicesAccuracy.choice2,
 
-                            "questions.$[question].choices.$[choice3].numPlayers": hoster.questionResults.choice3,
-                            "questions.$[question].choices.$[choice3].accuracy": choicesAccuracy.choice3,
+                        "questions.$[question].choices.$[choice3].numPlayers": hoster.questionResults.choice3,
+                        "questions.$[question].choices.$[choice3].accuracy": choicesAccuracy.choice3,
 
-                            "questions.$[question].choices.$[choice4].numPlayers": hoster.questionResults.choice4,
-                            "questions.$[question].choices.$[choice4].accuracy": choicesAccuracy.choice4,
+                        "questions.$[question].choices.$[choice4].numPlayers": hoster.questionResults.choice4,
+                        "questions.$[question].choices.$[choice4].accuracy": choicesAccuracy.choice4,
 
-                            "questions.$[question].numNoAnsPlayers": (hoster.receivedPlayers.length - hoster.answeredPlayers.length),
-                            "questions.$[question].noAnsAccuracy": noAnsAccuracy,
-                        }
-                    }, {
-                        arrayFilters: [
-                            { "question._id": hoster.question._id },
-                            { "choice1._id": hoster.question.choices[0]._id },
-                            { "choice2._id": hoster.question.choices[1]._id },
-                            { "choice3._id": hoster.question.choices[2]._id },
-                            { "choice4._id": hoster.question.choices[3]._id }
-                        ],
-                        upsert: true
-                    },
-                    (err, data) => {
-                        if (err) {
-                            console.log(err);
-                            return;
-                        };
-                        console.log(`[@hoster next-question] mongoDB responses success`);
-                    });
+                        "questions.$[question].numNoAnsPlayers": (hoster.receivedPlayers.length - hoster.answeredPlayers.length),
+                        "questions.$[question].noAnsAccuracy": noAnsAccuracy,
+                    }
+                }, {
+                    arrayFilters: [
+                        { "question._id": hoster.question._id },
+                        { "choice1._id": hoster.question.choices[0]._id },
+                        { "choice2._id": hoster.question.choices[1]._id },
+                        { "choice3._id": hoster.question.choices[2]._id },
+                        { "choice4._id": hoster.question.choices[3]._id }
+                    ],
+                    upsert: true
+                })
+
 
                 PlayerReport.updateMany({ "game_id": hoster.gameId }, {
                         $set: {
@@ -400,13 +420,12 @@ exports.nextQuestion = (socket, hasToken) => {
                             { "choice4._id": hoster.question.choices[3]._id }
                         ],
                         upsert: true
-                    },
-                    (err, data) => {
-                        if (err) {
-                            console.log(err);
-                            return;
-                        };
+                    })
+                    .then(() => {
                         console.log(`[@player next-question] mongoDB responses success`);
+                    })
+                    .catch(err => {
+                        console.log(err);
                     });
             };
 
@@ -436,7 +455,7 @@ exports.nextQuestion = (socket, hasToken) => {
             });
         };
     });
-}
+};
 
 exports.timerCountdown = (socket, hasToken) => {
     socket.on('time-left', (timeLeft) => {
@@ -455,5 +474,5 @@ exports.timerCountdown = (socket, hasToken) => {
             hoster.isQuestionLive = false;
             Hoster.updateHoster(hoster);
         };
-    })
-}
+    });
+};

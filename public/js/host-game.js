@@ -49,10 +49,13 @@ window.onload = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const quizId = urlParams.get("quizId");
 
+        const assignClassIds = [];
+
         socket.emit('host-game', {
             quizId,
             suffleQuestions: settings.suffleQuestions,
-            suffleAnswerOptions: settings.suffleAnswerOptions
+            suffleAnswerOptions: settings.suffleAnswerOptions,
+            assignClassIds
         }, (data) => {
             const { error, message, isHosted, gameId } = data;
 
