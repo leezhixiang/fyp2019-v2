@@ -68,59 +68,64 @@ exports.disconnect = (socket, hasToken) => {
             };
         };
     });
-}
+};
 
 exports.joinGame = (socket, hasToken) => {
     socket.on('join-game', (data, callback) => {
-        const { name, gameId } = data
+        const { name, gameId } = data;
 
         if (!name || !gameId) {
             return callback({
                 error: 'all fields are required',
                 message: 'join game failed',
                 isJoined: false
-            })
-        }
+            });
+        };
 
         const player = Player.getPlayerByName(name);
         const hoster = Hoster.getHosterByGameId(gameId);
 
         if (!player && hoster) {
             const player = new Player(socket.id, name, gameId);
+
             // save to memory
             player.addPlayer();
-            // save to mongoDB
-            Quiz.findOneAndUpdate({ _id: hoster.quizId }, { $inc: { plays: 1 } }, (err, data) => {
-                if (err) {
-                    console.log(err);
-                    return;
-                };
-                console.log(`[@player join-game] mongoDB responses success`);
-            });
-            if (hasToken === true) {
-                Quiz.findOne({ _id: hoster.quizId }, (err, quiz) => {
-                    if (err) {
-                        console.log(err);
-                        return;
-                    };
 
-                    HosterReport.findOne({ game_id: hoster.gameId })
-                        .select('_id')
-                        .then(hosterReport => {
-                            // save to mongoDB
-                            const playerReport = new PlayerReport({
-                                socket_id: socket.id,
-                                game_id: gameId,
-                                player: socket.request.user._id,
-                                game_name: quiz.title,
-                                hoster_name: hoster.name,
-                                hoster_report_id: hosterReport._id,
-                                questions: quiz.questions
-                            });
-                            playerReport.save()
-                            console.log(`[@player join-game] mongoDB responses success`);
-                        });
+            // save to mongoDB
+            Quiz.findOneAndUpdate({ _id: hoster.quizId }, { $inc: { plays: 1 } })
+                .then(() => {
+                    console.log(`[@player join-game] mongoDB responses success`);
+                })
+                .catch(err => {
+                    console.log(err);
                 });
+
+            if (hasToken === true) {
+                Quiz.findOne({ _id: hoster.quizId })
+                    .then((quiz) => {
+                        HosterReport.findOne({ game_id: hoster.gameId })
+                            .select('_id')
+                            .then(hosterReport => {
+                                const playerReport = new PlayerReport({
+                                    socket_id: socket.id,
+                                    game_id: gameId,
+                                    player: socket.request.user._id,
+                                    game_name: quiz.title,
+                                    hoster_name: hoster.name,
+                                    hoster_report_id: hosterReport._id,
+                                    questions: quiz.questions
+                                });
+                                // save to mongoDB
+                                playerReport.save()
+                                console.log(`[@player join-game] mongoDB responses success`);
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    });
             };
 
             // show player list
@@ -149,7 +154,7 @@ exports.joinGame = (socket, hasToken) => {
                     gameLive: hoster.isGameLive,
                     name
                 }
-            })
+            });
 
         } else {
             // response to player
@@ -157,10 +162,10 @@ exports.joinGame = (socket, hasToken) => {
                 error: 'display name or game PIN is invalid',
                 message: 'join game failed',
                 isJoined: false
-            })
-        }
-    })
-}
+            });
+        };
+    });
+};
 
 exports.getReceivedQuestion = (socket, hasToken) => {
     socket.on('receive-question', () => {
@@ -178,8 +183,8 @@ exports.getReceivedQuestion = (socket, hasToken) => {
         player.responseTime = 0;
         player.currentPoints = 0;
         Player.updatePlayer(player);
-    })
-}
+    });
+};
 
 exports.getPlayerAnswer = (socket, hasToken) => {
     socket.on('player-answer', (choiceId, callback) => {
@@ -192,6 +197,7 @@ exports.getPlayerAnswer = (socket, hasToken) => {
             return choice._id;
         });
 
+        // check whether answer input is valid or not
         if (choicesId.includes(choiceId) === false) {
             console.log('[@player player-answer] Something went wrong!');
             return;
@@ -201,64 +207,79 @@ exports.getPlayerAnswer = (socket, hasToken) => {
             hoster.answeredPlayers.push(socket.id);
             Hoster.updateHoster(hoster);
 
-            // correct choice ids
+            // get correct choice ids
             const correctChoicesId = hoster.question.choices
                 .filter(choice => choice.is_correct === true)
                 .map(correctChoice => correctChoice._id);
 
-            // checking true/false
-            const result = correctChoicesId.includes(choiceId)
+            // check whether answer is true/false
+            const result = correctChoicesId.includes(choiceId);
 
             if (result === true) {
                 const timeScore = Math.floor((hoster.timeLeft / hoster.question.timer) * 1000);
+
                 // previous answer result is true && toggled to 1000
                 if (player.answerResult === true && player.points >= 1000) {
+
                     player.responseTime = hoster.question.timer - hoster.timeLeft;
+
                     // gain streak
                     player.isLostStreak = false;
+
                     // maximum streak is 6
-                    if (player.streak < 6) {
+                    if (player.streak < 7) {
                         //streak ++
                         player.streak += 1;
-                    }
+                    };
+
                     player.currentPoints = (timeScore + ((player.streak * 100) - 100));
+
                     // points (up to 1000 points) + bonus
                     player.points += (timeScore + ((player.streak * 100) - 100));
-                    console.log(`bonus ${((player.streak * 100) - 100)}`)
+
+                    console.log(`bonus ${((player.streak * 100) - 100)}`);
+
                     player.correct += 1;
-                    // update answer result to true
+
                     player.answerResult = true;
                     player.didAnswer = true;
                     Player.updatePlayer(player);
+
                     console.log(`[@player player-answer] answerResult: ${true}, streak ${player.streak}`)
 
                 } else {
                     player.responseTime = hoster.question.timer - hoster.timeLeft;
+
                     // gain streak
                     player.isLostStreak = false;
+
                     player.currentPoints = timeScore;
-                    // points (up to 1000 points) 
+
                     player.points += timeScore;
                     player.correct += 1;
                     player.answerResult = true;
                     player.didAnswer = true;
                     Player.updatePlayer(player);
+
                     console.log(`[@player player-answer] answerResult: ${true}, streak ${player.streak}`)
-                }
+                };
 
             } else if (result === false) {
+
                 // having streak
                 if (player.streak > 0) {
                     // lost streak
                     player.isLostStreak = true;
                     player.streak = 0;
                     Player.updatePlayer(player);
-                }
+                };
+
                 player.responseTime = hoster.question.timer - hoster.timeLeft;
                 player.incorrect += 1;
                 player.answerResult = false;
                 player.didAnswer = true;
                 Player.updatePlayer(player);
+
                 console.log(`[@player player-answer] answerResult: ${false}, streak ${player.streak}`)
             };
 
@@ -267,32 +288,22 @@ exports.getPlayerAnswer = (socket, hasToken) => {
                 if (mongoose.Types.ObjectId(choiceId).equals(choice._id)) {
                     hoster.questionResults[Object.keys(hoster.questionResults)[index]] += 1;
                     Hoster.updateHoster(hoster);
-                    console.log('hi')
                 };
             });
 
             if (hasToken === true) {
-
                 // save to mongoDB
-                PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, {
+                PlayerReport.updateOne({ "socket_id": socket.id }, {
                         $set: {
                             "questions.$[i].choices.$[j].is_answer": true,
                             "questions.$[i].choices.$[j].response_time": player.responseTime
                         }
-                    }, {
-                        arrayFilters: [{
-                            "i._id": hoster.question._id
-                        }, {
-                            "j._id": choiceId
-                        }],
-                        upsert: true
-                    },
-                    (err, data) => {
-                        if (err) {
-                            console.log(err);
-                            return;
-                        };
+                    }, { arrayFilters: [{ "i._id": hoster.question._id }, { "j._id": choiceId }], upsert: true })
+                    .then(() => {
                         console.log(`[@player player-answer] mongoDB responses success`);
+                    })
+                    .catch(err => {
+                        console.log(err);
                     });
             };
 
@@ -304,6 +315,7 @@ exports.getPlayerAnswer = (socket, hasToken) => {
 
         const totalAnsweredPlayers = hoster.answeredPlayers.length;
         const totalReceivedPlayers = hoster.receivedPlayers.length;
+
         // validation of last question
         if (totalAnsweredPlayers == totalReceivedPlayers) {
             hoster.isQuestionLive = false;
@@ -313,7 +325,7 @@ exports.getPlayerAnswer = (socket, hasToken) => {
             io.getIO().to(hoster.socketId).emit('display-summary');
         };
     });
-}
+};
 
 exports.getQuestionResults = (socket, hasToken) => {
     socket.on('question-results', (callback) => {
@@ -326,14 +338,15 @@ exports.getQuestionResults = (socket, hasToken) => {
             player.isLostStreak = true;
             player.streak = 0;
             Player.updatePlayer(player);
-        }
+        };
 
         let bonus = 0;
+
         // calculate player bonus gained
         if (player.currentPoints !== 0 && player.streak > 1) {
             const timeScore = Math.floor(((hoster.question.timer - player.responseTime) / hoster.question.timer) * 1000);
             bonus = (player.currentPoints - timeScore);
-        }
+        };
 
         // calculate scoreboard among all players
         const players = Player.getPlayersByGameId(player.gameId);
@@ -349,6 +362,7 @@ exports.getQuestionResults = (socket, hasToken) => {
         const currentRank = scoreBoard.findIndex((scorer) => scorer.socketId === socket.id);
         player.rank = currentRank + 1;
         Player.updatePlayer(player);
+
         console.log(`[@player player-answer] ${player.name}`)
         console.log(`[@player player-answer] current rank: ${currentRank + 1}`);
 
@@ -356,12 +370,13 @@ exports.getQuestionResults = (socket, hasToken) => {
         let previousScorerPts = 0;
         let previousScorerName = null;
         let differencePts = null;
+
         if (currentRank > 0) {
             const previousScorer = scoreBoard[currentRank - 1];
             previousScorerName = previousScorer.name;
             previousScorerPts = previousScorer.points;
             differencePts = (previousScorerPts - player.points);
-        }
+        };
 
         // calculate performance statistics
         const unattepmted = (hoster.questionLength - player.correct - player.incorrect);
@@ -383,9 +398,9 @@ exports.getQuestionResults = (socket, hasToken) => {
             rank: player.rank,
             previousScorerName,
             differencePts
-        })
-    })
-}
+        });
+    });
+};
 
 exports.getOverallResults = (socket, hasToken) => {
     socket.on('get-overall-results', (callback) => {
@@ -407,14 +422,14 @@ exports.getOverallResults = (socket, hasToken) => {
         if (hasToken === true) {
             // save to mongoDB
             PlayerReport.findOneAndUpdate({ "socket_id": socket.id }, {
-                $set: { "rank": player.rank, "correct": player.correct, "incorrect": player.incorrect, "unattempted": unattempted }
-            }, { upsert: true }, (err, data) => {
-                if (err) {
+                    $set: { "rank": player.rank, "correct": player.correct, "incorrect": player.incorrect, "unattempted": unattempted }
+                }, { upsert: true })
+                .then(() => {
+                    console.log(`[@player get-overall-results] mongoDB responses success`);
+                })
+                .catch(err => {
                     console.log(err);
-                    return;
-                };
-                console.log(`[@player get-overall-results] mongoDB responses success`);
-            });
+                });
         };
-    })
-}
+    });
+};

@@ -2,7 +2,6 @@
 const playersController = require('../controllers/players');
 
 const playerRoutes = (socket, hasToken) => {
-    const userId = socket.request.user._id;
 
     playersController.disconnect(socket, hasToken);
 
