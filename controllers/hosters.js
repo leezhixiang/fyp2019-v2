@@ -1,6 +1,6 @@
-const Hoster = require('../models/hoster');
-const Player = require('../models/player');
+const mongoose = require('mongoose');
 
+const Hoster = require('../models/hoster');
 const Quiz = require('../models/mongoose/quiz');
 
 exports.addHoster = (socket, data) => {
@@ -78,3 +78,37 @@ exports.setGameOverData = (hoster) => {
     hoster.isGameOver = true;
     Hoster.updateHoster(hoster);
 };
+
+exports.removeAnsweredPlayer = (hoster, socket) => {
+    hoster.answeredPlayers = hoster.answeredPlayers.filter((answeredPlayer) => answeredPlayer != socket.id)
+    Hoster.updateHoster(hoster);
+}
+
+exports.removeReceivedPlayer = (hoster, socket) => {
+    hoster.receivedPlayers = hoster.receivedPlayers.filter((receivedPlayer) => receivedPlayer != socket.id)
+    Hoster.updateHoster(hoster);
+}
+
+exports.addReceivedPlayer = (hoster, socket) => {
+    hoster.receivedPlayers.push(socket.id);
+    Hoster.updateHoster(hoster);
+}
+
+exports.addAnsweredPlayer = (hoster, socket) => {
+    hoster.answeredPlayers.push(socket.id);
+    Hoster.updateHoster(hoster);
+}
+
+exports.setLastQuestionData = (hoster) => {
+    hoster.isQuestionLive = false;
+    Hoster.updateHoster(hoster);
+}
+
+exports.addQuestionResults = (hoster, choiceId) => {
+    hoster.question.choices.forEach((choice, index) => {
+        if (mongoose.Types.ObjectId(choiceId).equals(choice._id)) {
+            hoster.questionResults[Object.keys(hoster.questionResults)[index]] += 1;
+            Hoster.updateHoster(hoster);
+        };
+    });
+}

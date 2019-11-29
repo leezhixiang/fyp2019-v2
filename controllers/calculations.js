@@ -4,6 +4,7 @@ exports.calcScoreboard = (hoster) => {
     const players = Player.getPlayersByGameId(hoster.gameId);
     const scoreBoard = players.map((player) => {
         return {
+            socketId: player.socketId,
             name: player.name,
             points: player.points
         };
@@ -64,4 +65,9 @@ exports.calcChoicesAccuracy = (hoster) => {
     const noAnsAccuracy = Math.floor(((hoster.receivedPlayers.length - hoster.answeredPlayers.length) / hoster.receivedPlayers.length) * 100);
 
     return { choicesAccuracy, noAnsAccuracy };
+};
+
+exports.calcBonus = (hoster, player) => {
+    const timeScore = Math.floor(((hoster.question.timer - player.responseTime) / hoster.question.timer) * 1000);
+    return (player.currentPoints - timeScore);
 };

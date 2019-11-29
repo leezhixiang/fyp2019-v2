@@ -1,14 +1,14 @@
+const Quiz = require('../models/mongoose/quiz');
 const PlayerReport = require('../models/mongoose/player_report');
+const HosterReport = require('../models/mongoose/hoster_report');
 
-exports.deletePlayerReports = (hoster) => {
-    if (hoster && hoster.isGameOver === false) {
-        PlayerReport.deleteMany({ game_id: hoster.gameId })
-            .then(() => {
-                // console.log(`[@player mongoDB] player reports was deleted.`);
-            }).catch(err => {
-                console.log(err);
-            });
-    };
+exports.deleteAllPlayerReports = (hoster) => {
+    PlayerReport.deleteMany({ game_id: hoster.gameId })
+        .then(() => {
+            // console.log(`[@player mongoDB] player reports was deleted.`);
+        }).catch(err => {
+            console.log(err);
+        });
 };
 
 exports.setGameOverData = (hoster, scoreBoard) => {
@@ -43,6 +43,71 @@ exports.setQuestionResults = (hoster, choicesAccuracy) => {
         })
         .then(() => {
             // console.log(`[@player next-question] mongoDB responses success`);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+exports.addPlayerReport = (socket, hoster) => {
+    Quiz.findOne({ _id: hoster.quizId })
+        .then((quiz) => {
+            HosterReport.findOne({ game_id: hoster.gameId })
+                .select('_id')
+                .then(hosterReport => {
+                    const playerReport = new PlayerReport({
+                        socket_id: socket.id,
+                        game_id: hoster.gameId,
+                        player: socket.request.user._id,
+                        game_name: quiz.title,
+                        hoster_name: hoster.name,
+                        hoster_report_id: hosterReport._id,
+                        questions: quiz.questions
+                    });
+
+                    playerReport.save()
+                        // console.log(`[@player join-game] mongoDB responses success`);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+exports.deletePlayerReport = (socket) => {
+    PlayerReport.deleteOne({ socket_id: socket.id })
+        .then(() => {
+            // console.log(`[@player disconnect] mongoDB responses success`);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
+exports.setOverallResults = (player, unattempted) => {
+    PlayerReport.updateOne({ "socket_id": player.socketId }, {
+            $set: { "rank": player.rank, "correct": player.correct, "incorrect": player.incorrect, "unattempted": unattempted }
+        }, { upsert: true })
+        .then(() => {
+            // console.log(`[@player get-overall-results] mongoDB responses success`);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+exports.setAnswerResults = (player, hoster, choiceId) => {
+    PlayerReport.updateOne({ "socket_id": player.socketId }, {
+            $set: {
+                "questions.$[i].choices.$[j].is_answer": true,
+                "questions.$[i].choices.$[j].response_time": player.responseTime
+            }
+        }, { arrayFilters: [{ "i._id": hoster.question._id }, { "j._id": choiceId }], upsert: true })
+        .then(() => {
+            // console.log(`[@player player-answer] mongoDB responses success`);
         })
         .catch(err => {
             console.log(err);

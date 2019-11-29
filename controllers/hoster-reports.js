@@ -1,5 +1,3 @@
-const calculationsContoller = require('../controllers/calculations');
-
 const Quiz = require('../models/mongoose/quiz');
 const HosterReport = require('../models/mongoose/hoster_report');
 
@@ -27,15 +25,13 @@ exports.addHosterReports = (socket, hoster) => {
 };
 
 exports.deleteHosterReport = (socket, hoster) => {
-    if (hoster && hoster.isGameOver === false) {
-        HosterReport.deleteOne({ socket_id: socket.id })
-            .then(() => {
-                // console.log(`[@hoster mongoDB] hoster report was deleted.`);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    };
+    HosterReport.deleteOne({ socket_id: socket.id })
+        .then(() => {
+            // console.log(`[@hoster mongoDB] hoster report was deleted.`);
+        })
+        .catch(err => {
+            console.log(err);
+        });
 };
 
 exports.setGameOverData = (hoster, gameAccuracy, scoreBoard, playerResults) => {

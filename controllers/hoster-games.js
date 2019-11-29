@@ -2,6 +2,7 @@ const io = require('../models/socket');
 
 // controllers
 const hostersController = require('../controllers/hosters');
+const playersController = require('../controllers/players');
 const hosterReportsController = require('../controllers/hoster-reports');
 const playerReportsController = require('../controllers/player-reports');
 const notificationsContoller = require('../controllers/notifications');
@@ -10,10 +11,7 @@ const calculationsContoller = require('../controllers/calculations');
 // data model
 const Hoster = require('../models/hoster');
 const Player = require('../models/player');
-
 const Quiz = require('../models/mongoose/quiz');
-const HosterReport = require('../models/mongoose/hoster_report');
-const PlayerReport = require('../models/mongoose/player_report');
 
 exports.disconnect = (socket) => {
     const hasToken = socket.request.user.logged_in;
@@ -28,8 +26,10 @@ exports.disconnect = (socket) => {
 
             // remove from mongoDB
             if (hasToken === true) {
-                hosterReportsController.deleteHosterReport(socket, hoster);
-                playerReportsController.deletePlayerReports(hoster);
+                if (hoster && hoster.isGameOver === false) {
+                    hosterReportsController.deleteHosterReport(socket, hoster);
+                    playerReportsController.deleteAllPlayerReports(hoster);
+                };
             };
 
             // response to players
@@ -175,7 +175,7 @@ exports.nextQuestion = (socket) => {
             if (hasToken === true && onlinePlayers.length > 0) {
 
                 const questionResultsAccuracy = calculationsContoller.calcQuestionResultsAccuracy(hoster);
-                console.log(questionResultsAccuracy)
+
                 const { choicesAccuracy, noAnsAccuracy } = calculationsContoller.calcChoicesAccuracy(hoster);
 
                 // mongoDB

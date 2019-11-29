@@ -1,5 +1,5 @@
 // controllers
-const playersController = require('../controllers/players');
+const playersController = require('../controllers/player-games');
 
 const playerRoutes = (socket, hasToken) => {
 
