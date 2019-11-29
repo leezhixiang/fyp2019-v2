@@ -8,7 +8,9 @@ const Quiz = require('../models/mongoose/quiz');
 const HosterReport = require('../models/mongoose/hoster_report');
 const PlayerReport = require('../models/mongoose/player_report');
 
-exports.disconnect = (socket, hasToken) => {
+exports.disconnect = (socket) => {
+    const hasToken = socket.request.user.logged_in;
+
     socket.on('disconnect', (callback) => {
         const player = Player.getPlayerById(socket.id);
         if (!player) return;
@@ -70,7 +72,9 @@ exports.disconnect = (socket, hasToken) => {
     });
 };
 
-exports.joinGame = (socket, hasToken) => {
+exports.joinGame = (socket) => {
+    const hasToken = socket.request.user.logged_in;
+
     socket.on('join-game', (data, callback) => {
         const { name, gameId } = data;
 
@@ -167,7 +171,9 @@ exports.joinGame = (socket, hasToken) => {
     });
 };
 
-exports.getReceivedQuestion = (socket, hasToken) => {
+exports.getReceivedQuestion = (socket) => {
+    const hasToken = socket.request.user.logged_in;
+
     socket.on('receive-question', () => {
         const player = Player.getPlayerById(socket.id);
         if (!player) return;
@@ -186,7 +192,9 @@ exports.getReceivedQuestion = (socket, hasToken) => {
     });
 };
 
-exports.getPlayerAnswer = (socket, hasToken) => {
+exports.getPlayerAnswer = (socket) => {
+    const hasToken = socket.request.user.logged_in;
+
     socket.on('player-answer', (choiceId, callback) => {
         const player = Player.getPlayerById(socket.id);
         if (!player) return;
@@ -327,7 +335,9 @@ exports.getPlayerAnswer = (socket, hasToken) => {
     });
 };
 
-exports.getQuestionResults = (socket, hasToken) => {
+exports.getQuestionResults = (socket) => {
+    const hasToken = socket.request.user.logged_in;
+
     socket.on('question-results', (callback) => {
         const player = Player.getPlayerById(socket.id);
         const hoster = Hoster.getHosterByGameId(player.gameId);
@@ -402,7 +412,9 @@ exports.getQuestionResults = (socket, hasToken) => {
     });
 };
 
-exports.getOverallResults = (socket, hasToken) => {
+exports.getOverallResults = (socket) => {
+    const hasToken = socket.request.user.logged_in;
+
     socket.on('get-overall-results', (callback) => {
         const player = Player.getPlayerById(socket.id);
         if (!player) return;

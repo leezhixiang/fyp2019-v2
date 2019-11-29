@@ -1,15 +1,15 @@
 // controllers
-const hostersController = require('../controllers/hosters');
+const hosterGamesController = require('../controllers/hoster-games');
 
-const hosterRoutes = (socket, hasToken) => {
+const hosterRoutes = (socket) => {
 
-    hostersController.disconnect(socket, hasToken);
+    hosterGamesController.disconnect(socket);
 
-    hostersController.hostGame(socket, hasToken);
+    hosterGamesController.hostGame(socket);
 
-    hostersController.nextQuestion(socket, hasToken);
+    hosterGamesController.nextQuestion(socket);
 
-    hostersController.timerCountdown(socket, hasToken);
+    hosterGamesController.timerCountdown(socket);
 };
 
 module.exports = hosterRoutes;

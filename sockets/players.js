@@ -3,17 +3,17 @@ const playersController = require('../controllers/players');
 
 const playerRoutes = (socket, hasToken) => {
 
-    playersController.disconnect(socket, hasToken);
+    playersController.disconnect(socket);
 
-    playersController.joinGame(socket, hasToken);
+    playersController.joinGame(socket);
 
-    playersController.getReceivedQuestion(socket, hasToken);
+    playersController.getReceivedQuestion(socket);
 
-    playersController.getPlayerAnswer(socket, hasToken);
+    playersController.getPlayerAnswer(socket);
 
-    playersController.getQuestionResults(socket, hasToken);
+    playersController.getQuestionResults(socket);
 
-    playersController.getOverallResults(socket, hasToken);
+    playersController.getOverallResults(socket);
 };
 
 module.exports = playerRoutes;

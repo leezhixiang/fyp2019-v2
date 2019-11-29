@@ -56,7 +56,7 @@ window.onload = () => {
 
         socket.emit('receive-question');
 
-        const { questionIndex, questionLength, choicesId } = data
+        const { questionIndex, questionLength, choiceIds } = data
 
         if (questionIndex > 1) {
             // player who joined after game starts
@@ -86,7 +86,7 @@ window.onload = () => {
         document.querySelector("#totalQuestion").textContent = questionLength;
 
         document.querySelectorAll(".choice").forEach((choice, index) => {
-            choice.setAttribute("data-id", choicesId[index])
+            choice.setAttribute("data-id", choiceIds[index])
         })
 
         console.log(`[received] received question`);
