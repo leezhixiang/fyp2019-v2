@@ -244,8 +244,8 @@ exports.getPlayerAnswer = (socket) => {
                     Player.updatePlayer(player);
 
                 } else {
-                    player.answerResult = true;
                     player.didAnswer = true;
+                    player.answerResult = true;
 
                     // gain streak
                     player.isLostStreak = false;
@@ -258,8 +258,8 @@ exports.getPlayerAnswer = (socket) => {
                 };
 
             } else if (result === false) {
-                player.answerResult = false;
                 player.didAnswer = true;
+                player.answerResult = false;
 
                 // having streak
                 if (player.streak > 0) {
@@ -267,8 +267,11 @@ exports.getPlayerAnswer = (socket) => {
                     player.isLostStreak = true;
                     player.streak = 0;
                     Player.updatePlayer(player);
-                };
-
+                } else {
+                    player.isLostStreak = false;
+                    player.streak = 0;
+                    Player.updatePlayer(player);
+                }
                 player.responseTime = hoster.question.timer - hoster.timeLeft;
                 player.incorrect += 1;
                 Player.updatePlayer(player);
@@ -309,12 +312,16 @@ exports.getQuestionResults = (socket) => {
         const hoster = Hoster.getHosterByGameId(player.gameId);
         let bonus = 0;
 
-        // reset player who having streak and did not answer
-        if (player.currentPoints === 0 && player.streak > 0) {
-            // lost streak
-            player.isLostStreak = true;
-            player.streak = 0;
+        if (player.currentPoints === 0) {
+            player.answerResult = false;
             Player.updatePlayer(player);
+            // reset player who did not answer and having streak
+            if (player.streak > 0) {
+                // lost streak
+                player.isLostStreak = true;
+                player.streak = 0;
+                Player.updatePlayer(player);
+            };
         };
 
         // calculate player bonus gained
