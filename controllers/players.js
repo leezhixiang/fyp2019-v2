@@ -21,7 +21,7 @@ exports.disconnect = (socket) => {
             // memory
             Player.removePlayer(player.socketId);
 
-            console.log(`${player.socketId} ${player.name} disconnected from room ${player.gameId}`);
+            // console.log(`${player.socketId} ${player.name} disconnected from room ${player.gameId}`);
 
             // logging player list
             const players = Player.getPlayersByGameId(player.gameId);
@@ -129,7 +129,7 @@ exports.joinGame = (socket) => {
 
             // join room
             socket.join(player.gameId);
-            console.log(`${player.socketId} ${player.name} joined room ${player.gameId}`);
+            // console.log(`${player.socketId} ${player.name} joined room ${player.gameId}`);
 
             // response to hoster
             const onlinePlayers = Player.getPlayersByGameId(player.gameId);

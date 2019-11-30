@@ -41,14 +41,12 @@ exports.disconnect = (socket) => {
             // response to players
             socket.to(hoster.gameId).emit('hoster-disconnect');
 
-            console.log(`[@hoster disconenct] ${hoster.socketId} hoster has left room ${hoster.gameId}`);
+            // console.log(`[@hoster disconenct] ${hoster.socketId} hoster has left room ${hoster.gameId}`);
 
             // logging hoster list
             const hosters = Hoster.getHosters();
-            console.log(`[@hoster disconenct] hoster list:`);
-            console.log(hosters.map((hoster) => {
-                return { socketId: hoster.socketId, name: hoster.name }
-            }));
+            const hosterList = hosters.map((hoster) => { return { socketId: hoster.socketId, name: hoster.name } });
+            console.log(hosterList);
         };
     });
 };
@@ -146,7 +144,7 @@ exports.hostGame = (socket) => {
 
         // join room
         socket.join(hoster.gameId);
-        console.log(`${hoster.socketId} hoster created new room ${hoster.gameId}`);
+        // console.log(`${hoster.socketId} hoster created new room ${hoster.gameId}`);
 
         // response to hoster
         callback({
