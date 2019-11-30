@@ -14,7 +14,6 @@ module.exports = class Player {
 
         responseTime = 0,
         currentPoints = 0,
-
         points = 0,
         rank = 0,
         correct = 0,

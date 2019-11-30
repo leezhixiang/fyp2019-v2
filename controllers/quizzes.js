@@ -80,13 +80,3 @@ exports.addNewQuiz = (req, res) => {
             res.status(500).json(err);
         });
 };
-
-exports.increasePlays = (hoster) => {
-    Quiz.findOneAndUpdate({ _id: hoster.quizId }, { $inc: { plays: 1 } })
-        .then(() => {
-            // console.log(`[@player join-game] mongoDB responses success`);
-        })
-        .catch(err => {
-            console.log(err);
-        });
-}

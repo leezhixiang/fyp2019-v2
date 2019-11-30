@@ -1,5 +1,5 @@
 // controllers
-const hosterGamesController = require('../controllers/hoster-games');
+const hosterGamesController = require('../controllers/hosters');
 
 const hosterRoutes = (socket) => {
 
