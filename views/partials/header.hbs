@@ -1,4 +1,50 @@
-<nav id="navigation">
+<!-- Just an image -->
+<nav class="navbar navbar-expand navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="/img/logo.png" width="56" height="56" alt="" class="border">
+        </a>
+        <ul class="navbar-nav ml-2">
+            <li class="nav-item active">
+                <a class="nav-link" href="/">Discover</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/quizzes" id="quizzes">Quizzes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/reports" id="reports">Reports</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/classes" id="classes">Classes</a>
+            </li>
+        </ul>
+        <div class="dropdown ml-auto">
+            <button type="button" class="btn btn-dark-purple btn-sm" id="jewelButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Notifications<span class="badge badge-danger ml-2" id="jewelCount"></span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right scrollable-menu" aria-labelledby="jewelButton"
+                id="notificationsFlyout">
+            </div>
+        </div>
+        <ul class="navbar-nav ml-2 mr-4">
+            <li class="nav-item">
+                <a class="nav-link" href="/games/play-game">Enter Game PIN!</a>
+            </li>
+            <div class="vl my-auto mx-2" id="divider"></div>
+            <li class="nav-item guest">
+                <a class="nav-link" href="/users/login">Log in</a>
+            </li>
+            <li class="nav-item guest">
+                <a class="nav-link" href="/users/register">Sign Up</a>
+            </li>
+            <li class="nav-item logged">
+                <a class="nav-link" href="#" id="logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+{{!-- <nav id="navigation">
     <a href="/">
         <img class="border" id="logo" src="/img/logo.png" alt="" height="56" width="56">
     </a>
@@ -22,7 +68,7 @@
             <a href="/games/play-game" id="enterPIN">Enter Game PIN!</a>
         </li>
         <li>
-           <a href="#" id="logout">Logout</a>
+            <a href="#" id="logout">Logout</a>
         </li>
     </ul>
     <ul id="guest-nav">
@@ -37,4 +83,4 @@
             <a href="/users/register">Sign Up</a>
         </li>
     </ul>
-</nav>
+</nav> --}}

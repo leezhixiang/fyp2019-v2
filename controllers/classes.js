@@ -2,7 +2,12 @@
 const Class = require('../models/mongoose/class');
 
 exports.getClasses = (req, res) => {
-    Class.find({ admins: { "$in": [req.payload.userData._id] } })
+    Class.find({
+            $or: [
+                { admins: { $in: [req.payload.userData._id] } },
+                { members: { $in: [req.payload.userData._id] } }
+            ]
+        })
         .populate('admins', 'name')
         .populate('members', 'name')
         .then(myClass => {
@@ -10,8 +15,8 @@ exports.getClasses = (req, res) => {
         })
         .catch(err => {
             res.status(500).json(err);
-        });
-};
+        })
+}
 
 exports.getClassDetails = (req, res) => {
     Class.findOne({ _id: req.params.classId })
@@ -22,8 +27,8 @@ exports.getClassDetails = (req, res) => {
         })
         .catch(err => {
             res.status(500).json(err);
-        });
-};
+        })
+}
 
 exports.addNewClass = (req, res) => {
     if (!req.body.name) {
@@ -31,15 +36,15 @@ exports.addNewClass = (req, res) => {
             message: 'create failed',
             err: 'name is required',
             isCreated: false
-        });
-    };
+        })
+    }
 
     const createOps = {};
     for (const key in req.body) {
         if (req.body[key]) {
             createOps[key] = req.body[key];
-        };
-    };
+        }
+    }
 
     generateUID = () => {
         let firstPart = (Math.random() * 46656) | 0;
@@ -47,7 +52,7 @@ exports.addNewClass = (req, res) => {
         firstPart = ("000" + firstPart.toString(36)).slice(-3);
         secondPart = ("000" + secondPart.toString(36)).slice(-3);
         return firstPart + secondPart;
-    };
+    }
 
     createOps.class_id = generateUID();
     createOps.admins = [];
@@ -73,7 +78,7 @@ exports.addNewClass = (req, res) => {
                 isCreated: false,
             });
         });
-};
+}
 
 exports.updateClass = (req, res) => {
     if (!req.body.name) {
@@ -82,7 +87,7 @@ exports.updateClass = (req, res) => {
             err: 'name is required',
             isUpdated: false,
         });
-    };
+    }
 
     Class.findOne({
             _id: req.params.classId,
@@ -95,18 +100,18 @@ exports.updateClass = (req, res) => {
                     err: 'Forbidden',
                     isUpdated: false,
                 });
-            };
+            }
 
             const updateSetOps = {};
             const updateUnsetOps = {};
             for (const key in req.body) {
                 if (req.body[key]) {
                     updateSetOps[key] = req.body[key];
-                };
+                }
                 if (req.body[key] === "") {
                     updateUnsetOps[key] = req.body[key];
-                };
-            };
+                }
+            }
 
             Class.updateOne({
                     _id: req.params.classId,
@@ -141,7 +146,7 @@ exports.updateClass = (req, res) => {
                 isUpdated: false,
             });
         });
-};
+}
 
 exports.deleteClass = (req, res) => {
     Class.findOne({
@@ -155,7 +160,7 @@ exports.deleteClass = (req, res) => {
                     err: 'Forbidden',
                     isUpdated: false,
                 });
-            };
+            }
 
             Class.deleteOne({
                     _id: req.params.classId,

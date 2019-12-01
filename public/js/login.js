@@ -1,6 +1,9 @@
 window.onload = () => {
-    document.querySelector('#user-nav').classList.add("hidden");
-    document.querySelector('#guest-nav').classList.add("hidden");
+    document.querySelector('#divider').classList.add("d-none");
+    document.querySelectorAll('.guest').forEach(guest => {
+        guest.classList.add("d-none");
+    })
+    document.querySelector('.logged').classList.add("d-none");
 
     document.querySelector("#loginForm").addEventListener("submit", (e) => {
         e.preventDefault();
@@ -20,7 +23,12 @@ window.onload = () => {
                     localStorage.setItem('auth_token', JSON.stringify(res.token))
                     window.location.href = "http://localhost:3000/";
                 } else {
-                    throw new Error(res.message)
+                    const html = `<div class="alert alert-warning alert-dismissible fade show" role="alert">${res.message} ${res.err}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>`
+                    document.querySelector('#login-alert').innerHTML = html;
                 }
             })
             .catch((err) => {

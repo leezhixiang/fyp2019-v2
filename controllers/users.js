@@ -7,19 +7,19 @@ const User = require('../models/mongoose/user');
 
 exports.userRegister = (req, res) => {
     const { first_name, last_name, email, password, password2 } = req.body
-
+    console.log(req.body)
     if (!first_name || !last_name || !email || !password || !password2) {
         return res.status(400).json({
-            message: 'register failed',
-            err: 'all fields are required',
+            message: 'Register failed.',
+            err: 'All fields are required.',
             isRegistered: false
         });
     };
 
     if (password !== password2) {
         return res.status(400).json({
-            message: 'register failed',
-            err: 'passwords do not match',
+            message: 'Register failed.',
+            err: 'Passwords do not match.',
             isRegistered: false
         });
     };
@@ -28,8 +28,8 @@ exports.userRegister = (req, res) => {
         .then(user => {
             if (user) {
                 return res.status(400).json({
-                    message: 'register failed',
-                    err: 'user account already exists',
+                    message: 'Register failed.',
+                    err: 'User account already exists.',
                     isRegistered: false
                 });
             } else {
@@ -46,7 +46,7 @@ exports.userRegister = (req, res) => {
                         newUser.save()
                             .then(function(user) {
                                 res.status(200).json({
-                                    message: 'register successful',
+                                    message: 'Register successful.',
                                     user,
                                     isRegistered: true,
                                 });
@@ -54,7 +54,7 @@ exports.userRegister = (req, res) => {
                             .catch(err => {
                                 console.log(err);
                                 res.status(400).json({
-                                    message: 'register failed',
+                                    message: 'Register failed.',
                                     err: err.message,
                                     isRegistered: false,
                                 });
@@ -66,7 +66,7 @@ exports.userRegister = (req, res) => {
         .catch((err) => {
             console.log(err);
             res.status(400).json({
-                message: 'register failed',
+                message: 'Register failed.',
                 err: err.message,
                 isRegistered: false,
             });
@@ -78,8 +78,8 @@ exports.userLogin = (req, res) => {
 
     if (!email || !password) {
         return res.status(400).json({
-            message: 'login failed',
-            err: 'all fields are required',
+            message: 'Login failed.',
+            err: 'All fields are required.',
             isLogged: false
         });
     };
@@ -88,8 +88,8 @@ exports.userLogin = (req, res) => {
         .then(user => {
             if (!user) {
                 return res.status(400).json({
-                    message: 'login failed',
-                    err: 'user account does not exist',
+                    message: 'Login failed.',
+                    err: 'User account does not exist.',
                     isLogged: false
                 });
             } else {
@@ -97,8 +97,8 @@ exports.userLogin = (req, res) => {
                     .then(isMatch => {
                         if (!isMatch) {
                             return res.status(400).json({
-                                message: 'login failed',
-                                err: 'invalid credentials',
+                                message: 'Login failed.',
+                                err: 'Invalid credentials',
                                 isLogged: false
                             });
                         };
@@ -112,7 +112,7 @@ exports.userLogin = (req, res) => {
                         jwt.sign({ userData }, config.get('jwtSecret'), (err, token) => {
                             if (err) throw err;
                             res.status(201).json({
-                                message: 'login successful',
+                                message: 'Login successful.',
                                 token,
                                 user,
                                 isLogged: true
@@ -122,7 +122,7 @@ exports.userLogin = (req, res) => {
                     .catch(err => {
                         console.log(err)
                         res.status(400).json({
-                            message: 'login failed',
+                            message: 'Login failed.',
                             err: err.message,
                             isLogged: false
                         });
@@ -132,7 +132,7 @@ exports.userLogin = (req, res) => {
         .catch((err) => {
             console.log(err);
             res.status(400).json({
-                message: 'login failed',
+                message: 'Login failed.',
                 err: err.message,
                 isLogged: false
             });

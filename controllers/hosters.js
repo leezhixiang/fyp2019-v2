@@ -114,6 +114,7 @@ exports.hostGame = (socket) => {
                 assignClassIds.forEach(classId => {
                     // find the members based on given classId
                     Class.findOne({ class_id: classId })
+                        .select('name')
                         .select('members')
                         .then(myClass => {
                             const memberIds = myClass.members;
@@ -122,7 +123,7 @@ exports.hostGame = (socket) => {
                                     recipient_id: memberId,
                                     sender_id: socket.request.user._id,
                                     type: 'HOST GAME',
-                                    content: `${hoster.name} assigned you to play game. (Game Code: ${hoster.gameId})`,
+                                    content: `${hoster.name} from ${myClass.name} assigned you to play game. (Game Code: ${hoster.gameId})`,
                                     isRead: false
                                 });
                                 notification.save()

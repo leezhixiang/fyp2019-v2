@@ -1,6 +1,61 @@
 {{> header}}
 
-<form action="/users/register" method="POST">
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-4">
+        <div class="card">
+            <header class="card-header">
+                {{!-- <a href="" class="float-right btn btn-outline-primary">Log in</a> --}}
+                <h4 class="card-title mt-2">Create Account</h4>
+            </header>
+            <article class="card-body">
+                <div id="register-alert"></div>
+                <form id="registerForm">
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <label for="firstName">First name</label>
+                            <input type="name" id="firstName" name="firstName" class="form-control" placeholder=""
+                                value="" />
+                        </div> <!-- form-group end.// -->
+                        <div class="col form-group">
+                            <label for="name">Last name</label>
+                            <input type="name" id="lastName" name="lastName" class="form-control" placeholder=""
+                                value="" />
+                        </div> <!-- form-group end.// -->
+                    </div> <!-- form-row end.// -->
+
+                    <div class="form-group">
+                        <label>Email address</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="">
+                        <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Create password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder=""
+                            value="" autocomplete="password" />
+                    </div> <!-- form-group end.// -->
+
+                    <div class="form-group">
+                        <label for="password2">Confirm password</label>
+                        <input type="password" id="password2" name="password2" class="form-control" placeholder=""
+                            value="" autocomplete="password" />
+                    </div> <!-- form-group end.// -->
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+
+                    </div> <!-- form-group// -->
+                    <small class="text-muted">By clicking “Sign up”, you agree to our terms of service, privacy policy
+                        and cookie policy</small>
+
+                </form>
+            </article> <!-- card-body end .// -->
+            <div class="border-top card-body text-center">Have an account? <a href="/users/login">Log In</a></div>
+        </div> <!-- card.// -->
+    </div> <!-- col.//-->
+</div>
+
+{{!-- <form action="/users/register" method="POST">
     <label for="firstName">First Name</label>
     <input type="name" id="firstName" name="firstName" class="form-control" placeholder="First Name" value="" />
     <br />
@@ -22,4 +77,4 @@
         Sign Up
     </button>
 </form>
-<p">Have An Account? <a href="/users/login">Log In</a></p>
+<p>Have An Account? <a href="/users/login">Log In</a></p> --}}

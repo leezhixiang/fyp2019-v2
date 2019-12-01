@@ -49,7 +49,8 @@ window.onload = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const quizId = urlParams.get("quizId");
 
-        const assignClassIds = [];
+        const assignClassIds = ['kdihc9'];
+        // const assignClassIds = ['kdihc9', 'w0lihw'];
 
         socket.emit('host-game', {
             quizId,

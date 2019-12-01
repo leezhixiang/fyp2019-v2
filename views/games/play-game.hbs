@@ -1,4 +1,4 @@
-<div id="joinGame" class="play-game">
+{{!-- <div id="joinGame" class="play-game">
     <img src="/img/logo.png" alt="" height="130" width="130">
 
     <div class="join-game-form">
@@ -14,6 +14,40 @@
     </div>
 
     <p>Discover more quizzes at <a href="/" id="here">here</a></p>
+</div> --}}
+
+<div class="container" id="joinGame">
+    <div class="row justify-content-center align-items-center vh-100" >
+        <div class="col-sm-8 col-md-6 col-lg-4">
+            <div class="card">
+                <article class="card-body m-3 pt-4 pb-2">
+                    <img src="/img/logo.png" alt="" height="130" width="130" class="d-block mx-auto mb-4 border">
+                    <form id="joinGameForm">
+
+                        <div id="loginAlert"></div>
+
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="name" name="name" autocomplete="name"
+                                placeholder="Display name">
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="gameId" name="gameId" class="form-control" placeholder="Game PIN"
+                                autocomplete="gameId" />
+                        </div> <!-- form-group end.// -->
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block">Enter</button>
+                        </div> <!-- form-group// -->
+
+                    </form>
+                    <div class="text-center">Discover more quizzes at <a href="/" id="here">here</a></div>
+                </article> <!-- card-body end .// -->
+
+                {{!-- <div class="border-top card-body text-center">No Account? <a href="/users/register">Sign Up</a></div> --}}
+            </div> <!-- card.// -->
+        </div> <!-- col.//-->
+    </div>
 </div>
 
 <div id="playGame" class="play-game hidden">

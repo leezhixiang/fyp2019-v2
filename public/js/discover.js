@@ -1,48 +1,111 @@
 window.onload = () => {
     const token = JSON.parse(localStorage.getItem('auth_token'));
-    if (token) {
-        document.querySelector('#guest-nav').classList.add("hidden");
-    } else {
-        document.querySelector('#user-nav').classList.add("hidden");
-    }
 
-    document.querySelector("#logout").addEventListener("click", function(e) {
-        localStorage.removeItem('auth_token');
-        window.location.href = "http://localhost:3000/";
-    });
+    if (token) {
+        document.querySelectorAll('.guest').forEach(guest => {
+            guest.classList.add("d-none");
+        });
+    } else {
+        document.querySelector('.logged').classList.add("d-none");
+        document.querySelector('#jewelButton').setAttribute('data-toggle', '')
+    };
 
     // socket.io connection
     const passToken = (token) => {
         if (token) { return { query: `auth_token=${token}` } };
     };
     const notificationSocket = io('/notification', passToken(token));
+
     // connection failed
     notificationSocket.on('error', (err) => {
         throw new Error(err.message);
     });
+
     // connection successful
     notificationSocket.on('socket-conn', (data) => {
         console.log(`[socket-conn] ${data.message}`);
         console.log(`[socket-conn] token: ${data.hasToken}`);
     })
 
-    // get total notifications from server
-    notificationSocket.on('total-notifications', (number) => {
-        console.log(number);
+    // quizzes
+    document.querySelector('#quizzes').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (token) {
+            window.location.href = "http://localhost:3000/quizzes";
+        } else {
+            window.location.href = "http://localhost:3000/users/login";
+        }
     });
 
-    document.querySelectorAll('.notification').forEach((notification, index) => {
-        notification.addEventListener('click', () => {
-            // mark all as read
-            notificationSocket.emit('read-notification', (notifications) => {
-                console.log(notifications);
-            });
+    // reports
+    document.querySelector('#reports').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (token) {
+            window.location.href = "http://localhost:3000/reports";
+        } else {
+            window.location.href = "http://localhost:3000/reports";
+        }
+    });
+
+    // classes
+    document.querySelector('#reports').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (token) {
+            window.location.href = "http://localhost:3000/reports";
+        } else {
+            window.location.href = "http://localhost:3000/reports";
+        }
+    });
+
+    //notification
+    document.querySelector('#jewelButton').addEventListener('click', (e) => {
+        if (!token) {
+            window.location.href = "http://localhost:3000/users/login";
+        }
+    });
+
+    notificationSocket.on('total-notifications', (number) => {
+        document.querySelector('#jewelCount').textContent += 1;
+        if (number !== 0) {
+            document.querySelector('#jewelCount').textContent = number;
+        }
+    });
+
+    notificationSocket.on('new-notification', (content) => {
+        document.querySelector('#jewelCount').classList.remove("d-none");
+        document.querySelector('#jewelCount').textContent += 1;
+    });
+
+    $('.dropdown').on('show.bs.dropdown', function() {
+        document.querySelector('#jewelCount').textContent = 0;
+        document.querySelector('#jewelCount').classList.add("d-none");
+
+        notificationSocket.emit('read-notification', (notifications) => {
+            console.log(notifications);
+            if (notifications.length === 0) {
+                document.querySelector('#notificationsFlyout').innerHTML = `<a class="dropdown-item" href="#">No notifications.</a>`
+            } else {
+                let html = "";
+                notifications.forEach(notification => {
+                    html += `<div class="notification-box">
+                                <div class="media">
+                                    <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
+                                    <div class="media-body">
+                                        <div>${notification.content}</div>
+                                        <small class="text-warning">${notification.time_stamp}</small>
+                                    </div>
+                                </div>
+                            </div>`;
+                });
+                document.querySelector('#notificationsFlyout').innerHTML = html;
+            }
         });
     });
 
-    // get new notifications from server
-    notificationSocket.on('new-notification', (content) => {
-        console.log(content);
+    // logout button
+    document.querySelector("#logout").addEventListener("click", function(e) {
+        localStorage.removeItem('auth_token');
+        window.location.href = "http://localhost:3000/";
     });
 
     // get quizzes from api
