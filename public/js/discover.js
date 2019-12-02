@@ -118,16 +118,29 @@ window.onload = () => {
             console.log(quizzes);
 
             quizzes.forEach(quiz => {
-                html += `<div class="quiz-card">
-                            <a href="/quizzes/${quiz._id}">
-                                <div>
-                                    <p><span>${quiz.questions.length}</span> Question</span></p> 
-                                    <p>${quiz.title}</p>
-                                    <p><span>${quiz.creator.name}</span> • <span>${quiz.plays}</span> plays</p>
+                html += `<div class="col-6">
+                            <div class="card shadow-sm">
+                                <div class="row no-gutters">
+                                    <div class="col-3 border-right p-2">
+                                        <img src="/img/logo.png" class="card-img-top" style="opacity: 0.2" alt="...">
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="d-flex flex-column h-100 justify-content-between">
+                                            <div class="p-2">
+                                                <h6 class="badge badge-primary px-2 py-1">${quiz.questions.length}<span> Questions</span></h6>
+                                                <a href="/quizzes/${quiz._id}" class="ellipsis stretched-link font-weight-bold title">${quiz.title}</a>
+                                            </div>
+                                            <div class="d-flex flex-row justify-content-between px-2 py-1 border-top"
+                                                style="background: #f0f0f0;">
+                                                <div class="flex-grow-1 font-weight-normal text-muted text-truncate">${quiz.creator.name}</div>
+                                                <div class="flex-grow-1 text-right font-weight-bold text-truncate"><span>${quiz.plays}</span> plays</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </a>
+                            </div>
                         </div>`
-            })
+            });
 
             document.querySelector('#quizList').innerHTML = html;
         })

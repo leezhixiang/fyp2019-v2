@@ -104,20 +104,27 @@ exports.getSharedQuizzes = (req, res) => {
 };
 
 exports.addSharedQuiz = (req, res) => {
+    if (!req.body.email) {
+        return res.status(400).json({
+            message: 'Share failed.',
+            err: 'Email is required.',
+            isShared: false
+        });
+    };
     User.findOne({ email: req.body.email })
         .then((user) => {
             if (!user) {
                 return res.status(400).json({
-                    message: 'share failed',
-                    err: 'recipient account does not exist',
+                    message: 'Share failed.',
+                    err: 'Recipient account does not exist.',
                     isShared: false
                 });
             };
 
             if (user._id.equals(req.payload.userData._id)) {
                 return res.status(400).json({
-                    message: 'share failed',
-                    err: 'share to oneself is not allowed',
+                    message: 'Share failed.',
+                    err: 'Share to oneself is not allowed.',
                     isShared: false
                 });
             };
@@ -130,14 +137,14 @@ exports.addSharedQuiz = (req, res) => {
             share.save()
                 .then((share) => {
                     res.status(201).json({
-                        message: 'share successful',
+                        message: 'Share successful.',
                         share,
                         isShared: true,
                     });
                 })
                 .catch((err) => {
                     res.status(500).json({
-                        message: 'share failed',
+                        message: 'Share failed.',
                         err,
                         isShared: false
                     });
@@ -145,7 +152,6 @@ exports.addSharedQuiz = (req, res) => {
 
             // save notification to the recipient
             Quiz.findById(req.body.quizId)
-                .select('title')
                 .then(quiz => {
                     const notification = new Notification({
                         recipient_id: user._id,
@@ -180,7 +186,7 @@ exports.addSharedQuiz = (req, res) => {
         .catch((err) => {
             console.log(err);
             res.status(500).json({
-                message: 'share failed',
+                message: 'Share failed.',
                 err,
                 isShared: false
             });

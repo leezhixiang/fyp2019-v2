@@ -23,7 +23,10 @@ exports.getQuizDetails = (req, res) => {
                         message: "Quiz not found"
                     });
                 }
-                res.status(200).json(quiz);
+                res.status(200).json({
+                    quiz,
+                    isFavorited: false
+                });
             })
             .catch(err => {
                 res.status(500).json(err);
@@ -38,7 +41,7 @@ exports.getQuizDetails = (req, res) => {
         Promise.all(promises)
             .then((results) => {
                 // results is an array of the results of each promise, in order.
-                console.log(results);
+
                 const quiz = results[0];
                 const favorite = results[1];
 
