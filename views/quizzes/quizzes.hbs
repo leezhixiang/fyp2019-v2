@@ -1,15 +1,38 @@
 {{> header}}
 
-<ul>
-    <li>
-        <a href="#">My Quizzes</a>
-    </li>
-    <li>
-        <a href="#">Favorites</a>
-    </li>
-    <li>
-        <a href="#">Shared</a>
-    </li>
-</ul>
+<nav class="navbar navbar-light bg-light" style="height: 3.5rem">
+    <div class="container">
+        <ul class="nav nav-pills-quizzes" id="pills-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link-quizzes active" id="pills-quizzes-tab" data-toggle="pill" href="#pills-quizzes"
+                    role="tab" aria-controls="pills-quizzes" aria-selected="true">My Quizzes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link-quizzes" id="pills-favorites-tab" data-toggle="pill" href="#pills-favorites"
+                    role="tab" aria-controls="pills-favorites" aria-selected="false">Favorites</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link-quizzes" id="pills-shared-tab" data-toggle="pill" href="#pills-shared" role="tab"
+                    aria-controls="pills-shared" aria-selected="false">Shared</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
-<div></div>
+
+<div class="container">
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-quizzes" role="tabpanel" aria-labelledby="pills-quizzes-tab">
+            <h6 class="mt-4">My quizzes (<span id="tQuizzes">0</span>)</h6>
+            <div class="row" id="myQuizList"></div>
+        </div>
+        <div class="tab-pane fade" id="pills-favorites" role="tabpanel" aria-labelledby="pills-favorites-tab">
+            <h6 class="mt-4">Favorites quizzes (<span id="tFavorites">0</span>)</h6>
+            <div class="row mt-4" id="favoriteList"></div>
+        </div>
+        <div class="tab-pane fade" id="pills-shared" role="tabpanel" aria-labelledby="pills-shared-tab">
+            <h6 class="mt-4">Shared with me (<span id="tShares">0</span>)</h6>
+            <div class="row mt-4" id="sharedList"></div>
+        </div>
+    </div>
+</div>

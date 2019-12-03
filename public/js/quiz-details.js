@@ -1,6 +1,7 @@
 window.onload = () => {
     const token = JSON.parse(localStorage.getItem('auth_token'));
 
+    // account
     if (token) {
         document.querySelectorAll('.guest').forEach(guest => {
             guest.classList.add("d-none");
@@ -10,11 +11,106 @@ window.onload = () => {
         document.querySelector('#jewelButton').setAttribute('data-toggle', '')
     };
 
-    document.querySelector("#logout").addEventListener("click", (e) => {
-        localStorage.removeItem('auth_token');
-        window.location.href = "http://localhost:3000/";
+    // socket.io connection
+    const passToken = (token) => {
+        if (token) { return { query: `auth_token=${token}` } };
+    };
+
+    const notificationSocket = io('/notification', passToken(token));
+
+    // connection failed
+    notificationSocket.on('error', (err) => {
+        throw new Error(err.message);
+    });
+
+    // connection successful
+    notificationSocket.on('socket-conn', (data) => {
+        console.log(`[socket-conn] ${data.message}`);
+        console.log(`[socket-conn] token: ${data.hasToken}`);
     })
 
+    // quizzes
+    document.querySelector('#quizzes').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (token) {
+            window.location.href = "http://localhost:3000/quizzes";
+        } else {
+            window.location.href = "http://localhost:3000/users/login";
+        }
+    });
+
+    // reports
+    document.querySelector('#reports').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (token) {
+            window.location.href = "http://localhost:3000/reports";
+        } else {
+            window.location.href = "http://localhost:3000/users/login";
+        }
+    });
+
+    // classes
+    document.querySelector('#classes').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (token) {
+            window.location.href = "http://localhost:3000/reports";
+        } else {
+            window.location.href = "http://localhost:3000/users/login";
+        }
+    });
+
+    // notification
+    document.querySelector('#jewelButton').addEventListener('click', (e) => {
+        if (!token) {
+            return window.location.href = "http://localhost:3000/users/login";
+        }
+    });
+
+    notificationSocket.on('total-notifications', (number) => {
+        document.querySelector('#jewelCount').textContent += 1;
+        if (number !== 0) {
+            document.querySelector('#jewelCount').textContent = number;
+        }
+    });
+
+    notificationSocket.on('new-notification', (content) => {
+        document.querySelector('#jewelCount').classList.remove("d-none");
+        document.querySelector('#jewelCount').textContent += 1;
+    });
+
+    $('#dropdownNotification').on('show.bs.dropdown', () => {
+        document.querySelector('#jewelCount').textContent = 0;
+        document.querySelector('#jewelCount').classList.add("d-none");
+
+        notificationSocket.emit('read-notification', (notifications) => {
+            console.log(notifications);
+            if (notifications.length === 0) {
+                document.querySelector('#notificationsFlyout').innerHTML = `<a class="dropdown-item" href="#">No notifications.</a>`
+            } else {
+                let html = "";
+                notifications.forEach(notification => {
+                    html += `<div class="notification-box">
+                                <div class="media">
+                                    <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
+                                    <div class="media-body">
+                                        <div>${notification.content}</div>
+                                        <small class="text-warning">${notification.time_stamp}</small>
+                                    </div>
+                                </div>
+                            </div>`;
+                });
+                document.querySelector('#notificationsFlyout').innerHTML = html;
+            }
+        });
+    });
+
+    // logout button
+    document.querySelector("#logout").addEventListener("click", function(e) {
+        localStorage.removeItem('auth_token');
+        window.location.href = "http://localhost:3000/";
+    });
+
+    // quiz details
     const pathName = window.location.pathname.split('/');
     const quizId = pathName[2];
 
@@ -25,15 +121,14 @@ window.onload = () => {
             }
         }
     }
+
     fetch(`http://localhost:3000/api/quizzes/${quizId}`, {
             method: 'GET',
             headers: passHeader(token)
         })
-        .then((res) => {
-            return res.json()
-        })
-        .then((result) => {
-            const { quiz, isFavorited } = result;
+        .then(res => res.json())
+        .then(res => {
+            const { quiz, isFavorited } = res;
 
             console.log(quiz)
 
@@ -54,7 +149,7 @@ window.onload = () => {
                 html += `<div class="col-sm-8 mt-3">
                             <div class="card">
                                 <div class="card-body" id="headingOne" style="height: 6.375rem;">
-                                    <button class="btn btn-question" type="button" data-toggle="collapse" data-parent="#accordionExample" data-target="#collapse${index +1}"
+                                    <button class="btn btn-question" type="button" data-toggle="collapse" data-parent="#accordionQuizzes" data-target="#collapse${index +1}"
                                         aria-expanded="true" aria-controls="collapseOne">
                                         <span class="ellipsis text-left">Q${index +1}. <span
                                                 class="font-weight-bold">${question.question}</span></span>
@@ -120,32 +215,57 @@ window.onload = () => {
                         </div>`
             });
 
-            document.querySelector('#accordionExample').innerHTML = html;
-
-            $("#collapseToggle").click(function(e) {
-                e.preventDefault();
-                if ((document.querySelector("#collapseToggle").textContent).includes("HIDE ANSWERS")) {
-                    document.querySelector('#collapseToggle').textContent = "SHOW ANSWERS";
-                } else {
-                    document.querySelector('#collapseToggle').textContent = "HIDE ANSWERS";
-                }
-                $(".collapse").collapse('toggle');
-            });
-
-            document.querySelector("#hostBtn").addEventListener("click", (e) => {
-                localStorage.removeItem('auth_token');
-                window.location.href = `http://localhost:3000/games/host-game?quizId=${quizId}`;
-            })
+            document.querySelector('#accordionQuizzes').innerHTML = html;
         })
-        .catch((err) => {
-            console.log(err)
-        })
+        .catch(err => console.log(err));
 
+    // show/hide answers
+    $("#collapseToggle").click((e) => {
+        e.preventDefault();
+        if ((document.querySelector("#collapseToggle").textContent).includes("HIDE ANSWERS")) {
+            document.querySelector('#collapseToggle').textContent = "SHOW ANSWERS";
+            $(".collapse").collapse('hide');
+        } else {
+            document.querySelector('#collapseToggle').textContent = "HIDE ANSWERS";
+            $(".collapse").collapse('show');
+        }
+    });
+
+    $('#accordionQuizzes').on('shown.bs.collapse', () => {
+        let hasOneCollapsed = false;
+        document.querySelectorAll(".collapse").forEach((collapse) => {
+            if (!collapse.classList.contains("show")) {
+                hasOneCollapsed = true;
+            }
+        })
+        if (!hasOneCollapsed) {
+            document.querySelector('#collapseToggle').textContent = "HIDE ANSWERS";
+        }
+    })
+
+    $('#accordionQuizzes').on('hidden.bs.collapse', () => {
+        let hasOneCollapsed = false;
+        document.querySelectorAll(".collapse").forEach((collapse) => {
+            if (collapse.classList.contains("show")) {
+                hasOneCollapsed = true;
+            }
+        })
+        if (!hasOneCollapsed) {
+            document.querySelector('#collapseToggle').textContent = "SHOW ANSWERS";
+        }
+    })
+
+    // host game
+    document.querySelector("#hostBtn").addEventListener("click", (e) => {
+        localStorage.removeItem('auth_token');
+        window.location.href = `http://localhost:3000/games/host-game?quizId=${quizId}`;
+    })
+
+    // favorite
     document.querySelector("#favBtn").addEventListener("click", (e) => {
         if (!token) {
             return window.location.href = "http://localhost:3000/users/login";
         }
-
         // unfavorite
         if (document.querySelector("#favIcon").classList.contains("fa-star")) {
             setTimeout(() => {
@@ -159,13 +279,11 @@ window.onload = () => {
                         'authorization': `Bearer ${token}`
                     }
                 })
-                .then((res) => {
-                    return res.json()
-                })
+                .then(res => res.json())
                 .then(res => console.log(res))
-                .catch((err) => console.log(err));
+                .catch(err => console.log(err));
 
-        } else if (document.querySelector("#favIcon").classList.contains("fa-star-o")) {
+        } else {
             setTimeout(() => {
                 document.querySelector("#favIcon").classList.remove('fa-star-o')
                 document.querySelector("#favIcon").classList.add('fa-star')
@@ -180,20 +298,22 @@ window.onload = () => {
                     body: JSON.stringify({ quizId })
                 })
                 .then(res => res.json())
-                .then(res => {
-                    console.log(res);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+                .then(res => console.log(res))
+                .catch(err => console.log(err));
         };
     });
 
-    // $('#exampleModalCenter').modal('toggle')
-
+    // share
     document.querySelector("#shareBtn").addEventListener("click", (e) => {
+        console.log(token)
+        if (!token) {
+            return window.location.href = "http://localhost:3000/users/login";
+        }
+        $('#exampleModalCenter').modal('toggle')
+    });
 
-
+    document.querySelector("#shareBtn2").addEventListener("click", (e) => {
+        e.preventDefault();
         const email = document.querySelector('#email').value
 
         fetch(`http://localhost:3000/api/library/shared`, {
@@ -212,7 +332,6 @@ window.onload = () => {
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>`
-
                     document.querySelector('#share-alert').innerHTML = html;
                 } else {
                     const html = `<div class="alert alert-warning alert-dismissible fade show" role="alert">${res.message} ${res.err}
@@ -220,12 +339,9 @@ window.onload = () => {
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>`
-
                     document.querySelector('#share-alert').innerHTML = html;
                 }
             })
-            .catch((err) => {
-                console.log(err);
-            });
+            .catch(err => console.log(err));
     })
 }

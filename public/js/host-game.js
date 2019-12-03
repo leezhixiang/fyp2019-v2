@@ -44,7 +44,7 @@ window.onload = () => {
         });
 
         document.querySelector("#launch").remove();
-        document.querySelector("#lobby").classList.remove("hidden");
+        document.querySelector("#lobby").classList.remove("d-none");
 
         const urlParams = new URLSearchParams(window.location.search);
         const quizId = urlParams.get("quizId");
@@ -106,7 +106,7 @@ window.onload = () => {
 
                 // change to next question
                 document.querySelector("#lobby").remove();
-                document.querySelector("#hostGame").classList.remove("hidden");
+                document.querySelector("#hostGame").classList.remove("d-none");
 
                 document.querySelector("#question").textContent = question.question;
 
@@ -142,8 +142,8 @@ window.onload = () => {
                 const { question, gameId } = nextQuestionData;
 
                 // change to next question
-                document.querySelector("#summary").classList.add("hidden");
-                document.querySelector("#displayQuestion").classList.remove("hidden");
+                document.querySelector("#summary").classList.add("d-none");
+                document.querySelector("#displayQuestion").classList.remove("d-none");
 
                 document.querySelector("#question").textContent = question.question;
 
@@ -166,8 +166,8 @@ window.onload = () => {
             } else if (nextQuestion === false && isGameOver === false) {
                 const { questionResults, scoreBoard } = nextQuestionData;
 
-                document.querySelector("#displayQuestion").classList.add("hidden");
-                document.querySelector("#summary").classList.remove("hidden");
+                document.querySelector("#displayQuestion").classList.add("d-none");
+                document.querySelector("#summary").classList.remove("d-none");
 
                 document.querySelectorAll(".total-chooses").forEach((totalChooses, index) => {
                     totalChooses.textContent = questionResults[Object.keys(questionResults)[index]];
@@ -189,7 +189,7 @@ window.onload = () => {
                 const { scoreBoard } = nextQuestionData;
 
                 document.querySelector("#hostGame").remove();
-                document.querySelector("#gameOver").classList.remove("hidden");
+                document.querySelector("#gameOver").classList.remove("d-none");
 
                 console.log(`[next-button] game over`);
                 console.log(`[next]`);

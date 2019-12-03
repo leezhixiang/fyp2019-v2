@@ -2,24 +2,39 @@
 
 <div class="container mt-4">
     <div class="row">
-        <div class="col-sm-8">
-            <div class="card shadow-sm">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-3">
                 <div class="row no-gutters">
                     <div class="col-2 border-right p-2">
-                        <img src="/img/logo.png" class="card-img" style="opacity: 0.2" alt="...">
+                        <img src="/img/logo.png" class="card-img-top" style="opacity: 0.2" alt="...">
                     </div>
                     <div class="col-10">
                         <div class="d-flex flex-column h-100 justify-content-between">
                             <div class="p-2">
-                                <h6 class="badge badge-primary" id="tQuestionBadge"></h6>
-                                <a href="" class="ellipsis stretched-link font-weight-bold title" id="title"></a>
+                                <div class="dropdown float-right">
+                                    <button class="icon-button-quiz" type="button" id="dropdownMenuButtonOpt"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-ellipsis-v img-fluid" aria-hidden="true"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonOpt">
+                                        <a class="dropdown-item" href="#">Edit</a>
+                                        <a class="dropdown-item" href="#">Delete</a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="badge badge-primary" id="tQuestionBadge"><span> Questions</span></div>
+                                </div>
+                                <div class="mt-1">
+                                    <a href="#" class="ellipsis font-weight-bold title"
+                                        id="title"></a>
+                                </div>
                             </div>
                             <div class="d-flex flex-row justify-content-between px-2 py-1 border-top"
-                                style="background: #f0f0f0; height: 33px">
+                                style="background: #f0f0f0; height: 2.0625rem">
                                 <div class="flex-grow-1 mr-3">
-                                    <span class="font-weight-normal text-muted text-truncate" id="creator"></span>
+                                    <span class="font-weight-normal text-muted text-truncate"
+                                        id="creator"></span>
                                 </div>
-
                                 <span class="text-right font-weight-bold text-truncate" id="tPlays"></span>
                             </div>
                         </div>
@@ -28,21 +43,18 @@
             </div>
         </div>
     </div>
-
     <div class="row mt-4">
         <div class="col-sm-8">
             <div class="d-flex justify-content-between">
                 <div>
-                    <button type="button" class="btn btn-primary" id="hostBtn">Multiple
-                        Choice</button>
+                    <button type="button" class="btn btn-primary" id="hostBtn">Multiple Choice</button>
                 </div>
                 <div>
                     <button type="button" class="icon-button ml-1" id="favBtn">
                         <i class="fa fa-star-o img-fluid" aria-hidden="true" id="favIcon"></i>
                     </button>
                     <!-- Button trigger modal -->
-                    <button type="button" class="icon-button ml-1" data-toggle="modal"
-                        data-target="#exampleModalCenter">
+                    <button type="button" class="icon-button ml-1" id="shareBtn">
                         <i class="fa fa-share img-fluid" aria-hidden="true"></i>
                     </button>
                     <button type="button" class="icon-button ml-1" id="printBtn">
@@ -53,7 +65,6 @@
             <hr />
         </div>
     </div>
-
     <div class="row mt-1">
         <div class="col-sm-8">
             <div class="d-flex flex-row justify-content-between">
@@ -69,47 +80,33 @@
             </div>
         </div>
     </div>
-
-
-    <div class="accordion row mb-5" id="accordionExample"></div>
-
-
-
-
-
-    <!-- Modal -->
+    <div class="accordion row mb-5" id="accordionQuizzes"></div>
+    <!-- Mxdal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-
                     <div class="m-3">
                         <div class="my-3 text-center">
                             <img src="https://freepngimg.com/thumb/web_design/51077-6-share-images-png-download-free.png"
                                 alt="" class="" style="height: 70px;">
                             <h4 class="mt-3">Share quiz with your friends</h4>
                         </div>
-
-                        {{!-- <div class="alert alert-danger mt-4" role="alert">
-                            A simple danger alert—check it out!
-                        </div> --}}
                         <div id="share-alert"></div>
-
                         <form class="my-4">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Share via email</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder=""
-                                        aria-label="email" aria-describedby="email" id="email">
+                                    <input type="text" class="form-control" placeholder="" aria-label="email"
+                                        aria-describedby="email" id="email">
                                     <div class="input-group-append">
-                                        <button class="btn btn btn-primary" type="button" id="shareBtn">Share</button>
+                                        <button class="btn btn btn-primary" type="submit" id="shareBtn2">Share</button>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary mx-auto" data-dismiss="modal">Back</button>

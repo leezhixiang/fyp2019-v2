@@ -1,66 +1,201 @@
-<div id="launch">
-    <button id="hostBtn">Host Game</button>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary line-top ">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="/img/logo.png" width="56" height="56" alt="" class="border">
+        </a>
+    </div>
+</nav>
 
-    <h2>Question Settings</h2>
+<div class="container-fluid pt-4 pb-5" id="launch" style="background-color: #6769F0;">
 
-    <div>
-        Shuffle questions
-        <label class="switch">
-            <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
-            <span class="slider"></span>
-        </label>
+    <div class="row">
+        <div class="col-md-5 mx-auto">
+            <div class="text-center p-4" style="background:#3436BC;">
+                <div>
+                    <img src="https://gretchenrubin.com/static/media/archive.c8adaf84.svg" alt="" class="img-fluid"
+                        style="height: 150px;">
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-success btn-lg mt-4" id="hostBtn">Host Game</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div>
-        Shuffle answer options
-        <label class="switch">
-            <input type="checkbox" name="settings" value="suffleAnsOpts" id="suffleAnsOpts">
-            <span class="slider"></span>
-        </label>
-    </div>
+    <div class="row mt-4">
+        <div class="col-md-5 mx-auto">
+            <div class="">
+                <div class="card-settings">
+                    <h4 class="card-header-settings font-weight-bold">Question Settings</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item-settings mt-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="w-100 mr-3">
+                                    <h5 class="mb-0">Shuffle questions</h5>
+                                </div>
+                                <div class="flex-shrink-1">
+                                    <label class="switch mb-0">
+                                        <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item-settings mt-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="w-100 mr-3">
+                                    <h5 class="mb-0">Shuffle answer options</h5>
+                                </div>
+                                <div class="flex-shrink-1">
+                                    <label class="switch mb-0">
+                                        <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
 
-    <h2>Game Settings</h2>
-
-    <div>
-        Question Timer
-        <label class="switch">
-            <input type="checkbox" name="settings" value="qTimer" id="qTimer" checked>
-            <span class="slider"></span>
-        </label>
-    </div>
-
-    <div>
-        Automatically move through questions
-        <label class="switch">
-            
-            <input type="checkbox" name="settings" value="autoMoveThroughQs" id="autoMoveThroughQs">
-            <span class="slider"></span>
-        </label>
+                <div class="card-settings mt-4">
+                    <h4 class="card-header-settings font-weight-bold">Game Settings</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item-settings mt-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="w-100 mr-3">
+                                    <h5 class="mb-0">Question Timer</h5>
+                                </div>
+                                <div class="flex-shrink-1">
+                                    <label class="switch mb-0">
+                                        <input type="checkbox" name="settings" value="suffleQs" id="suffleQs" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item-settings mt-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="w-100 mr-3">
+                                    <h5 class="mb-0">Automatically move through questions</h5>
+                                </div>
+                                <div class="flex-shrink-1">
+                                    <label class="switch mb-0">
+                                        <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div id="lobby" class="host-game hidden">
-    <div class="lobby-header">
-        <p>Join at www.cls.com or CLS app with Game PIN:</p>
-        <h1 id="gameId"></h1>
-    </div>
 
-    <div>
-        <h2><span id="totalPlayers">0</span>Players</h2>
-        <img class="img-thumbnail" src="/img/logo.png" alt="" height="70" width="70">
-        <button id="startBtn">Start</button>
-    </div>
+<div class="container-fluid p-4 d-none" id="lobby" style="background-color:#3436BC;">
+    <div class="container">
 
-    <div>
-        <ul id="nameList"></ul>
-    </div>
+        <div class="row">
+            <div class="col-md-5 mx-auto text-center" style="color: white;">
+                <div>
+                    <h4><span class="badge badge-light-purple">To play this game</span></h4>
+                </div>
+                <div class="mt-3">
+                    <h4>Join at www.cls.com or CLS app with Game PIN:</h4>
+                </div>
+            </div>
+        </div>
 
-    <div class="lobby-footer">
-        <h4>Waiting for players...</h4>
-    </div>
+        <div class="row mt-3">
+            <div class="col-md-6 mx-auto text-center">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 id="gameId" class="display-2 text-center"
+                            style="font-family: 'ZCOOL QingKe HuangYou', cursive;">123456</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12 p-4 mx-auto">
+
+                <div class="p-3" style="background-color: #6769F0;">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h2>
+                                <span id="totalPlayers" class="badge badge-light-purple">
+                                    <span class="live mr-1 align-middle"></span>0 Players</span>
+                            </h2>
+                        </div>
+                        <div>
+                            <button id="startBtn" class="btn btn-danger btn-lg font-weight-bold">Start</button>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4" id="nameList" style="background-color:; color:white; min-height:12.5rem">
+                        <div class="col-md-4 col-lg-3">
+                            <div class="text-center mb-3 text-truncate">
+                                <h5>Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3">
+                            <div class="text-center mb-3 text-truncate">
+                                <h5>Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3">
+                            <div class="text-center mb-3 text-truncate">
+                                <h5>Zhi Xiang Lee</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3">
+                            <div class="text-center mb-3 text-truncate">
+                                <h5>Zhi Xiang Lee</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div><!-- .container -->
+
+
+
 </div>
 
-<div id="hostGame" class="host-game hidden">
+
+{{!-- <div class="container-fluid" style="position:absolute; bottom:0">
+    <div class="row">
+        <div class="col" style="background-color: #6769F0;">
+            <h4>Waiting for players...</h4>
+        </div>
+    </div>
+</div> --}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="hostGame" class="host-game d-none">
     <div class="host-game-header">
         <span class="exit">X</span>
         <h3 id="timer">00:00</h3>
@@ -71,7 +206,7 @@
         <p id="question"></p>
     </div>
 
-    <div id="summary" class="host-game-content hidden">
+    <div id="summary" class="host-game-content d-none">
         <div class="block"><span class="total-chooses"></span>block 1</div>
         <div class="block"><span class="total-chooses"></span>block 2</div>
         <div class="block"><span class="total-chooses"></span>block 3</div>
@@ -90,9 +225,55 @@
     </div>
 </div>
 
-<div id="gameOver" class="host-game hidden">
+<div id="gameOver" class="host-game d-none">
     <div class="host-game-header">
         <span class="exit">X</span>
         <h1>Game Over</h1>
     </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+{{!-- <div>
+                Shuffle questions
+                <label class="switch">
+                    <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div>
+                Shuffle answer options
+                <label class="switch">
+                    <input type="checkbox" name="settings" value="suffleAnsOpts" id="suffleAnsOpts">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <h2>Game Settings</h2>
+
+            <div>
+                Question Timer
+                <label class="switch">
+                    <input type="checkbox" name="settings" value="qTimer" id="qTimer" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div>
+                Automatically move through questions
+                <label class="switch">
+
+                    <input type="checkbox" name="settings" value="autoMoveThroughQs" id="autoMoveThroughQs">
+                    <span class="slider"></span>
+                </label>
+            </div> --}}
