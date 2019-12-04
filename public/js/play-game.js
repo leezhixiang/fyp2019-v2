@@ -1,4 +1,6 @@
 window.onload = () => {
+
+
     const token = JSON.parse(localStorage.getItem("auth_token"));
 
     const passToken = (token) => {
@@ -32,13 +34,14 @@ window.onload = () => {
                 console.log(`[join-game] ${message}`);
 
                 // change to next page
-                document.querySelector("#joinGame").classList.add("hidden");
-                document.querySelector("#playGame").classList.remove("hidden");
+                document.body.style.background = "#212529";
+                document.querySelector("#joinGame").classList.add("d-none");
+                document.querySelector("#playGame").classList.remove("d-none");
 
                 if (joinGameData.gameLive === true) {
-                    document.querySelector("#waitingNext").classList.remove("hidden");
+                    document.querySelector("#waitingNext").classList.remove("d-none");
                 } else if (joinGameData.gameLive === false) {
-                    document.querySelector("#waitingStart").classList.remove("hidden");
+                    document.querySelector("#waitingStart").classList.remove("d-none");
                 }
 
                 document.querySelector("#playerName").textContent = name;
@@ -60,23 +63,27 @@ window.onload = () => {
 
         if (questionIndex > 1) {
             // player who joined after game starts
-            document.querySelector("#waitingNext").classList.add("hidden");
+            document.querySelector("#waitingNext").classList.add("d-none");
         } else {
             // player who joined before game starts
-            document.querySelector("#waitingStart").classList.add("hidden");
+            document.querySelector("#waitingStart").classList.add("d-none");
         }
 
         if (lastResult === true) {
+            document.querySelector('#correctResults').innerHTML = "";
             // player who answered correct
-            document.querySelector("#correct").classList.add("hidden");
+            document.querySelector("#correct").classList.add("d-none");
         } else if (lastResult === false) {
+            document.querySelector('#wrongResults').innerHTML = "";
             // player who answered wrong
-            document.querySelector("#wrong").classList.add("hidden");
+            document.querySelector("#wrong").classList.add("d-none");
         } else {
+            document.querySelector('#correctResults').innerHTML = "";
+            document.querySelector('#wrongResults').innerHTML = "";
             // player who did not attempt
-            document.querySelector("#wrong").classList.add("hidden");
+            document.querySelector("#wrong").classList.add("d-none");
         }
-        document.querySelector("#choices").classList.remove("hidden");
+        document.querySelector("#choices").classList.remove("d-none");
 
         document.querySelectorAll(".choice").forEach((choice) => {
             choice.disabled = false
@@ -92,15 +99,15 @@ window.onload = () => {
         console.log(`[received] received question`);
     });
 
-    document.querySelectorAll(".choice").forEach((choice, index) => {
+    document.querySelectorAll(".btn-choice").forEach((choice, index) => {
         choice.addEventListener("click", () => {
 
-            document.querySelector("#choices").classList.add("hidden");
-            document.querySelector("#waitingOthers").classList.remove("hidden");
+            document.querySelector("#choices").classList.add("d-none");
+            document.querySelector("#waitingOthers").classList.remove("d-none");
 
-            choice.disabled = true;
+            choice.firstElementChild.disabled = true;
 
-            const choiceId = choice.getAttribute("data-id");
+            const choiceId = choice.firstElementChild.getAttribute("data-id");
 
             // send answer to server
             socket.emit('player-answer', choiceId)
@@ -108,24 +115,142 @@ window.onload = () => {
     })
 
     socket.on('get-question-results', () => {
-
+        console.log('1')
         socket.emit('question-results', (data) => {
-            // get results from server, either true or false
-            const { answerResult, didAnswer, isLostStreak, streak, currentPoints, rank, nextScorer, differencePts } = data;
+            console.log('2')
+                // get results from server, either true or false
+            const { answerResult, didAnswer, isLostStreak, streak, bonus, currentPoints, points, rank, previousScorerName, differencePts } = data;
             console.table(data);
 
             if (answerResult === true && didAnswer === true) {
-                document.querySelector("#waitingOthers").classList.add("hidden");
-                document.querySelector("#correct").classList.remove("hidden");
+                document.querySelector("#waitingOthers").classList.add("d-none");
+                document.querySelector("#correct").classList.remove("d-none");
+
+                document.querySelector("#totalPts").textContent = points;
+
+                let html = "";
+
+                if (streak === 0) {
+
+                    html = `<div class="mt-2 px-4 py-2" style="background-color: white; color:#212529">
+                                <h5 class="m-0 text-center" id="currentPts">+${currentPoints}</h5>
+                            </div>
+
+                            <h5 class="mt-3 text-center">You're in rank <span id="rank">${rank}</span></h5>`
+
+                    if (rank > 1) {
+                        html += `<h5 class="text-center">
+                                    <span id="dPts">${differencePts}</span> points behind
+                                    <span id="behindName">${previousScorerName}</span>
+                                </h5>`
+                    }
+
+                    document.querySelector('#correctResults').innerHTML = html;
+
+                } else if (streak === 1) {
+
+                    html = `<h5 class="mt-4 text-center">Answer Streak
+                                <strong><span id="streak">x${streak}</span></strong>
+                            </h5>
+
+                            <div class="mt-2 px-4 py-2" style="background-color: white; color:#212529">
+                                <h5 class="m-0 text-center" id="currentPts">+${currentPoints}</h5>
+                            </div>
+
+                            <h5 class="mt-3 text-center">You're in rank <span id="rank">${rank}</span></h5>`
+
+                    if (rank > 1) {
+                        html += `<h5 class="text-center">
+                                    <span id="dPts">${differencePts}</span> points behind
+                                    <span id="behindName">${previousScorerName}</span>
+                                </h5>`
+                    }
+
+                    document.querySelector('#correctResults').innerHTML = html;
+
+                } else if (streak > 1) {
+
+                    html = `<h5 class="mt-4 text-center">Answer Streak
+                                <strong><span id="streak">x${streak}</span></strong>
+                            </h5>
+
+                            <p class="text-center"><strong><span id="bonus">+${bonus}</span></strong> Bonus points
+                            </p>
+
+                            <div class="mt-2 px-4 py-2" style="background-color: white; color:#212529">
+                                <h5 class="m-0 text-center" id="currentPts">+${currentPoints}</h5>
+                            </div>
+
+                            <h5 class="mt-3 text-center">You're in rank <span id="rank">${rank}</span></h5>`
+
+                    if (rank > 1) {
+                        html += `<h5 class="text-center">
+                                    <span id="dPts">${differencePts}</span> points behind
+                                    <span id="behindName">${previousScorerName}</span>
+                                </h5>`
+                    }
+
+                    document.querySelector('#correctResults').innerHTML = html;
+                }
 
             } else if (answerResult === false && didAnswer === true) {
-                document.querySelector("#waitingOthers").classList.add("hidden");
-                document.querySelector("#wrong").classList.remove("hidden");
+                document.querySelector("#waitingOthers").classList.add("d-none");
+                document.querySelector("#wrong").classList.remove("d-none");
+
+
+                if (isLostStreak === false) {
+
+                    html = `<div class="mt-2 px-4 py-2" style="background-color: white; color:#212529">
+                                <h5 class="m-0 text-center" id="currentPts">Don't worry, nobody's perfect</h5>
+                            </div>                        
+                            <h5 class="mt-3 text-center">You're in rank <span id="rank">${rank}</span></h5>`
+
+                    if (rank > 1) {
+                        html += `<h5 class="text-center">
+                                    <span id="dPts">${differencePts}</span> points behind
+                                    <span id="behindName">${previousScorerName}</span>
+                                </h5>`
+                    }
+
+                    document.querySelector('#wrongResults').innerHTML = html;
+
+                } else if (isLostStreak === true) {
+
+                    html = `<h5 class="mt-4 text-center">Answer Streak Lost</h5>                          
+                            <div class="mt-2 px-4 py-2" style="background-color: white; color:#212529">
+                                <h5 class="m-0 text-center" id="currentPts">Don't worry, nobody's perfect</h5>
+                            </div>                        
+                            <h5 class="mt-3 text-center">You're in rank <span id="rank">${rank}</span></h5>`
+
+                    if (rank > 1) {
+                        html += `<h5 class="text-center">
+                                    <span id="dPts">${differencePts}</span> points behind
+                                    <span id="behindName">${previousScorerName}</span>
+                                </h5>`
+                    }
+
+                    document.querySelector('#wrongResults').innerHTML = html;
+                }
 
             } else if (didAnswer === false) {
+
+                html = `<div class="mt-2 px-4 py-2" style="background-color: white; color:#212529">
+                                <h5 class="m-0 text-center" id="currentPts">Don't worry, nobody's perfect</h5>
+                            </div>                        
+                            <h5 class="mt-3 text-center">You're in rank <span id="rank">${rank}</span></h5>`
+
+                if (rank > 1) {
+                    html += `<h5 class="text-center">
+                                    <span id="dPts">${differencePts}</span> points behind
+                                    <span id="behindName">${previousScorerName}</span>
+                                </h5>`
+                }
+
+                document.querySelector('#wrongResults').innerHTML = html;
+
                 // player who did not attempt
-                document.querySelector("#choices").classList.add("hidden");
-                document.querySelector("#wrong").classList.remove("hidden");
+                document.querySelector("#choices").classList.add("d-none");
+                document.querySelector("#wrong").classList.remove("d-none");
             };
             // save for next question reference
             lastResult = answerResult;
@@ -137,7 +262,7 @@ window.onload = () => {
             const { points, rank, correct, incorrect, unattempted } = data
 
             document.querySelector("#playGame").remove();
-            document.querySelector("#gameOver").classList.remove("hidden");
+            document.querySelector("#gameOver").classList.remove("d-none");
 
             console.log(`[game-over] game has over`);
             console.log(`[game-over]`);

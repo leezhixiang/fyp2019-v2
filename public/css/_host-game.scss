@@ -2,13 +2,15 @@
 #timer {
     font-size: 2em;
     font-weight: 500;
-    line-height: 1.25
 }
 
-#gamePIN {
+.footer-text {
     font-size: 2em;
     font-weight: 400;
-    line-height: 1.25
+}
+
+.choice-false {
+    opacity: 0.4;
 }
 
 .c1 {
@@ -72,8 +74,31 @@
     line-height: 1.25;
 }
 
+.scorer-badge {
+    height: 1.75rem;
+    width: 1.75rem;
+    background-color: #6769F0;
+    color: white;
+    display: inline-block;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.75rem
+}
+
+#top1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+#top1Pts {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
 @include media-breakpoint-between(xs, sm) {
-    #gamePIN {
+    .footer-text {
         font-size: 1.5em;
         font-weight: 400;
         line-height: 1.25
@@ -103,4 +128,8 @@
 
 #summary {
     // height: 50%;
+}
+
+.btn-choice {
+    cursor: pointer;
 }

@@ -90,10 +90,14 @@ window.onload = () => {
 
         let html = "";
         names.forEach((name) => {
-            html += `<li>${name}</li>`;
+            html += `<div class="col-md-4 col-lg-3">
+                        <div class="text-center mb-3 text-truncate">
+                            <h5>${name}</h5>
+                        </div>
+                    </div>`;
         });
         document.querySelector("#nameList").innerHTML = html;
-        document.querySelector("#totalPlayers").textContent = names.length;
+        document.querySelector("#totalPlayers").textContent = `${names.length} Players`;
     });
 
     let counter = 0;
@@ -159,6 +163,10 @@ window.onload = () => {
                     choice.setAttribute("data-correct", question.choices[index].is_correct);
                 });
 
+                document.querySelectorAll(".choice").forEach((choice, index) => {
+                    choice.parentElement.parentElement.classList.remove("choice-false");
+                });
+
                 document.querySelector("#gameId").textContent = gameId;
 
                 // setting: question timer
@@ -171,16 +179,29 @@ window.onload = () => {
                 console.log(`[next-button] next question`);
 
             } else if (nextQuestion === false && isGameOver === false) {
-                const { questionResults, scoreBoard } = nextQuestionData;
+                const { choicesAccuracy, questionResults, scoreBoard } = nextQuestionData;
+
 
                 document.querySelector("#displayQuestion").classList.add("d-none");
                 document.querySelector("#summary").classList.remove("d-none");
 
-                document.querySelectorAll(".total-chooses").forEach((totalChooses, index) => {
-                    totalChooses.textContent = questionResults[Object.keys(questionResults)[index]];
+
+                document.querySelectorAll(".choice").forEach((choice, index) => {
+                    const ans = choice.getAttribute("data-correct");
+                    if (ans === 'false') {
+                        choice.parentElement.parentElement.classList.add("choice-false");
+                    }
+                });
+
+                document.querySelectorAll(".tC").forEach((tC, index) => {
+                    tC.textContent = questionResults[Object.keys(questionResults)[index]];
+                    document.querySelector(`#block${index+1}`).style.height = `${choicesAccuracy[Object.keys(choicesAccuracy)[index]]}%`;
+                    console.log(questionResults[Object.keys(choicesAccuracy)[index]])
                 })
 
                 document.querySelector('#nextBtn').setAttribute('data-state', true)
+
+                console.log(choicesAccuracy)
                 console.log(questionResults);
                 console.log(scoreBoard);
 
@@ -195,8 +216,16 @@ window.onload = () => {
             } else if (nextQuestion === false && isGameOver === true) {
                 const { scoreBoard } = nextQuestionData;
 
+                document.body.style.background = "#f2f2f2";
                 document.querySelector("#hostGame").remove();
                 document.querySelector("#gameOver").classList.remove("d-none");
+
+                scoreBoard.forEach((scorer, index) => {
+                    const top = document.querySelectorAll(".top");
+                    const topPts = document.querySelectorAll(".topPts");
+                    top[index].textContent = scorer.name;
+                    topPts[index].textContent = scorer.points;
+                });
 
                 console.log(`[next-button] game over`);
                 console.log(`[next]`);

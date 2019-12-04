@@ -288,6 +288,18 @@ exports.nextQuestion = (socket) => {
         } else if (btnState === false) {
             const onlinePlayers = Player.getOnlinePlayersByGameId(hoster.gameId);
 
+            // choices accuracy
+            const choicesAccuracy = {};
+
+            calcChoiceAccuracy = (totalChoices, totalPlayers) => {
+                return Math.floor((totalChoices / totalPlayers) * 100);
+            };
+
+            choicesAccuracy.choice1 = calcChoiceAccuracy(hoster.questionResults.choice1, hoster.receivedPlayers.length);
+            choicesAccuracy.choice2 = calcChoiceAccuracy(hoster.questionResults.choice2, hoster.receivedPlayers.length);
+            choicesAccuracy.choice3 = calcChoiceAccuracy(hoster.questionResults.choice3, hoster.receivedPlayers.length);
+            choicesAccuracy.choice4 = calcChoiceAccuracy(hoster.questionResults.choice4, hoster.receivedPlayers.length);
+
             if (hasToken === true && onlinePlayers.length > 0) {
                 // question results accuracy
                 const choiceResults = [];
@@ -299,17 +311,6 @@ exports.nextQuestion = (socket) => {
                 });
                 const totalChoiceResults = choiceResults.reduce((accumulator, currentValue) => accumulator + currentValue);
                 const questionResultsAccuracy = Math.floor((totalChoiceResults / hoster.receivedPlayers.length) * 100);
-
-                // choices accuracy
-                calcChoiceAccuracy = (totalChoices, totalPlayers) => {
-                    return Math.floor((totalChoices / totalPlayers) * 100);
-                };
-
-                const choicesAccuracy = {};
-                choicesAccuracy.choice1 = calcChoiceAccuracy(hoster.questionResults.choice1, hoster.receivedPlayers.length);
-                choicesAccuracy.choice2 = calcChoiceAccuracy(hoster.questionResults.choice2, hoster.receivedPlayers.length);
-                choicesAccuracy.choice3 = calcChoiceAccuracy(hoster.questionResults.choice3, hoster.receivedPlayers.length);
-                choicesAccuracy.choice4 = calcChoiceAccuracy(hoster.questionResults.choice4, hoster.receivedPlayers.length);
 
                 // no answers accuracy
                 const noAnsAccuracy = Math.floor(((hoster.receivedPlayers.length - hoster.answeredPlayers.length) / hoster.receivedPlayers.length) * 100);
@@ -380,6 +381,7 @@ exports.nextQuestion = (socket) => {
                 nextQuestion: false,
                 isGameOver: hoster.isGameOver,
                 nextQuestionData: {
+                    choicesAccuracy,
                     questionResults: hoster.questionResults,
                     scoreBoard
                 }

@@ -146,7 +146,7 @@ window.onload = () => {
             let html = "";
 
             quiz.questions.forEach((question, index) => {
-                html += `<div class="col-sm-8 mt-3">
+                html += `<div class="col-md-8 mt-3">
                             <div class="card">
                                 <div class="card-body" id="headingOne" style="height: 6.375rem;">
                                     <button class="btn btn-question" type="button" data-toggle="collapse" data-parent="#accordionQuizzes" data-target="#collapse${index +1}"
@@ -257,7 +257,6 @@ window.onload = () => {
 
     // host game
     document.querySelector("#hostBtn").addEventListener("click", (e) => {
-        localStorage.removeItem('auth_token');
         window.location.href = `http://localhost:3000/games/host-game?quizId=${quizId}`;
     })
 
