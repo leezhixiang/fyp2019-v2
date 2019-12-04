@@ -1,21 +1,7 @@
-// Your variable overrides
-$body-bg: #f2f2f2;
-$primary: #6769F0;
-$success: #16D46B;
-$warning: #F9B616;
-$danger: #E21A3C;
-$light-purple: #F3F3FF;
-$dark-purple: #3436BC;
-$theme-colors: ( "light-purple":#F3F3FF, "dark-purple":#5052A9);
-$navbar-padding-y: 0;
-$navbar-padding-x: 0;
-$navbar-brand-padding-y: 0;
-$border-radius: 0;
-$border-radius-sm: 0;
-$border-radius-lg: 0;
-$modal-content-border-radius: 0;
+@import "./variables";
 // Bootstrap and its default variables
 @import "../../node_modules/bootstrap/scss/bootstrap";
+@import "./host-game";
 .vl {
     border-left: 1px solid $light-purple;
     height: 2rem;

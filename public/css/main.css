@@ -11092,6 +11092,112 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
   }
 }
 
+#timer {
+  font-size: 2em;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+#gamePIN {
+  font-size: 2em;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.c1 {
+  background-color: #E21A3C;
+  height: calc(50% - 0.25rem);
+  width: calc(50% - 0.25rem);
+  margin-right: .5rem;
+}
+
+.c2 {
+  background-color: #6769F0;
+  height: calc(50% - 0.25rem);
+  width: calc(50% - 0.25rem);
+}
+
+.c3 {
+  background-color: #F9B616;
+  height: calc(50% - 0.25rem);
+  width: calc(50% - 0.25rem);
+  margin-top: .5rem;
+}
+
+.c4 {
+  background-color: #16D46B;
+  height: calc(50% - 0.25rem);
+  width: calc(50% - 0.25rem);
+  margin-left: .5rem;
+  margin-top: .5rem;
+}
+
+.question-top {
+  -webkit-box-flex: 5;
+      -ms-flex: 5 1 0%;
+          flex: 5 1 0%;
+  background-color: white;
+}
+
+.question-choices {
+  -webkit-box-flex: 5;
+      -ms-flex: 5 1 0%;
+          flex: 5 1 0%;
+  margin-top: .5rem;
+}
+
+#question {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  font-size: 5vmin;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.choice {
+  color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  font-size: 4vmin;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+@media (max-width: 767.98px) {
+  #gamePIN {
+    font-size: 1.5em;
+    font-weight: 400;
+    line-height: 1.25;
+  }
+  #question {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    font-size: 6vmin;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .choice {
+    color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    font-size: 5vmin;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+}
+
 .vl {
   border-left: 1px solid #F3F3FF;
   height: 2rem;

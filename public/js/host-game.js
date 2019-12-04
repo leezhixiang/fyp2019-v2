@@ -1,4 +1,7 @@
 window.onload = () => {
+
+    document.body.style.background = "#6769F0";
+
     const token = JSON.parse(localStorage.getItem('auth_token'));
 
     const passToken = (token) => {
@@ -43,8 +46,10 @@ window.onload = () => {
             };
         });
 
+        document.body.style.backgroundColor = "#3436BC";
         document.querySelector("#launch").remove();
         document.querySelector("#lobby").classList.remove("d-none");
+        window.scrollTo(0, 0);
 
         const urlParams = new URLSearchParams(window.location.search);
         const quizId = urlParams.get("quizId");
@@ -105,7 +110,9 @@ window.onload = () => {
                 const { question, gameId } = nextQuestionData;
 
                 // change to next question
+                document.body.style.background = "#212529";
                 document.querySelector("#lobby").remove();
+                document.querySelector(".navbar").classList.add("d-none");
                 document.querySelector("#hostGame").classList.remove("d-none");
 
                 document.querySelector("#question").textContent = question.question;

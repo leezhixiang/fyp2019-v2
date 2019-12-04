@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary line-top ">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary line-top d-none">
     <div class="container">
         <a class="navbar-brand" href="/">
             <img src="/img/logo.png" width="56" height="56" alt="" class="border">
@@ -6,7 +6,143 @@
     </div>
 </nav>
 
-<div class="container-fluid pt-4 pb-5" id="launch" style="background-color: #6769F0;">
+<div id="hostGame" class="host-game vh-100 vw-100">
+    <div class="d-flex flex-column h-100">
+
+        <div class="nav-game-header px-3 py-2" style="background-color:#6769F0; color: white">
+            <div class="row no-gutters h-100">
+
+                <div class="col-4 my-auto" style="cursor:pointer">
+                    <h2 class="exit">&times;</h2>
+                </div>
+
+                <div class="col-4 my-auto">
+                    <div id="timer" class="text-center">00:00</div>
+                </div>
+
+                <div class="col-4 my-auto">
+                    <div class="text-right">
+                        <button class="btn btn-dark-purple" id="nextBtn">Next</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="flex-grow-1 p-3">
+
+            <div class="d-flex flex-column h-100">
+
+                <div id="displayQuestion" class="question-top">
+
+                    <div class="h-100 d-flex flex-column justify-content-center align-items-center">
+
+                        {{!-- <div class="row w-100" style="background-color: tomato;">
+                            <div class="col-lg-7 mx-auto" style="background-color:turquoise;">
+                                <div id="question">Use justify-content utilities on flexbox containers to
+                                    change the alignment of flex items on the main axis (the x-axis to start, y-axis if
+                                    flex-direction: column). Choose from start (browser default), end, center, between,
+                                    or around.</div>
+                            </div>
+                        </div> --}}
+
+                        <div id="summary" class="row h-75 w-100" style="background-color: tomato;">
+                            <div class="col-lg-7 mx-auto" style="background-color:turquoise;">
+                                <div class="block"><span class="total-chooses"></span>block 1</div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div id="choices" class="question-choices">
+                    <div class="d-flex flex-row flex-wrap h-100">
+
+                        <div class="c1">
+                            <div class="h-100 p-3 d-flex align-items-center">
+                                <div class="choice text-center">Use justify-content utilities on flexbox containers to
+                                    change the alignment of flex items on the main axis (the x-axis to start, y-axis if
+                                    flex-direction: column). Choose from start (browser default), end, center, between,
+                                    or around.</div>
+                            </div>
+                        </div>
+
+                        <div class="c2">
+                            <div class="h-100 p-3 d-flex align-items-center">
+                                <div class="choice text-center">Use justify-content utilities on flexbox containers to
+                                    change the alignment of flex items on the main axis (the x-axis to start, y-axis if
+                                    flex-direction: column). Choose from start (browser default), end, center, between,
+                                    or around.</div>
+                            </div>
+                        </div>
+
+                        <div class="c3">
+                            <div class="h-100 p-3 d-flex align-items-center">
+                                <div class="choice text-center">Use justify-content utilities on flexbox containers to
+                                    change the alignment of flex items on the main axis (the x-axis to start, y-axis if
+                                    flex-direction: column). Choose from start (browser default), end, center, between,
+                                    or around.</div>
+                            </div>
+                        </div>
+
+                        <div class="c4">
+                            <div class="h-100 p-3 d-flex align-items-center">
+                                <div class="choice text-center">Use justify-content utilities on flexbox containers to
+                                    change the alignment of flex items on the main axis (the x-axis to start, y-axis if
+                                    flex-direction: column). Choose from start (browser default), end, center, between,
+                                    or around.</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="nav-game-footer px-3 pb-3" style="background-color:; color: white">
+            <div class="row no-gutters h-100">
+                <div class="col my-auto">
+                    <div id="gamePIN">Game PIN: <span id="gameId">123456</span></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<div id="gameOver" class="host-game d-none">
+    <div class="host-game-header">
+        <span class="exit">X</span>
+        <h1>Game Over</h1>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container-fluid pt-4 pb-5 d-none" id="launch">
 
     <div class="row">
         <div class="col-md-5 mx-auto">
@@ -94,7 +230,7 @@
 </div>
 
 
-<div class="container-fluid p-4 d-none" id="lobby" style="background-color:#3436BC;">
+<div class="container-fluid p-4 d-none" id="lobby">
     <div class="container">
 
         <div class="row">
@@ -138,13 +274,15 @@
                     <div class="row mt-4" id="nameList" style="background-color:; color:white; min-height:12.5rem">
                         <div class="col-md-4 col-lg-3">
                             <div class="text-center mb-3 text-truncate">
-                                <h5>Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee
+                                <h5>Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang
+                                    Lee
                                 </h5>
                             </div>
                         </div>
                         <div class="col-md-4 col-lg-3">
                             <div class="text-center mb-3 text-truncate">
-                                <h5>Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee
+                                <h5>Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang
+                                    Lee
                                 </h5>
                             </div>
                         </div>
@@ -186,51 +324,26 @@
 
 
 
+{{!-- <div class="row h-100 justify-content-center">
+                        <div class="col-lg-7 mx-3 my-auto h-100 text-center" style="background-color:violet;">
+
+                            {{!-- <div id="question">Use justify-content utilities on flexbox containers to
+                                change the alignment of flex items on the main axis (the x-axis to start, y-axis if
+                                flex-direction: column). Choose from start (browser default), end, center, between,
+                                or around.</div> --}}
+
+{{!-- <div id="summary" class="d-flex flex-row h-100" style="background-color: tomato;">
+                                <div class="block"><span class="total-chooses"></span>block 1</div>
+                            </div> --}}
 
 
-
-
-
-
-
-
-
-<div id="hostGame" class="host-game d-none">
-    <div class="host-game-header">
-        <span class="exit">X</span>
-        <h3 id="timer">00:00</h3>
-        <button id="nextBtn">Next</button>
-    </div>
-
-    <div id="displayQuestion" class="host-game-content">
-        <p id="question"></p>
-    </div>
-
-    <div id="summary" class="host-game-content d-none">
-        <div class="block"><span class="total-chooses"></span>block 1</div>
-        <div class="block"><span class="total-chooses"></span>block 2</div>
-        <div class="block"><span class="total-chooses"></span>block 3</div>
-        <div class="block"><span class="total-chooses"></span>block 4</div>
-    </div>
-
-    <div id="choices" class="host-game-content">
-        <div class="choice">Choice 1</div>
-        <div class="choice">Choice 2</div>
-        <div class="choice">Choice 3</div>
-        <div class="choice">Choice 4</div>
-    </div>
-
-    <div class="host-game-footer">
-        <h3>Game PIN: <span id="gameId"></span></h3>
-    </div>
 </div>
 
-<div id="gameOver" class="host-game d-none">
-    <div class="host-game-header">
-        <span class="exit">X</span>
-        <h1>Game Over</h1>
-    </div>
-</div>
+</div> --}}
+
+
+
+
 
 
 
