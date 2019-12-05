@@ -53,7 +53,7 @@ window.onload = () => {
     document.querySelector('#classes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/reports";
+            window.location.href = "http://localhost:3000/classes";
         } else {
             window.location.href = "http://localhost:3000/users/login";
         }
@@ -183,19 +183,20 @@ window.onload = () => {
                                 <div class="question-list__wrap p-3">
 
                                     <div class="question-list__body">
-                                        <div><small>Question <span id="questionIndex">1</span></small></div>
+                                        <div><small>Question <span id="questionIndex">${index+1}</span></small></div>
                                         <p id="questionTitle">${question.question}</p>
                                     </div>
 
-                                    <div class="question-list__header px-3 py-2 d-flex">
+                                    <div class="question-list__header px-3 py-2 d-flex align-items-center">
                                         <div class="header-text mr-auto">Answered correctly</div>
-                                        <div>${question.accuracy}%</div>
+                                        <div class="mr-2">${question.accuracy}%</div>
+                                        <div class="choice-result choice-result--${question.choices[0].is_correct}"></div>
                                     </div>
                                     <ul class="question-list">
                                         <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
                                             <div class="question-choice flex-grow-1 mr-2" id="choice">${question.choices[0].choice}</div>
                                             <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
-                                                <div class="mr-2" id="choiceAccuracy">${question.choices[0].numPlayers} Players</div>
+                                                <div class="mr-4" id="choiceAccuracy">${question.choices[0].numPlayers} Players</div>
                                                 <div class="choice-accuracy mr-1" id="choiceAccuracy">${question.choices[0].accuracy}%</div>
                                                 <div class="choice-result choice-result--${question.choices[0].is_correct}"></div>
                                             </div>
@@ -203,7 +204,7 @@ window.onload = () => {
                                         <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
                                             <div class="question-choice flex-grow-1 mr-2" id="choice">${question.choices[1].choice}</div>
                                             <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
-                                                <div class="mr-2" id="choiceAccuracy">${question.choices[1].numPlayers} Players</div>
+                                                <div class="mr-4" id="choiceAccuracy">${question.choices[1].numPlayers} Players</div>
                                                 <div class="choice-accuracy mr-1" id="choiceAccuracy">${question.choices[1].accuracy}%</div>
                                                 <div class="choice-result choice-result--${question.choices[1].is_correct}"></div>
                                             </div>
@@ -211,7 +212,7 @@ window.onload = () => {
                                         <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
                                             <div class="question-choice flex-grow-1 mr-2" id="choice">${question.choices[2].choice}</div>
                                             <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
-                                                <div class="mr-2" id="choiceAccuracy">${question.choices[2].numPlayers} Players</div>
+                                                <div class="mr-4" id="choiceAccuracy">${question.choices[2].numPlayers} Players</div>
                                                 <div class="choice-accuracy mr-1" id="choiceAccuracy">${question.choices[2].accuracy}%</div>
                                                 <div class="choice-result choice-result--${question.choices[2].is_correct}"></div>
                                             </div>
@@ -219,15 +220,15 @@ window.onload = () => {
                                         <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
                                             <div class="question-choice flex-grow-1 mr-2" id="choice">${question.choices[3].choice}</div>
                                             <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
-                                                <div class="mr-2" id="choiceAccuracy">${question.choices[3].numPlayers} Players</div>
+                                                <div class="mr-4" id="choiceAccuracy">${question.choices[3].numPlayers} Players</div>
                                                 <div class="choice-accuracy mr-1" id="choiceAccuracy">${question.choices[3].accuracy}%</div>
                                                 <div class="choice-result choice-result--${question.choices[3].is_correct}"></div>
                                             </div>
                                         </li>
                                         <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
-                                            <div class="question-choice flex-grow-1 mr-2 text-muted" id="choice">Unattempted</div>
+                                            <div class="question-choice flex-grow-1 mr-2" id="choice">Unattempted</div>
                                             <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
-                                                <div class="mr-2" id="choiceAccuracy">${question.numNoAnsPlayers} Players</div>
+                                                <div class="mr-4" id="choiceAccuracy">${question.numNoAnsPlayers} Players</div>
                                                 <div class="choice-accuracy mr-1" id="choiceAccuracy">${question.noAnsAccuracy}%</div>
                                                 <div class="choice-result choice-result--unattempted"></div>
                                             </div>
@@ -235,29 +236,6 @@ window.onload = () => {
                                     </ul>
                                 </div>
                             </div>`;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     document.querySelector('#questionReportList').innerHTML = html;
                 })
             })
@@ -272,6 +250,39 @@ window.onload = () => {
         document.querySelector('#overallReport').classList.add("d-none");
         document.querySelector('#playersReport').classList.remove("d-none");
     })
+
+    fetch(`http://localhost:3000/api/reports/hoster/${hoster_reportId}`, {
+            headers: {
+                'authorization': `Bearer ${token}`,
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((report) => {
+            console.log(report);
+            const { player_results } = report.hosterReport;
+
+            let html = "";
+
+            player_results.forEach((player, index) => {
+
+                html += `<li class="result-item d-flex px-3 py-2 align-items-center flex-wrap">
+                            <div class="name flex-grow-1 mr-2 text-truncate" id="name">${player.name}</div>
+
+                            <div class="d-flex align-items-center flex-wrap my-1">
+                                <div class="mr-4" id="playerAccuracy">${player.accuracy}%</div>
+                                <div class="mr-1" id="correctAccuracy">${player.correct}</div>
+                                <div class="circle-bullet circle-bullet--correct mr-4"></div>
+                                <div class="mr-1" id="wrongAccuracy">${player.incorrect}</div>
+                                <div class="circle-bullet circle-bullet--incorrect mr-4"></div>
+                                <div class="mr-1" id="unattemptAccuracy">${player.unattempted}</div>
+                                <div class="circle-bullet circle-bullet--unattempt"></div>
+                            </div>
+                        </li>`;
+                document.querySelector('#playersReportList').innerHTML = html;
+            })
+        })
 
 
 };

@@ -391,7 +391,7 @@ exports.getOverallResults = (socket) => {
         // mongoDB
         if (hasToken === true) {
             PlayerReport.updateOne({ "socket_id": player.socketId }, {
-                    $set: { "rank": player.rank, "correct": player.correct, "incorrect": player.incorrect, "unattempted": unattempted }
+                    $set: { "points": player.points, "rank": player.rank, "correct": player.correct, "incorrect": player.incorrect, "unattempted": unattempted }
                 }, { upsert: true })
                 .then(() => console.log(`mongoDB responses success`))
                 .catch(err => console.log(err));

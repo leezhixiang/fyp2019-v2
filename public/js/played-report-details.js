@@ -53,7 +53,7 @@ window.onload = () => {
     document.querySelector('#classes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/reports";
+            window.location.href = "http://localhost:3000/classes";
         } else {
             window.location.href = "http://localhost:3000/users/login";
         }
@@ -123,9 +123,136 @@ window.onload = () => {
         })
         .then((report) => {
             console.log(report);
+            const accuracy = Math.floor((report.correct / report.questions.length) * 100);
             document.querySelector('#reportTimeStamp').textContent = report.played_date;
             document.querySelector('#gameName').textContent = report.game_name;
             document.querySelector('#creator').textContent = report.hoster_name;
+            document.querySelector('#totalPoints').textContent = `${report.points}`;
+            document.querySelector('#totalAccuracy').textContent = `${accuracy}%`;
+            document.querySelector('#rank').textContent = `${report.unattempted}`;
+            document.querySelector('#totalCorrects').textContent = `${report.correct}`;
+            document.querySelector('#totalIncorrects').textContent = `${report.incorrect}`;
+            document.querySelector('#totalUnattempted').textContent = `${report.unattempted}`;
 
+            report.scoreboard.forEach((scorer, index) => {
+                const scorerNames = document.querySelectorAll(".scorer-name");
+                const scorerPoints = document.querySelectorAll(".scorer-points");
+                scorerNames[index].textContent = scorer.name;
+                scorerPoints[index].textContent = scorer.points;
+            })
         })
+
+
+
+    // document.querySelector("#overallTab").addEventListener("click", function(e) {
+    //     document.querySelector('#overallTab').classList.add("active");
+    //     document.querySelector('#playersTab').classList.remove("active");
+    //     document.querySelector('#questionTab').classList.remove("active");
+
+    //     document.querySelector('#questionReport').classList.add("d-none");
+    //     document.querySelector('#playersReport').classList.add("d-none");
+    //     document.querySelector('#overallReport').classList.remove("d-none");
+
+    // })
+
+    // document.querySelector("#questionTab").addEventListener("click", function(e) {
+    //     document.querySelector('#questionTab').classList.add("active");
+    //     document.querySelector('#playersTab').classList.remove("active");
+    //     document.querySelector('#overallTab').classList.remove("active");
+
+    //     document.querySelector('#overallReport').classList.add("d-none");
+    //     document.querySelector('#playersReport').classList.add("d-none");
+    //     document.querySelector('#questionReport').classList.remove("d-none");
+
+    //     fetch(`http://localhost:3000/api/reports/hoster/${hoster_reportId}`, {
+    //             headers: {
+    //                 'authorization': `Bearer ${token}`,
+    //             }
+    //         })
+    //         .then((res) => {
+    //             return res.json();
+    //         })
+    //         .then((report) => {
+    //             console.log(report);
+    //             const { questions } = report.hosterReport;
+    //             console.log(questions);
+
+    //             let html = "";
+
+    //             questions.forEach((question, index) => {
+
+    //                 html += `<div class="col-md-8 mb-3">
+    //                             <div class="question-list__wrap p-3">
+
+    //                                 <div class="question-list__body">
+    //                                     <div><small>Question <span id="questionIndex">${index+1}</span></small></div>
+    //                                     <p id="questionTitle">${question.question}</p>
+    //                                 </div>
+
+    //                                 <div class="question-list__header px-3 py-2 d-flex align-items-center">
+    //                                     <div class="header-text mr-auto">Answered correctly</div>
+    //                                     <div class="mr-2">${question.accuracy}%</div>
+    //                                     <div class="choice-result choice-result--${question.choices[0].is_correct}"></div>
+    //                                 </div>
+    //                                 <ul class="question-list">
+    //                                     <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+    //                                         <div class="question-choice flex-grow-1 mr-2" id="choice">${question.choices[0].choice}</div>
+    //                                         <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
+    //                                             <div class="mr-4" id="choiceAccuracy">${question.choices[0].numPlayers} Players</div>
+    //                                             <div class="choice-accuracy mr-1" id="choiceAccuracy">${question.choices[0].accuracy}%</div>
+    //                                             <div class="choice-result choice-result--${question.choices[0].is_correct}"></div>
+    //                                         </div>
+    //                                     </li>
+    //                                     <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+    //                                         <div class="question-choice flex-grow-1 mr-2" id="choice">${question.choices[1].choice}</div>
+    //                                         <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
+    //                                             <div class="mr-4" id="choiceAccuracy">${question.choices[1].numPlayers} Players</div>
+    //                                             <div class="choice-accuracy mr-1" id="choiceAccuracy">${question.choices[1].accuracy}%</div>
+    //                                             <div class="choice-result choice-result--${question.choices[1].is_correct}"></div>
+    //                                         </div>
+    //                                     </li>
+    //                                     <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+    //                                         <div class="question-choice flex-grow-1 mr-2" id="choice">${question.choices[2].choice}</div>
+    //                                         <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
+    //                                             <div class="mr-4" id="choiceAccuracy">${question.choices[2].numPlayers} Players</div>
+    //                                             <div class="choice-accuracy mr-1" id="choiceAccuracy">${question.choices[2].accuracy}%</div>
+    //                                             <div class="choice-result choice-result--${question.choices[2].is_correct}"></div>
+    //                                         </div>
+    //                                     </li>
+    //                                     <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+    //                                         <div class="question-choice flex-grow-1 mr-2" id="choice">${question.choices[3].choice}</div>
+    //                                         <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
+    //                                             <div class="mr-4" id="choiceAccuracy">${question.choices[3].numPlayers} Players</div>
+    //                                             <div class="choice-accuracy mr-1" id="choiceAccuracy">${question.choices[3].accuracy}%</div>
+    //                                             <div class="choice-result choice-result--${question.choices[3].is_correct}"></div>
+    //                                         </div>
+    //                                     </li>
+    //                                     <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+    //                                         <div class="question-choice flex-grow-1 mr-2" id="choice">Unattempted</div>
+    //                                         <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
+    //                                             <div class="mr-4" id="choiceAccuracy">${question.numNoAnsPlayers} Players</div>
+    //                                             <div class="choice-accuracy mr-1" id="choiceAccuracy">${question.noAnsAccuracy}%</div>
+    //                                             <div class="choice-result choice-result--unattempted"></div>
+    //                                         </div>
+    //                                     </li>
+    //                                 </ul>
+    //                             </div>
+    //                         </div>`;
+    //                 document.querySelector('#questionReportList').innerHTML = html;
+    //             })
+    //         })
+    // })
+
+
+
+
+
+
+
+
+
+
+
+
+
 };

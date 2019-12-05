@@ -11299,6 +11299,35 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
   background-color: #e21a3c;
 }
 
+#playedReports .indicators__wrap .indicator__wrap {
+  background-color: white;
+}
+
+#playedReports .indicators__wrap .indicator__wrap .indicator-box {
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1.75;
+}
+
+#playedReports .indicators__wrap .indicator__wrap .indicator-label {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #fff;
+}
+
+#playedReports .indicators__wrap .indicator__wrap .indicator-label--correct {
+  background-color: #16D46B;
+}
+
+#playedReports .indicators__wrap .indicator__wrap .indicator-label--incorrect {
+  background-color: #E21A3C;
+}
+
+#playedReports .indicators__wrap .indicator__wrap .indicator-label--unattempted {
+  background-color: #6c757d;
+}
+
 .reports__nav-pills .nav-link {
   border-radius: 50rem;
 }
@@ -11377,6 +11406,18 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
   line-height: 1.5;
 }
 
+.question-list__wrap .question-list__header .choice-result {
+  height: 1rem;
+  width: 1rem;
+  display: inline-block;
+  text-align: center;
+  border-radius: 50%;
+}
+
+.question-list__wrap .question-list__header .choice-result--true {
+  background-color: #16D46B;
+}
+
 .question-list__wrap .question-list {
   list-style-type: none;
   margin: 0;
@@ -11385,6 +11426,11 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
 
 .question-list__wrap .question-list .question-item:nth-child(even) {
   background-color: #f2f2f2;
+}
+
+.question-list__wrap .question-list .question-item:nth-child(5) {
+  color: white;
+  background-color: #6c757d;
 }
 
 .question-list__wrap .question-list .question-item .choice-result {
@@ -11396,7 +11442,7 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
 }
 
 .question-list__wrap .question-list .question-item .choice-result--unattempted {
-  background-color: #6c757d;
+  background-color: lightgray;
 }
 
 .question-list__wrap .question-list .question-item .choice-result--true {

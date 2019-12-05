@@ -32,7 +32,7 @@ window.onload = () => {
     document.querySelector('#classes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/reports";
+            window.location.href = "http://localhost:3000/classes";
         } else {
             window.location.href = "http://localhost:3000/users/login";
         }
