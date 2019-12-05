@@ -6,7 +6,7 @@
     </div>
 </nav>
 
-<div class="container-fluid pt-4 pb-5" id="launch">
+<div class="container-fluid pt-4 pb-5 " id="launch">
 
     <div class="row">
         <div class="col-md-5 mx-auto">
@@ -94,74 +94,55 @@
 </div><!-- #launch -->
 
 <div class="container-fluid p-4 d-none" id="lobby">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-5 mx-auto text-center" style="color: white;">
-                <div>
-                    <h4><span class="badge badge-light-purple">To play this game</span></h4>
-                </div>
-                <div class="mt-3">
-                    <h4>Join at www.cls.com or CLS app with Game PIN:</h4>
-                </div>
-            </div>
-        </div><!-- #row -->
-        <div class="row mt-3">
-            <div class="col-md-6 mx-auto text-center">
-                <div class="card">
-                    <div class="card-body">
-                        <h1 id="gameId" class="display-2 text-center"
-                            style="font-family: 'ZCOOL QingKe HuangYou', cursive;">123456</h1>
-                    </div>
-                </div>
-            </div>
-        </div><!-- #row -->
-        <div class="row mt-4">
-            <div class="col-md-12 p-4 mx-auto">
-                <div class="p-3" style="background-color: #6769F0;">
-                    <div class="d-flex justify-content-between">
-                        <div >
-                            <h2>
-                                <span class="badge badge-light-purple">
-                                    <span class="live mr-1 mb-1"></span>
-                                    <span id="totalPlayers">0 Players</span>
-                                </span>
-                            </h2>
-                        </div>
-                        <div>
-                            <button id="startBtn" class="btn btn-danger btn-lg font-weight-bold">Start</button>
-                        </div>
-                    </div>
 
-                    <div class="row mt-4" id="nameList" style="background-color:; color:white; min-height:12.5rem">
-                        <div class="col-md-4 col-lg-3">
-                            <div class="text-center mb-3 text-truncate">
-                                <h5>Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang
-                                    Lee
-                                </h5>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-lg-3">
-                            <div class="text-center mb-3 text-truncate">
-                                <h5>Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang Lee Zhi Xiang
-                                    Lee
-                                </h5>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-lg-3">
-                            <div class="text-center mb-3 text-truncate">
-                                <h5>Zhi Xiang Lee</h5>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-lg-3">
-                            <div class="text-center mb-3 text-truncate">
-                                <h5>Zhi Xiang Lee</h5>
-                            </div>
+    <div class="row">
+        <div class="col-md-5 mx-auto text-center" style="color: white;">
+            <div>
+                <h4><span class="badge badge-light-purple">To play this game</span></h4>
+            </div>
+            <div class="mt-3">
+                <h4>Join at www.cls.com or CLS app with Game PIN:</h4>
+            </div>
+        </div>
+    </div><!-- #row -->
+    <div class="row mt-3">
+        <div class="col-md-6 mx-auto text-center">
+            <div class="card">
+                <div class="card-body">
+                    <h1 id="gameId" class="display-2 text-center"
+                        style="font-family: 'ZCOOL QingKe HuangYou', cursive;">123456</h1>
+                </div>
+            </div>
+        </div>
+    </div><!-- #row -->
+    <div class="row mt-4">
+        <div class="col-md-10 p-4 mx-auto">
+            <div class="p-3" style="background-color: #6769F0;">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h2>
+                            <span class="badge badge-light-purple">
+                                <span class="live mr-1 mb-1"></span>
+                                <span id="totalPlayers">0 Players</span>
+                            </span>
+                        </h2>
+                    </div>
+                    <div>
+                        <button id="startBtn" class="btn btn-danger btn-lg font-weight-bold">Start</button>
+                    </div>
+                </div>
+
+                <div class="row mt-4" id="nameList" style="background-color:; color:white; min-height:12.5rem">
+                    <div class="col-md-4 col-lg-3">
+                        <div class="text-center mb-3 text-truncate">
+                            <h5>Zhi Xiang Lee</h5>
                         </div>
                     </div>
                 </div>
-            </div><!-- .col -->
-        </div><!-- .row -->
-    </div><!-- .container -->
+            </div>
+        </div><!-- .col -->
+    </div><!-- .row -->
+    <!-- .container -->
 </div><!-- #lobby -->
 
 <div id="hostGame" class="host-game vh-100 vw-100 d-none">
@@ -291,112 +272,57 @@
     </div><!-- .flex-column -->
 </div><!-- #hostGame -->
 
-<div id="gameOver" class="vh-100 vw-100 d-none">
-    <div class="d-flex flex-column h-100">
 
-        <div class="nav-game-header px-3 py-2" style="background-color:#6769F0; color: white">
-            <div class="row no-gutters h-100">
+<div id="gameOver" class="game-over__wrap d-none">
 
-                <div class="col-1 my-auto" style="cursor:pointer">
-                    <h2 class="exit">&times;</h2>
+    <div class="host-game__navbar__wrap">
+        <div class="host-game__navbar-top px-3 py-2">
+            <div class="row">
+                <div class="col-1 exit">
+                    <span aria-hidden="true" class="icon-x">&times;</span>
                 </div>
-
-                <div class="col-10 my-auto">
-                    <h1 class="text-center">Game Over</h1>
+                <div class="col-10 my-auto text-center">
+                    <div class="">Game Over</div>
                 </div>
-
             </div>
         </div>
-
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6 mt-5">
-                    <div class="px-3 py-2" style="color: white; background-color:#3436BC">
-                        <h4 class="text-center">Final Scoreboard</h4>
-                    </div>
-                </div><!-- .col -->
-            </div><!-- .row -->
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="px-3 py-2 "
-                        style="background-color:white; border-left: 2px solid #3436BC; border-right: 2px solid #3436BC; border-bottom: 2px solid #3436BC;">
-                        <div class="d-flex flex-row align-items-center">
-                            <div class="scorer-badge mr-3">
-                                <span>1</span>
-                            </div>
-                            <div class="flex-grow-1 text-truncate mr-4 top">
-                                Zhi Xiang
-                            </div>
-                            <div class="topPts">19999</div>
-                        </div><!-- .d-flex -->
-                    </div>
-                </div><!-- .col -->
-            </div><!-- .row -->
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="px-3 py-2 " style="background-color:;">
-                        <div class="d-flex flex-row align-items-center">
-                            <div class="scorer-badge mr-3">
-                                <span>2</span>
-                            </div>
-                            <div class="flex-grow-1 text-truncate mr-4 top"></div>
-                            <div class="topPts"></div>
-                        </div><!-- .d-flex -->
-                    </div>
-                </div><!-- .col -->
-            </div><!-- .row -->
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="px-3 py-2 " style="background-color:white;">
-                        <div class="d-flex flex-row align-items-center">
-                            <div class="scorer-badge mr-3">
-                                <span>3</span>
-                            </div>
-                            <div class="flex-grow-1 text-truncate mr-4 top"></div>
-                            <div class="topPts"></div>
-                        </div><!-- .d-flex -->
-                    </div>
-                </div><!-- .col -->
-            </div><!-- .row -->
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="px-3 py-2 " style="background-color:;">
-                        <div class="d-flex flex-row align-items-center">
-                            <div class="scorer-badge mr-3">
-                                <span>4</span>
-                            </div>
-                            <div class="flex-grow-1 text-truncate mr-4 top"></div>
-                            <div class="topPts"></div>
-                        </div><!-- .d-flex -->
-                    </div>
-                </div><!-- .col -->
-            </div><!-- .row -->
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="px-3 py-2" style="background-color:white;">
-                        <div class="d-flex flex-row align-items-center">
-                            <div class="scorer-badge mr-3">
-                                <span>5</span>
-                            </div>
-                            <div class="flex-grow-1 text-truncate mr-4 top"></div>
-                            <div class="topPts"></div>
-                        </div><!-- .d-flex -->
-                    </div>
-                </div><!-- .col -->
-            </div><!-- .row -->
-        </div><!-- .container -->
-
-    </div>
-</div>
+    </div><!-- .header -->
 
 
-
-
-
-{{!-- <div class="container-fluid" style="position:absolute; bottom:0">
-    <div class="row">
-        <div class="col" style="background-color: #6769F0;">
-            <h4>Waiting for players...</h4>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col scorer-list__wrap col-6 ">
+                <div class="scorer-list__header px-3 py-2 text-center">
+                    Final Scoreboard
+                </div>
+                <ul class="scorer-list">
+                    <li class="scorer-item d-flex px-3 py-2">
+                        <div class="scorer-badge mr-2">1</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
+                        <div class="scorer-points">123456</div>
+                    </li>
+                    <li class="scorer-item d-flex px-3 py-2">
+                        <div class="scorer-badge mr-2">2</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
+                        <div class="scorer-points">123456</div>
+                    </li>
+                    <li class="scorer-item d-flex px-3 py-2">
+                        <div class="scorer-badge mr-2">3</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
+                        <div class="scorer-points">123456</div>
+                    </li>
+                    <li class="scorer-item d-flex px-3 py-2">
+                        <div class="scorer-badge mr-2">4</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
+                        <div class="scorer-points">123456</div>
+                    </li>
+                    <li class="scorer-item d-flex px-3 py-2">
+                        <div class="scorer-badge mr-2">5</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
+                        <div class="scorer-points">123456</div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-</div> --}}
+</div>

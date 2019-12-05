@@ -17,7 +17,7 @@
     background-color: $danger;
     height: calc(50% - 0.25rem);
     width: calc(50% - 0.25rem);
-    margin-right: .5rem;
+    margin-right: 0.5rem;
 }
 
 .c2 {
@@ -30,15 +30,15 @@
     background-color: $warning;
     height: calc(50% - 0.25rem);
     width: calc(50% - 0.25rem);
-    margin-top: .5rem;
+    margin-top: 0.5rem;
 }
 
 .c4 {
     background-color: $success;
     height: calc(50% - 0.25rem);
     width: calc(50% - 0.25rem);
-    margin-left: .5rem;
-    margin-top: .5rem;
+    margin-left: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .question-top {
@@ -48,7 +48,7 @@
 
 .question-choices {
     flex: 5 1 0%;
-    margin-top: .5rem;
+    margin-top: 0.5rem;
 }
 
 #question {
@@ -59,7 +59,7 @@
     -webkit-box-orient: vertical;
     font-size: 5vmin;
     font-weight: 500;
-    line-height: 1.25
+    line-height: 1.25;
 }
 
 .choice {
@@ -72,19 +72,6 @@
     font-size: 4vmin;
     font-weight: 500;
     line-height: 1.25;
-}
-
-.scorer-badge {
-    height: 1.75rem;
-    width: 1.75rem;
-    background-color: #6769F0;
-    color: white;
-    display: inline-block;
-    text-align: center;
-    border-radius: 50%;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.75rem
 }
 
 #top1 {
@@ -101,7 +88,7 @@
     .footer-text {
         font-size: 1.5em;
         font-weight: 400;
-        line-height: 1.25
+        line-height: 1.25;
     }
     #question {
         overflow: hidden;
@@ -111,7 +98,7 @@
         -webkit-box-orient: vertical;
         font-size: 6vmin;
         font-weight: 500;
-        line-height: 1.25
+        line-height: 1.25;
     }
     .choice {
         color: white;
@@ -122,7 +109,7 @@
         -webkit-box-orient: vertical;
         font-size: 5vmin;
         font-weight: 500;
-        line-height: 1.25
+        line-height: 1.25;
     }
 }
 
@@ -132,4 +119,50 @@
 
 .btn-choice {
     cursor: pointer;
+}
+
+.host-game__navbar__wrap {
+    color: white;
+    background-color: #6769f0;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.scorer-list__wrap {
+    .scorer-list__header {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.5;
+        color: white;
+        background-color: #3436bc;
+    }
+    .scorer-list {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        .scorer-item:nth-child(odd) {
+            background-color: white;
+        }
+        .scorer-item:nth-child(1) {
+            background-color: white;
+            border-left: 2px solid #3436bc;
+            border-right: 2px solid #3436bc;
+            border-bottom: 2px solid #3436bc;
+        }
+        .scorer-item {
+            .scorer-badge {
+                font-size: 1rem;
+                font-weight: 400;
+                line-height: 1.5;
+                height: 1.75rem;
+                width: 1.75rem;
+                color: white;
+                background-color: #6769f0;
+                display: inline-block;
+                text-align: center;
+                border-radius: 50%;
+            }
+        }
+    }
 }

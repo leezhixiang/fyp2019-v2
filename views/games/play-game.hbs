@@ -1,113 +1,90 @@
-<div class="container" id="joinGame">
+<div id="joinGame" class="container">
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-sm-8 col-md-6 col-lg-4">
             <div class="card">
                 <article class="card-body m-3 pt-4 pb-2">
                     <img src="/img/logo.png" alt="" height="130" width="130" class="d-block mx-auto mb-4 border">
                     <form id="joinGameForm">
-
-                        <div id="loginAlert"></div>
-
+                        <div id="joinGameAlert"></div>
                         <div class="form-group">
                             <input type="name" class="form-control" id="name" name="name" autocomplete="name"
-                                placeholder="Display name">
+                                placeholder="Display name" />
                         </div>
-
                         <div class="form-group">
-                            <input type="text" id="gameId" name="gameId" class="form-control" placeholder="Game PIN"
-                                autocomplete="gameId" />
+                            <input type="text" class="form-control" id="gameId" name="gameId" autocomplete="gameId"
+                                placeholder="Game PIN" />
                         </div> <!-- form-group end.// -->
-
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-block">Enter</button>
                         </div> <!-- form-group// -->
-
                     </form>
                     <div class="text-center">Discover more quizzes at <a href="/" id="here">here</a></div>
                 </article> <!-- card-body end .// -->
-
-                {{!-- <div class="border-top card-body text-center">No Account? <a href="/users/register">Sign Up</a></div> --}}
             </div> <!-- card.// -->
         </div> <!-- col.//-->
     </div>
 </div>
 
 
+<div id="playGame" class="play-game__wrap vh-100 vw-100 d-none">
+    <div class="play-game d-flex flex-column h-100">
 
-
-
-
-
-
-
-<div id="playGame" class="host-game vh-100 vw-100 d-none">
-    <div class="d-flex flex-column h-100">
-
-        <div class="nav-game-header px-3 py-2" style="background-color:#6769F0; color: white">
-            <div class="row no-gutters h-100">
-                <div class="col my-auto" style="cursor:pointer">
-                    <div class="d-flex align-items-center">
-                        <h2 class="exit mr-3">&times;</h2>
-                        <h3>
-                            <span id="questionIndex">0</span> / <span id="totalQuestion">0</span>
-                        </h3>
+        <div class="play-game__navbar__wrap">
+            <div class="play-game__navbar-top d-flex align-items-center px-3 py-2">
+                <div class="exit mr-4">
+                    <span aria-hidden="true" class="icon-x">&times;</span>
+                </div>
+                <div class="">
+                    <div>
+                        <span id="questionIndex">0</span> / <span id="totalQuestion">0</span>
                     </div>
                 </div>
-            </div><!-- .row -->
+            </div>
         </div><!-- .header -->
 
-
-        <div id="waitingStart" class="flex-grow-1 p-3 d-none">
-            <div class="h-100 d-flex flex-column align-items-center justify-content-center"
-                style="background-color: #16D46B;">
-                <div class="spinner-grow text-danger" style="width: 4rem; height: 4rem;" role="status">
+        <div id="waitingStart" class="play-game__waiting-start__wrap flex-grow-1 p-3">
+            <div class="waiting-start d-flex flex-column justify-content-center align-items-center h-100">
+                <div class="spinner-grow text-danger" style="width: 4rem; height: 4rem;">
                     <span class="sr-only">Loading...</span>
                 </div>
-                <div class="display-4 mt-4">You're in!</div>
-                <h2 class="mt-2 text-center">See your name on screen?</h2>
+                <h3 class="mt-2 display-4">You're in!</h3>
+                <h3 class="mt-2 text-center">See your name on screen?</h3>
             </div>
         </div>
 
-        <div id="waitingNext" class="flex-grow-1 p-3 d-none">
-            <div class="h-100 d-flex flex-column align-items-center justify-content-center"
-                style="background-color: #F9B616;">
-                <div class="spinner-grow text-danger" style="width: 4rem; height: 4rem;" role="status">
+        <div id="waitingNext" class="play-game__waiting_next__wrap flex-grow-1 p-3 d-none">
+            <div class="waiting-next d-flex flex-column justify-content-center align-items-center h-100">
+                <div class="spinner-grow text-danger" style="width: 4rem; height: 4rem;">
                     <span class="sr-only">Loading...</span>
                 </div>
-                <div class="display-4 mt-4">You're in!</div>
-                <h2 class="mt-2 text-center">Waiting for next question to answer...</h2>
+                <div class="mt-2 display-4">You're in!</div>
+                <h3 class="mt-2 text-center">Waiting for next question to answer...</h3>
             </div>
-        </div>
+        </div><!-- .play-game__content__wrap -->
 
-        <div id="waitingOthers" class="flex-grow-1 p-3 d-none">
-            <div class="h-100 d-flex flex-column align-items-center justify-content-center"
-                style="background-color: #f2f2f2;">
-                <div class="spinner-border text-secondary" style="width: 4rem; height: 4rem;" role="status">
+        <div id="waitingOthers" class="play-game__waiting-others__wrap flex-grow-1 p-3 d-none">
+            <div class="waiting-others d-flex flex-column justify-content-center align-items-center h-100">
+                <div class="spinner-border text-secondary" style="width: 4rem; height: 4rem;">
                     <span class="sr-only">Loading...</span>
                 </div>
                 <h2 class="mt-4 text-center">Waiting for others to answer...</h2>
             </div>
         </div>
 
-        <div id="correct" class="flex-grow-1 p-3 d-none">
-            <div class="h-100 d-flex flex-column align-items-center justify-content-center"
-                style="background-color: #16D46B; color:white">
-
+        <div id="correct" class="play-game__correct__wrap flex-grow-1 p-3 d-none">
+            <div class="correct d-flex flex-column justify-content-center align-items-center h-100">
                 <span class="" style="display: inline-block; vertical-align: middle; width: 72px; height: 72px;">
                     <svg viewBox="0 0 32 32">
                         <path d="M11.709 29.182L0 17.255 5.527 11.727 11.709 17.982 26.473 3 32 8.6z"
                             style="fill: rgb(255, 255, 255);"></path>
                     </svg></span>
                 <div class="display-4 mt-1">Correct</div>
-
                 <div id="correctResults"></div>
             </div>
         </div>
 
-        <div id="wrong" class="flex-grow-1 p-3 d-none">
-            <div class="h-100 d-flex flex-column align-items-center justify-content-center"
-                style="background-color: #E21A3C; color:white">
-
+        <div id="wrong" class="play-game__wrong__wrap flex-grow-1 p-3 d-none">
+            <div class="d-none wrong d-flex flex-column justify-content-center align-items-center h-100">
                 <span class="mt-4" style="display: inline-block; vertical-align: middle; width: 72px; height: 72px;">
                     <svg viewBox="0 0 32 32" aria-labelledby="correct-answer-iconTitle correct-answer-iconDesc">
                         <path
@@ -121,16 +98,7 @@
             </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-        <div id="choices" class="flex-grow-1 p-3 d-none">
+        <div id="choices" class="play-game__choices__wrap flex-grow-1 p-3 d-none">
             <div class="d-flex flex-row flex-wrap h-100">
                 <div class="c1">
                     <div class="btn-choice h-100 p-3 d-flex align-items-center justify-content-center">
@@ -155,57 +123,52 @@
             </div><!-- .c4 -->
         </div>
 
-        <div class="nav-game-footer px-3 pb-3" style="background-color:; color: white">
-            <div class="row no-gutters h-100">
-                <div class="col my-auto">
-                    <div class="footer-text"><span id="playerName">Zhi Xiang Lee</span></div>
-                </div>
-                <div class="col my-auto">
-                    <div class="text-right">
-                        <div class="footer-text" class="ml-auto"><span id="totalPts">99885</span></div>
+        <div class="play-game__navbar__wrap">
+            <div class="play-game__navbar-bottom d-flex align-items-center px-3 py-2">
+                <ul class="player-details d-flex flex-row justify-content-between w-100">
+                    <li class="player-details__item flex-grow-1 flex-shrink-1">
+                        <div class="player-details__name" id="playerName">Zhi Xiang Lee</div>
+                    </li>
+                    <li class="player-details__item flex-grow-1 flex-shrink-1 text-right">
+                        <div class="player-details__points">Points: <span id="totalPts">99885</span></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div><!-- .play-game -->
+
+
+    <div id="gameOver" class="vh-100 vw-100 d-none">
+        <div class="d-flex flex-column h-100">
+
+            <div class="nav-game-header px-3 py-2" style="background-color:#6769F0; color: white">
+                <div class="row no-gutters h-100">
+
+                    <div class="col-1 my-auto" style="cursor:pointer">
+                        <h2 class="exit">&times;</h2>
                     </div>
+
+                    <div class="col-10 my-auto">
+                        <h1 class="text-center">Game Over</h1>
+                    </div>
+
                 </div>
             </div>
-        </div>
-
-
-
-    </div><!-- .d-flex -->
-</div><!-- #playGame -->
 
 
 
 
 
+        </div><!-- .d-flex -->
+    </div>
 
-
-<div id="gameOver" class="vh-100 vw-100 d-none">
-    <div class="d-flex flex-column h-100">
-
-        <div class="nav-game-header px-3 py-2" style="background-color:#6769F0; color: white">
-            <div class="row no-gutters h-100">
-
-                <div class="col-1 my-auto" style="cursor:pointer">
-                    <h2 class="exit">&times;</h2>
-                </div>
-
-                <div class="col-10 my-auto">
-                    <h1 class="text-center">Game Over</h1>
-                </div>
-
-            </div>
-        </div>
-
-
-
-
-
-
-
-
-
-    </div><!-- .d-flex -->
 </div>
+
+
+
+
+
+
 
 
 
@@ -233,43 +196,60 @@
 
 {{!-- 
 
-<div id="playGame" class="play-game hidden">
-    <div class="play-game-header">
-        <span class="exit">X</span>
-        <span id="questionIndex">0</span><span>/</span><span id="totalQuestion">0</span>
-    </div>
 
-    <div id="waitingStart" class="play-game-content hidden">
-        <h1>You're in!</h1>
-        <h4>See your name on screen?</h4>
-    </div>
+        <div id="waitingOthers"
+            class="d-none waiting-others d-flex flex-column justify-content-center align-items-center h-100">
+            <div class="spinner-border text-secondary" style="width: 4rem; height: 4rem;">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <h2 class="mt-4 text-center">Waiting for others to answer...</h2>
+        </div>
 
-    <div id="waitingNext" class="play-game-content hidden">
-        <h1>You're in!</h1>
-        <h4>Waiting for next question to answer...</h4>
-    </div>
+        <div id="correct" class="d-none correct d-flex flex-column justify-content-center align-items-center h-100">
+            <span class="" style="display: inline-block; vertical-align: middle; width: 72px; height: 72px;">
+                <svg viewBox="0 0 32 32">
+                    <path d="M11.709 29.182L0 17.255 5.527 11.727 11.709 17.982 26.473 3 32 8.6z"
+                        style="fill: rgb(255, 255, 255);"></path>
+                </svg></span>
+            <div class="display-4 mt-1">Correct</div>
 
-    <div id="waitingOthers" class="play-game-content hidden"><span>Spinner</span></div>
+            <div id="correctResults"></div>
+        </div>
 
-    <div id="correct" class="play-game-content hidden"><span>Correct</span></div>
+        <div id="wrong" class="d-none wrong d-flex flex-column justify-content-center align-items-center">
+            <span class="mt-4" style="display: inline-block; vertical-align: middle; width: 72px; height: 72px;">
+                <svg viewBox="0 0 32 32" aria-labelledby="correct-answer-iconTitle correct-answer-iconDesc">
+                    <path
+                        d="M32 6.147L25.853 0 16 9.853 6.147 0 0 6.147 9.853 16 0 25.853 6.147 32 16 22.147 25.853 32 32 25.853 22.147 16z"
+                        style="fill: rgb(255, 255, 255);"></path>
+                </svg>
+            </span>
+            <div class="display-4 mt-1">Incorrect</div>
 
-    <div id="wrong" class="play-game-content hidden"><span>Wrong</span></div>
+            <div id="wrongResults"></div>
+        </div>
 
-    <div id="choices" class="play-game-content hidden">
-        <button class="choice">Choice 1</button>
-        <button class="choice">Choice 2</button>
-        <button class="choice">Choice 3</button>
-        <button class="choice">Choice 4</button>
-    </div>
-
-    <div class="play-game-footer">
-        <span id="playerName"></span>
-    </div>
-</div>
-
-<div id="gameOver" class="play-game hidden">
-    <div class="play-game-header">
-        <span class="exit">X</span>
-        <h1>Game Over</h1>
-    </div>
-</div> --}}
+        <div id="choices" class="play-game__content flex-grow-1 p-3 d-none">
+            <div class="d-flex flex-row flex-wrap h-100">
+                <div class="c1">
+                    <div class="btn-choice h-100 p-3 d-flex align-items-center justify-content-center">
+                        <div class="choice"></div>
+                    </div>
+                </div><!-- .c1 -->
+                <div class="c2">
+                    <div class="btn-choice h-100 p-3 d-flex align-items-center justify-content-center">
+                        <div class="choice"></div>
+                    </div>
+                </div><!-- .c2 -->
+                <div class="c3">
+                    <div class="btn-choice h-100 p-3 d-flex align-items-center justify-content-center">
+                        <div class="choice"></div>
+                    </div>
+                </div><!-- .c3 -->
+                <div class="c4">
+                    <div class="btn-choice h-100 p-3 d-flex align-items-center justify-content-center">
+                        <div class="choice"></div>
+                    </div>
+                </div>
+            </div><!-- .c4 -->
+        </div> --}}

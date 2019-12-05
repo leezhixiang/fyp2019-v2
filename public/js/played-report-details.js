@@ -110,77 +110,22 @@ window.onload = () => {
         window.location.href = "http://localhost:3000/";
     });
 
-    document.querySelector("#playedTab").addEventListener("click", function(e) {
-        document.querySelector('#playedTab').classList.add("active");
-        document.querySelector('#playedReports').classList.remove("d-none");
-        document.querySelector('#hostedTab').classList.remove("active");
-        document.querySelector('#hostedReports').classList.add("d-none");
-        // get player reports
-        fetch(`http://localhost:3000/api/reports/player`, {
-                headers: {
-                    'authorization': `Bearer ${token}`,
-                }
-            })
-            .then((res) => {
-                return res.json();
-            })
-            .then((reports) => {
-                console.log(reports);
+    const pathName = window.location.pathname.split('/');
+    const played_reportId = pathName[3];
 
-                let html = "";
+    fetch(`http://localhost:3000/api/reports/player/${played_reportId}`, {
+            headers: {
+                'authorization': `Bearer ${token}`,
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((report) => {
+            console.log(report);
+            document.querySelector('#reportTimeStamp').textContent = report.played_date;
+            document.querySelector('#gameName').textContent = report.game_name;
+            document.querySelector('#creator').textContent = report.hoster_name;
 
-                reports.forEach((report) => {
-                    html += `<div class="col-md-6">
-                    <div class="report__wrap p-3 mb-3">
-                        <div class="report-header__wrap d-flex align-items-center">
-                            <img class="mr-2" src="/img/logo.png" height="18px" width="18px" alt="">
-                            <div class="report-time-stamp text-truncate"><small>${report.played_date}</small></div>
-                        </div>
-                        <a href="/reports/played/${report._id}" class="report-title mt-1">${report.game_name}</a>
-                        <div class="report-hosted text-muted text-truncate"><small>Hosted by
-                                <span id="creator">${report.hoster_name}</span></small></div>
-                    </div>
-                </div>`;
-                    document.querySelector('#playedReportsList').innerHTML = html;
-                })
-            });
-    });
-
-    document.querySelector("#playedTab").click();
-
-    document.querySelector("#hostedTab").addEventListener("click", function(e) {
-
-        document.querySelector('#hostedTab').classList.add("active");
-        document.querySelector('#hostedReports').classList.remove("d-none");
-        document.querySelector('#playedTab').classList.remove("active");
-        document.querySelector('#playedReports').classList.add("d-none");
-        // get hoster reports
-        fetch(`http://localhost:3000/api/reports/hoster`, {
-                headers: {
-                    'authorization': `Bearer ${token}`,
-                }
-            })
-            .then((res) => {
-                return res.json();
-            })
-            .then((reports) => {
-                console.log(reports);
-                let html = "";
-
-                reports.forEach((report) => {
-                    html += `<div class="col-md-6">
-                                <div class="report__wrap p-3 mb-3">
-                                    <div class="report-header__wrap d-flex align-items-center">
-                                        <img class="mr-2" src="/img/logo.png" height="18px" width="18px" alt="">
-                                        <div class="report-time-stamp text-truncate"><small>${report.hosted_date}</small></div>
-                                    </div>
-                                    <a href="/reports/hosted/${report._id}" class="report-title mt-1">${report.game_name}</a>
-                                </div>
-                            </div>`;
-                    document.querySelector('#hostedReportsList').innerHTML = html;
-                })
-            });
-    })
-
-
-}
+        })
+};

@@ -221,10 +221,10 @@ window.onload = () => {
                 document.querySelector("#gameOver").classList.remove("d-none");
 
                 scoreBoard.forEach((scorer, index) => {
-                    const top = document.querySelectorAll(".top");
-                    const topPts = document.querySelectorAll(".topPts");
-                    top[index].textContent = scorer.name;
-                    topPts[index].textContent = scorer.points;
+                    const scorerNames = document.querySelectorAll(".scorer-name");
+                    const scorerPoints = document.querySelectorAll(".scorer-points");
+                    scorerNames[index].textContent = scorer.name;
+                    scorerPoints[index].textContent = scorer.points;
                 });
 
                 console.log(`[next-button] game over`);

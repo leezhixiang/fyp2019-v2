@@ -1,0 +1,229 @@
+{{> header}}
+
+
+
+
+<div id="playedReports" class="container report-list__wrap">
+
+    <div id="playedReportsList" class="report-list played-report-list row mt-4">
+        <div class="col-md-8">
+            <div class="report__wrap p-3">
+                <div class="report-header__wrap d-flex align-items-center">
+                    <img class="mr-2" src="/img/logo.png" height="18px" width="18px" alt="">
+                    <div class="report-time-stamp text-truncate" id="reportTimeStamp"><small>2019/11/25 12:12:12</small>
+                    </div>
+                </div>
+                <div class="report-title mt-1" id="gameName">Hardware Identification - Refresher</div>
+                <div class="report-hosted text-muted text-truncate"><small>Hosted by
+                        <span id="creator">Zhi Xiang Lee</span></small></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-8">
+            <ul class="nav nav-pills nav-fill bg-light">
+                <li class="nav-item">
+                    <a class="nav-link active" id="overallTab" href="#">Overall</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="questionTab" href="#">Questions</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="playersTab" href="#">Players</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="overallReport" class="mb-5">
+        <div class="row indicators__wrap mt-4">
+            <div class="col-sm-12 col-md-8 col-lg-8">
+                <div class="row no-gutters">
+                    <div class="col-4">
+                        <div
+                            class="indicator__wrap d-flex flex-column justify-content-center align-items-center p-3 mr-1">
+                            <div class="indicator-box" id="gameAccuracy">25%</div>
+                            <div class="indicator-label text-center w-100 py-2 mt-2">Accuracy</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div
+                            class="indicator__wrap d-flex flex-column justify-content-center align-items-center p-3 ml-1 mr-1">
+                            <div class="indicator-box" id="totalQuestions">25</div>
+                            <div class="indicator-label text-center w-100 py-2 mt-2">Questions</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div
+                            class="indicator__wrap d-flex flex-column justify-content-center align-items-center p-3 ml-1">
+                            <div class="indicator-box" id="totalPlayers">25</div>
+                            <div class="indicator-label text-center w-100 py-2 mt-2">Players</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="scorer-list__wrap col-md-8">
+                <div class="scorer-list__header px-3 py-2 text-center">
+                    Final Scoreboard
+                </div>
+                <ul class="scorer-list">
+                    <li class="scorer-item d-flex px-3 py-2">
+                        <div class="scorer-badge mr-2">1</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
+                        <div class="scorer-points">123456</div>
+                    </li>
+                    <li class="scorer-item d-flex px-3 py-2">
+                        <div class="scorer-badge mr-2">2</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
+                        <div class="scorer-points">123456</div>
+                    </li>
+                    <li class="scorer-item d-flex px-3 py-2">
+                        <div class="scorer-badge mr-2">3</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
+                        <div class="scorer-points">123456</div>
+                    </li>
+                    <li class="scorer-item d-flex px-3 py-2">
+                        <div class="scorer-badge mr-2">4</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
+                        <div class="scorer-points">123456</div>
+                    </li>
+                    <li class="scorer-item d-flex px-3 py-2">
+                        <div class="scorer-badge mr-2">5</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
+                        <div class="scorer-points">123456</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="questionReport" class="d-none">
+        <div class="row mt-4" id="questionReportList">
+            <div class="col-md-8 mb-3">
+                <div class="question-list__wrap p-3">
+
+                    <div class="question-list__body">
+                        <div><small>Question <span id="questionIndex">1</span></small></div>
+                        <p id="questionTitle">toggle a flex item’s ability to shrink if necessary</p>
+                    </div>
+
+                    <div class="question-list__header px-3 py-2 d-flex">
+                        <div class="header-text mr-auto">Answered correctly</div>
+                        <div>25%</div>
+                    </div>
+                    <ul class="question-list">
+                        <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+                            <div class="question-choice flex-grow-1 mr-2" id="choice">123456toggle a flex
+                                item’s ability to shrink if necessarytoggle a flex item’s ability to shrink if
+                                necessarytoggle a flex item’s ability to shrink if necessary</div>
+                            <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
+                                <div class="mr-2" id="choiceAccuracy">10 Players</div>
+                                <div class="choice-accuracy mr-1" id="choiceAccuracy">25%</div>
+                                <div class="choice-result choice-result--"></div>
+                            </div>
+                        </li>
+                        <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+                            <div class="question-choice flex-grow-1 mr-2" id="choice">123456toggle a flex
+                                item’s ability to shrink if necessarytoggle a flex item’s ability to shrink if
+                                necessarytoggle a flex item’s ability to shrink if necessary</div>
+                            <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
+                                <div class="mr-2" id="choiceAccuracy">10 Players</div>
+                                <div class="choice-accuracy mr-1" id="choiceAccuracy">25%</div>
+                                <div class="choice-result choice-result--"></div>
+                            </div>
+                        </li>
+                        <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+                            <div class="question-choice flex-grow-1 mr-2" id="choice">123456toggle a flex
+                                item’s ability to shrink if necessarytoggle a flex item’s ability to shrink if
+                                necessarytoggle a flex item’s ability to shrink if necessary</div>
+                            <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
+                                <div class="mr-2" id="choiceAccuracy">10 Players</div>
+                                <div class="choice-accuracy mr-1" id="choiceAccuracy">25%</div>
+                                <div class="choice-result choice-result--"></div>
+                            </div>
+                        </li>
+                        <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+                            <div class="question-choice flex-grow-1 mr-2" id="choice">123456toggle a flex
+                                item’s ability to shrink if necessarytoggle a flex item’s ability to shrink if
+                                necessarytoggle a flex item’s ability to shrink if necessary</div>
+                            <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
+                                <div class="mr-2" id="choiceAccuracy">10 Players</div>
+                                <div class="choice-accuracy mr-1" id="choiceAccuracy">25%</div>
+                                <div class="choice-result choice-result--"></div>
+                            </div>
+                        </li>
+                        <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+                            <div class="question-choice flex-grow-1 mr-2 text-muted" id="choice">Unattempted</div>
+                            <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
+                                <div class="mr-2" id="choiceAccuracy">10 Players</div>
+                                <div class="choice-accuracy mr-1" id="choiceAccuracy">25%</div>
+                                <div class="choice-result choice-result--unattempted"></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+    <div id="playersReport" class="d-none">
+
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="result-list__wrap p-3">
+
+                    <div class="result-list__body d-flex flex-row align-items-center">
+                        <div class="flex-grow-1 mr-2 d-flex align-items-center flex-wrap">
+                            <div class="d-flex flex-row align-items-center my-1">
+                                <div class="circle-bullet circle-bullet--correct mr-1"></div>
+                                <div class="mr-4">Correct</div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center my-1">
+                                <div class="circle-bullet circle-bullet--incorrect mr-1"></div>
+                                <div class="mr-4">Incorrect</div>
+                            </div>
+                            <div class="d-flex flex-row align-items-center my-1">
+                                <div class="circle-bullet circle-bullet--unattempt mr-1"></div>
+                                <div class="mr-4">Unattempt</div>
+                            </div>
+
+                        </div>
+                        <div class="">Accuracy %</div>
+                    </div>
+
+                    <ul class="result-list mt-3">
+                        <li class="result-item d-flex px-3 py-2 align-items-center flex-wrap">
+                            <div class="name flex-grow-1 mr-2 text-truncate" id="name">toggle a flex item’s ability to
+                                shrink if necessary</div>
+
+                            <div class="d-flex align-items-center flex-wrap my-1">
+                                <div class="mr-1" id="correctAccuracy">25</div>
+                                <div class="circle-bullet circle-bullet--correct mr-4"></div>
+                                <div class="mr-1" id="wrongAccuracy">25</div>
+                                <div class="circle-bullet circle-bullet--incorrect mr-4"></div>
+                                <div class="mr-1" id="unattemptAccuracy">25</div>
+                                <div class="circle-bullet circle-bullet--unattempt mr-4"></div>
+                                <div class="mr-1" id="playerAccuracy">25%</div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+</div>

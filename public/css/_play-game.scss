@@ -1,0 +1,37 @@
+@import "./variables";
+.play-game {
+    .play-game__navbar__wrap {
+        color: white;
+        background-color: #6769f0;
+        font-size: 1.5rem;
+        font-weight: 400;
+        line-height: 1.5;
+        .play-game__navbar-bottom {
+            .player-details {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+        }
+    }
+    .waiting-start {
+        color: white;
+        background-color: #16d46b;
+    }
+    .waiting-next {
+        color: white;
+        background-color: #f9b616;
+    }
+    .waiting-others {
+        color: $gray-900;
+        background-color: white;
+    }
+    .correct {
+        color: white;
+        background-color: #16d46b;
+    }
+    .wrong {
+        color: white;
+        background-color: #e21a3c;
+    }
+}

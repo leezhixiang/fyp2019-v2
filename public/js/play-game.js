@@ -1,7 +1,7 @@
 window.onload = () => {
 
 
-    const token = JSON.parse(localStorage.getItem("auth_token"));
+    const token = JSON.parse(localStorage.getItem('auth_token'));
 
     const passToken = (token) => {
         if (token) {
@@ -34,7 +34,6 @@ window.onload = () => {
                 console.log(`[join-game] ${message}`);
 
                 // change to next page
-                document.body.style.background = "#212529";
                 document.querySelector("#joinGame").classList.add("d-none");
                 document.querySelector("#playGame").classList.remove("d-none");
 

@@ -2,6 +2,8 @@
 // Bootstrap and its default variables
 @import "../../node_modules/bootstrap/scss/bootstrap";
 @import "./host-game";
+@import "./play-game";
+@import "./reports";
 .vl {
     border-left: 1px solid $light-purple;
     height: 2rem;
@@ -80,7 +82,7 @@
 }
 
 #icon-choice1 {
-    background: url('/img/c1.png');
+    background: url("/img/c1.png");
     height: 1.5rem;
     width: 1.5rem;
     display: inline-block;
@@ -90,7 +92,7 @@
 }
 
 #icon-choice2 {
-    background: url('/img/c2.png');
+    background: url("/img/c2.png");
     height: 1.5rem;
     width: 1.5rem;
     display: inline-block;
@@ -100,7 +102,7 @@
 }
 
 #icon-choice3 {
-    background: url('/img/c3.png');
+    background: url("/img/c3.png");
     height: 1.5rem;
     width: 1.5rem;
     display: inline-block;
@@ -110,7 +112,7 @@
 }
 
 #icon-choice4 {
-    background: url('/img/c4.png');
+    background: url("/img/c4.png");
     height: 1.5rem;
     width: 1.5rem;
     display: inline-block;
@@ -129,8 +131,8 @@
 
 .live {
     background-color: $danger;
-    width: .875rem;
-    height: .875rem;
+    width: 0.875rem;
+    height: 0.875rem;
     border-radius: 50%;
     display: inline-block;
 }
@@ -152,7 +154,7 @@
 }
 
 #showcase {
-    background: url('/img/bg.jpg');
+    background: url("/img/bg.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -160,8 +162,8 @@
 
 .nav-link-quizzes {
     display: block;
-    padding: .5rem 1rem;
-    font-size: $font-size-base * .875;
+    padding: 0.5rem 1rem;
+    font-size: $font-size-base * 0.875;
     line-height: 1.5;
     @include hover-focus() {
         text-decoration: none;
@@ -217,8 +219,8 @@
     right: 0;
     bottom: 0;
     background-color: $gray-700;
-    -webkit-transition: .4s;
-    transition: .4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
 }
 
 .slider:before {
@@ -229,8 +231,8 @@
     left: 4px;
     bottom: 4px;
     background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
 }
 
 input:checked+.slider {
@@ -292,7 +294,7 @@ input:checked+.slider:before {
     background-color: white;
     border-bottom: $card-border-width solid $card-border-color;
     &:first-child {
-        @include border-radius($card-inner-border-radius $card-inner-border-radius 0 0);
+        @include border-radius( $card-inner-border-radius $card-inner-border-radius 0 0);
     }
     +.list-group {
         .list-group-item:first-child {
@@ -338,4 +340,13 @@ input:checked+.slider:before {
 
 .line-top {
     border-top: 5px solid $dark-purple;
+    color: white;
+}
+
+.icon-x {
+    font-size: 2.5rem;
+    line-height: 1;
+    color: white;
+    opacity: 0.8;
+    cursor: pointer;
 }
