@@ -30,7 +30,34 @@
         </div>
     </div>
 
+
+
     <div id="overallReport" class="mb-5">
+
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="px-3 py-2" style="background-color: white;">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="text-center results" id="totalCorrects">1</div>
+                            <div class="text-center">Correct</div>
+
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center results" id="totalIncorrects">1</div>
+                            <div class="text-center">Inorrect</div>
+
+                        </div>
+                        <div class="col-4">
+                            <div class="text-center results" id="totalUnattempted">1</div>
+                            <div class="text-center">Unattempted</div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
         <div class="row indicators__wrap mt-4">
             <div class="col-sm-12 col-md-8 col-lg-8">
@@ -65,30 +92,7 @@
             </div>
         </div>
 
-        <div id="playedReportsList" class="report-list played-report-list row mt-4">
-            <div class="col-md-8">
-                <div class="px-3 py-2" style="background-color: white;">
-                    <div class="row">
-                        <div class="col-4">
-                            <div class="text-center" id="totalCorrects">1</div>
-                            <div class="text-center"><strong>Correct</strong></div>
 
-                        </div>
-                        <div class="col-4">
-                            <div class="text-center" id="totalIncorrects">1</div>
-                            <div class="text-center"><strong>Inorrect</strong></div>
-
-                        </div>
-                        <div class="col-4">
-                            <div class="text-center" id="totalUnattempted">1</div>
-                            <div class="text-center"><strong>Unattempted</strong></div>
-
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
 
         <div class="row mt-4">
             <div class="scorer-list__wrap col-md-8">
@@ -98,28 +102,28 @@
                 <ul class="scorer-list">
                     <li class="scorer-item d-flex px-3 py-2">
                         <div class="scorer-badge mr-2">1</div>
-                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
-                        <div class="scorer-points">123456</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate"></div>
+                        <div class="scorer-points"></div>
                     </li>
                     <li class="scorer-item d-flex px-3 py-2">
                         <div class="scorer-badge mr-2">2</div>
-                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
-                        <div class="scorer-points">123456</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate"></div>
+                        <div class="scorer-points"></div>
                     </li>
                     <li class="scorer-item d-flex px-3 py-2">
                         <div class="scorer-badge mr-2">3</div>
-                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
-                        <div class="scorer-points">123456</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate"></div>
+                        <div class="scorer-points"></div>
                     </li>
                     <li class="scorer-item d-flex px-3 py-2">
                         <div class="scorer-badge mr-2">4</div>
-                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
-                        <div class="scorer-points">123456</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate"></div>
+                        <div class="scorer-points"></div>
                     </li>
                     <li class="scorer-item d-flex px-3 py-2">
                         <div class="scorer-badge mr-2">5</div>
-                        <div class="scorer-name flex-grow-1 mr-2 text-truncate">Zhi Xiang Lee</div>
-                        <div class="scorer-points">123456</div>
+                        <div class="scorer-name flex-grow-1 mr-2 text-truncate"></div>
+                        <div class="scorer-points"></div>
                     </li>
                 </ul>
             </div>
@@ -131,10 +135,10 @@
 
 
 
-    <div id="questionReport" class="">
+    <div id="questionReport" class="d-none">
 
-        <div class="row mt-4">
-            <div class="col-md-8">
+        <div class="row mt-4" id="questionReportList">
+            <div class="col-md-8 mb-3">
                 <div class="question-list__wrap p-3">
 
                     <div class="question-list__body">
@@ -145,7 +149,7 @@
                     <div class="question-list__header px-3 py-2">
                         Answered correctly
                     </div>
-                    <ul class="question-list">
+                    <ul class="question-list question-list--player">
                         <li class="question-item d-flex px-3 py-2 align-items-center">
                             <div class="question-choice flex-grow-1 mr-2 text-truncate" id="choice">123456</div>
                             <div class="choice-accuracy mr-1" id="choiceAccuracy">25%</div>

@@ -188,11 +188,11 @@ window.onload = () => {
                                     </div>
 
                                     <div class="question-list__header px-3 py-2 d-flex align-items-center">
-                                        <div class="header-text mr-auto">Answered correctly</div>
+                                        <div class="header-text mr-auto my-1">Answered correctly</div>
                                         <div class="mr-2">${question.accuracy}%</div>
                                         <div class="choice-result choice-result--${question.choices[0].is_correct}"></div>
                                     </div>
-                                    <ul class="question-list">
+                                    <ul class="question-list question-list--hoster">
                                         <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
                                             <div class="question-choice flex-grow-1 mr-2" id="choice">${question.choices[0].choice}</div>
                                             <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
@@ -225,7 +225,7 @@ window.onload = () => {
                                                 <div class="choice-result choice-result--${question.choices[3].is_correct}"></div>
                                             </div>
                                         </li>
-                                        <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">
+                                        <li class="question-item question-item--last-child d-flex px-3 py-2 align-items-center flex-wrap">
                                             <div class="question-choice flex-grow-1 mr-2" id="choice">Unattempted</div>
                                             <div class="d-flex align-items-center flex-wrap my-1 ml-auto">
                                                 <div class="mr-4" id="choiceAccuracy">${question.numNoAnsPlayers} Players</div>

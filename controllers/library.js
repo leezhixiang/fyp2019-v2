@@ -94,6 +94,13 @@ exports.getSharedQuizzes = (req, res) => {
         .select('_id')
         .select('quiz_id')
         .populate('quiz_id')
+        .populate({
+            path: 'quiz_id',
+            populate: {
+                path: 'creator',
+                select: 'name'
+            }
+        })
         .then(sharedQuizzes => {
             res.status(200).json(sharedQuizzes)
         })

@@ -263,6 +263,28 @@ window.onload = () => {
             document.querySelector("#playGame").remove();
             document.querySelector("#gameOver").classList.remove("d-none");
 
+            let html = `<div class="rank-points text-center mb-3">
+                            You finished at rank ${rank} with ${points} points
+                        </div>
+                        <div class="d-flex flex-wrap justify-content-center">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="correct-result-circle mr-2"></div>
+                                <div class="mr-3">${correct} Correct</div>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="incorrect-result-circle mr-2"></div>
+                                <div class="mr-3">${incorrect} Correct</div>
+                            </div>
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="unattempted-result-circle mr-2"></div>
+                                <div class="mr-3">${unattempted} Correct</div>
+                            </div>
+                        </div>
+            `;
+            document.querySelector('.final-results').innerHTML = html;
+
+
+
             console.log(`[game-over] game has over`);
             console.log(`[game-over]`);
             console.table(data);

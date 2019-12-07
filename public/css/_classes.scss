@@ -1,0 +1,27 @@
+@import "./variables";
+.class-list {
+    .class-card__wrap:nth-child(4n + 1) {
+        .class-card {
+            color: white;
+            background-color: $danger;
+        }
+    }
+    .class-card__wrap:nth-child(4n + 2) {
+        .class-card {
+            color: white;
+            background-color: $primary;
+        }
+    }
+    .class-card__wrap:nth-child(4n + 3) {
+        .class-card {
+            color: white;
+            background-color: $success;
+        }
+    }
+    .class-card__wrap:nth-child(4n + 4) {
+        .class-card {
+            color: white;
+            background-color: $warning;
+        }
+    }
+}

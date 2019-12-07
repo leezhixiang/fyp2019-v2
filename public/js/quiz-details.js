@@ -114,6 +114,10 @@ window.onload = () => {
     const pathName = window.location.pathname.split('/');
     const quizId = pathName[2];
 
+    document.querySelector("#printBtn").addEventListener("click", function(e) {
+        window.location.href = `http://localhost:3000/print/quizzes/${quizId}`;
+    });
+
     passHeader = (token) => {
         if (token) {
             return {

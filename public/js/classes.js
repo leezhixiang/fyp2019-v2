@@ -108,4 +108,26 @@ window.onload = () => {
         localStorage.removeItem('auth_token');
         window.location.href = "http://localhost:3000/";
     });
+
+
+    fetch(`http://localhost:3000/api/classes/`, {
+            headers: {
+                'authorization': `Bearer ${token}`,
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+        .then((classes) => {
+            console.log(classes)
+        });
+
+
+
+
+
+
+
+
+
 }

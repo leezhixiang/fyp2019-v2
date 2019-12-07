@@ -1,4 +1,12 @@
 window.onload = () => {
+    pop = new Audio("https://play.kahoot.it/v2/assets/music/pop01.5d1ab475.mp3")
+    questionEnd = new Audio("https://play.kahoot.it/v2/assets/music/TheEnd.d97a1e85.mp3")
+    lobbyMusic = new Audio("https://play.kahoot.it/v2/assets/music/lobby-christmas.cf76f00d.mp3")
+    lobbyMusic.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, false);
+
 
     document.body.style.background = "#6769F0";
 
@@ -27,6 +35,8 @@ window.onload = () => {
 
     // click host game button
     document.querySelector("#hostBtn").addEventListener("click", () => {
+        lobbyMusic.play();
+
         document.querySelectorAll("input[name='settings']").forEach((setting, index) => {
             switch (index) {
                 case 0:
@@ -105,6 +115,10 @@ window.onload = () => {
 
     // start game to get 1st question
     document.querySelector("#startBtn").addEventListener("click", () => {
+        lobbyMusic.pause();
+        lobbyMusic.currentTime = 0;
+        pop.play();
+
         const btnState = true;
 
         socket.emit('next-question', btnState, (data) => {
@@ -150,6 +164,10 @@ window.onload = () => {
             const { nextQuestion, isGameOver, nextQuestionData } = data;
 
             if (nextQuestion === true && isGameOver === false) {
+                questionEnd.pause();
+                questionEnd.currentTime = 0;
+                pop.play();
+
                 const { question, gameId } = nextQuestionData;
 
                 // change to next question
@@ -179,6 +197,8 @@ window.onload = () => {
                 console.log(`[next-button] next question`);
 
             } else if (nextQuestion === false && isGameOver === false) {
+                questionEnd.play();
+
                 const { choicesAccuracy, questionResults, scoreBoard } = nextQuestionData;
 
 
@@ -214,6 +234,10 @@ window.onload = () => {
                 };
 
             } else if (nextQuestion === false && isGameOver === true) {
+                questionEnd.pause();
+                questionEnd.currentTime = 0;
+                pop.play();
+
                 const { scoreBoard } = nextQuestionData;
 
                 document.body.style.background = "#f2f2f2";

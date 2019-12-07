@@ -1,0 +1,69 @@
+@import "./variables";
+.print-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    color: white;
+    background-color: $primary;
+    .tool-checkbox {
+        height: 1.5rem;
+        width: 1.5rem;
+        background-color: $primary;
+    }
+    .print-btn {
+        background-color: #fff;
+        color: #292a3a;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 16px;
+        width: 120px;
+        text-align: center;
+        border: 2px solid $dark-purple;
+        i {
+            display: block;
+            text-align: center;
+            margin-right: 4px;
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+    }
+}
+
+@media print {
+    @page {
+        size: 210mm 297mm;
+        /* Chrome sets own margins, we change these printer settings */
+        margin: 27mm 16mm 27mm 16mm;
+    }
+    html,
+    body {
+        width: 210mm;
+        /* height: 297mm; */
+        height: 282mm;
+    }
+    .print-content {
+        margin-top: 0 !important;
+    }
+}
+
+.print-content {
+    min-height: 11.69in;
+    margin-top: 200px;
+    background-color: white;
+    .content-body {
+        .question__wrap {
+            .question {}
+            .answer {
+                .checkbox {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+        }
+    }
+}

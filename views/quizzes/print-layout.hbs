@@ -1,0 +1,226 @@
+<div class="print-toolbar d-print-none">
+    <div class="row p-3 justify-content-center">
+        <div class="col-6">
+            <div class="fields">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-flex my-2 justify-content-between">
+                            <div class="label">Font size</div>
+                            <input id="fontSizeInput" type="number" name="fontSize" min="8" max="32" value="16">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex my-2 justify-content-between">
+                            <div class="label">Shuffle questions</div>
+                            <input id="shuffleQuestionsCheckbox" class="tool-checkbox" type="checkbox"
+                                name="shuffleQuestions" value="">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex my-2 justify-content-between">
+                            <div class="label">Shuffle answers</div>
+                            <input id="shuffleAnswersCheckbox" class="tool-checkbox" type="checkbox"
+                                name="shuffleAnswers" value="">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex my-2 justify-content-between">
+                            <div class="label">Checkboxes</div>
+                            <input id="checkBoxesCheckbox" class="tool-checkbox" type="checkbox" name="checkboxes"
+                                value="">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex my-2 justify-content-between">
+                            <div class="label">Answer key</div>
+                            <input id="answerKeyCheckbox" class="tool-checkbox" type="checkbox" name="answerKey"
+                                value="">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex my-2 justify-content-between">
+                            <div class="label">Show answer options</div>
+                            <input id="showAnsOptsCheckbox" class="tool-checkbox" type="checkbox" name="answerOptions"
+                                value="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="print-btn mx-auto mt-2" id="printBtn"><i class="fa fa-print"></i> PRINT </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="print-content d-print-block d-flex flex-column">
+    <div class="content-header mb-3">
+        <div class="row p-4">
+            <div class="col-6">
+                <div class="d-flex align-items-center h-100">
+                    <img src="/img/logo.png" alt="" height="66px" width="66px" class="border mr-3">
+                    <div>Name:</div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="d-flex align-items-center h-100">
+                    <div>Tutorial Group:</div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="d-flex align-items-center h-100">
+                    <div>Date:</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row px-4">
+            <div class="col">
+                <div id="quizName">
+                    In this complete and practical guide
+                </div>
+                <div class="mt-3" id="totalQuestion">10 Questions</div>
+            </div>
+        </div>
+        <hr />
+    </div>
+
+    <div class="content-body px-4 mb-3">
+        <div class="question__wrap mb-3">
+            <div class="question row">
+                <div class="col">
+                    <div class="d-flex">
+                        <div class="index mr-3">1.</div>
+                        <div>In this complete and practical guide</div>
+                    </div>
+                </div>
+            </div>
+            <hr class="breakline d-none">
+            <div class="answer row mt-2">
+                <div class="col-6 mb-2">
+                    <div class="d-flex align-items-center">
+                        <div class="checkbox border mr-3"></div>
+                        <div class="answer-options">
+                            In this complete and practical guide
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-2">
+                    <div class="d-flex align-items-center">
+                        <div class="checkbox border mr-3"></div>
+                        <div class="answer-options">
+                            In this complete and practical guide
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-2">
+                    <div class="d-flex align-items-center">
+                        <div class="checkbox border mr-3"></div>
+                        <div class="answer-options">
+                            In this complete and practical guide
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-2">
+                    <div class="d-flex align-items-center">
+                        <div class="checkbox border mr-3"></div>
+                        <div class="answer-options">
+                            In this complete and practical guide
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="question__wrap mb-3">
+            <div class="question row">
+                <div class="col">
+                    <div class="d-flex">
+                        <div class="index mr-3">1.</div>
+                        <div>In this complete and practical guide</div>
+                    </div>
+                </div>
+            </div>
+            <hr class="breakline d-none">
+            <div class="answer row mt-2">
+                <div class="col-6 mb-2">
+                    <div class="d-flex align-items-center">
+                        <div class="checkbox border mr-3"></div>
+                        <div class="answer-options">
+                            In this complete and practical guide
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-2">
+                    <div class="d-flex align-items-center">
+                        <div class="checkbox border mr-3"></div>
+                        <div class="answer-options">
+                            In this complete and practical guide
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-2">
+                    <div class="d-flex align-items-center">
+                        <div class="checkbox border mr-3"></div>
+                        <div class="answer-options">
+                            In this complete and practical guide
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-2">
+                    <div class="d-flex align-items-center">
+                        <div class="checkbox border mr-3"></div>
+                        <div class="answer-options">
+                            In this complete and practical guide
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="answer-key__wrap px-4 mb-3">
+        <div class="row mb-2">
+            <div class="col-12">
+                <div>Answer Key</div>
+            </div>
+        </div>
+        <div class="answer-key row mb-2">
+            <div class="col-3 mb-2">
+                <div class="key ml-3">1. </div>
+            </div>
+            <div class="col-3 mb-2">
+                <div class="key ml-3">1. </div>
+            </div>
+            <div class="col-3 mb-2">
+                <div class="key ml-3">1. </div>
+            </div>
+            <div class="col-3 mb-2">
+                <div class="key ml-3">1. </div>
+            </div>
+            <div class="col-3 mb-2">
+                <div class="key ml-3">1. </div>
+            </div>
+            <div class="col-3 mb-2">
+                <div class="key ml-3">1. </div>
+            </div>
+            <div class="col-3 mb-2">
+                <div class="key ml-3">1. </div>
+            </div>
+            <div class="col-3 mb-2">
+                <div class="key ml-3">1. </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>

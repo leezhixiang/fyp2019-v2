@@ -96,6 +96,19 @@
 }
 
 .question-list__wrap {
+    .question-list--player {
+        .question-item:nth-child(3) {
+            background-color: #f2f2f2;
+        }
+        .question-item:nth-child(5) {
+            background-color: #f2f2f2;
+        }
+    }
+    .question-list--hoster {
+        .question-item:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    }
     background-color: white;
     .question-list__header {
         .header-text {
@@ -120,12 +133,13 @@
         list-style-type: none;
         margin: 0;
         padding: 0;
-        .question-item:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .question-item:nth-child(5) {
+        .question-item--last-child {
             color: white;
             background-color: $secondary;
+        }
+        .question-item--correct {
+            color: white;
+            background-color: $primary;
         }
         .question-item {
             .choice-result {
@@ -201,6 +215,39 @@
         background-color: $danger;
     }
     .circle-bullet--unattempt {
+        background-color: $secondary;
+    }
+}
+
+.results {
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.final-results {
+    font-size: 1.5rem;
+    .rank-points {
+        font-size: 1.75rem;
+        font-weight: 400;
+        line-height: 1.25;
+    }
+    .correct-result-circle {
+        height: 1.25rem;
+        width: 1.25rem;
+        border-radius: 50%;
+        background-color: $success;
+    }
+    .incorrect-result-circle {
+        height: 1.25rem;
+        width: 1.25rem;
+        border-radius: 50%;
+        background-color: $danger;
+    }
+    .unattempted-result-circle {
+        height: 1.25rem;
+        width: 1.25rem;
+        border-radius: 50%;
         background-color: $secondary;
     }
 }

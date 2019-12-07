@@ -42,7 +42,7 @@
             </div>
         </div><!-- .header -->
 
-        <div id="waitingStart" class="play-game__waiting-start__wrap flex-grow-1 p-3">
+        <div id="waitingStart" class="play-game__waiting-start__wrap flex-grow-1 p-3 d-none">
             <div class="waiting-start d-flex flex-column justify-content-center align-items-center h-100">
                 <div class="spinner-grow text-danger" style="width: 4rem; height: 4rem;">
                     <span class="sr-only">Loading...</span>
@@ -138,33 +138,59 @@
     </div><!-- .play-game -->
 
 
-    <div id="gameOver" class="vh-100 vw-100 d-none">
-        <div class="d-flex flex-column h-100">
 
-            <div class="nav-game-header px-3 py-2" style="background-color:#6769F0; color: white">
-                <div class="row no-gutters h-100">
-
-                    <div class="col-1 my-auto" style="cursor:pointer">
-                        <h2 class="exit">&times;</h2>
-                    </div>
-
-                    <div class="col-10 my-auto">
-                        <h1 class="text-center">Game Over</h1>
-                    </div>
-
-                </div>
-            </div>
-
-
-
-
-
-        </div><!-- .d-flex -->
-    </div>
 
 </div>
 
 
+<div id="gameOver" class="vh-100 d-none" style="background-color: #F9B616;">
+    <div class="h-100 d-flex flex-column">
+        <div class="nav-game-header px-3 py-2" style="background-color:#6769F0; color: white">
+            <div class="row no-gutters h-100">
+
+                <div class="col-1 my-auto" style="cursor:pointer">
+                    <h2 class="exit">&times;</h2>
+                </div>
+
+                <div class="col-10 my-auto">
+                    <h1 class="text-center">Game Over</h1>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="d-flex flex-column flex-grow-1 align-items-center justify-content-center" style="z-index: 9999;">
+
+            <div class="final-results">
+                <div class="rank-points text-center mb-3">
+                    You finished at rank 1 with 2500 points
+                </div>
+                <div class="d-flex flex-wrap justify-content-center">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="correct-result-circle mr-2"></div>
+                        <div class="mr-3">2 Correct</div>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="incorrect-result-circle mr-2"></div>
+                        <div class="mr-3">2 Inorrect</div>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="unattempted-result-circle mr-2"></div>
+                        <div class="mr-3">2 Unattempted</div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- .d-flex -->
+
+        <div class="play-game__navbar__wrap">
+            <div class="play-game__navbar-bottom d-flex align-items-center px-3 py-2">
+                <ul class="player-details d-flex flex-row justify-content-between w-100">
+
+                </ul>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -193,8 +219,7 @@
 
 
 
-
-{{!-- 
+    {{!-- 
 
 
         <div id="waitingOthers"
