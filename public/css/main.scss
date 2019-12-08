@@ -6,6 +6,31 @@
 @import "./reports";
 @import "./print";
 @import "./classes";
+@include media-breakpoint-down(lg) {
+    .vl {
+        display: none;
+    }
+    .navbar-collapse {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+    #jewelButton {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .navbar-toggler {
+        margin-right: 0.5rem;
+    }
+}
+
+@include media-breakpoint-up(lg) {
+    .navbar-line {
+        display: none;
+    }
+}
+
 .vl {
     border-left: 1px solid $light-purple;
     height: 2rem;
@@ -28,6 +53,14 @@
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.ellipsis1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
 }
 

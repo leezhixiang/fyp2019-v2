@@ -32,9 +32,9 @@ window.onload = () => {
     document.querySelector('#quizzes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/quizzes";
+            window.location.href = "/quizzes";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
@@ -42,9 +42,9 @@ window.onload = () => {
     document.querySelector('#reports').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/reports";
+            window.location.href = "/reports";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
@@ -52,16 +52,16 @@ window.onload = () => {
     document.querySelector('#classes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/classes";
+            window.location.href = "/classes";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
     // notification
     document.querySelector('#jewelButton').addEventListener('click', (e) => {
         if (!token) {
-            return window.location.href = "http://localhost:3000/users/login";
+            return window.location.href = "/users/login";
         }
     });
 
@@ -106,28 +106,165 @@ window.onload = () => {
     // logout button
     document.querySelector("#logout").addEventListener("click", function(e) {
         localStorage.removeItem('auth_token');
-        window.location.href = "http://localhost:3000/";
+        window.location.href = "/";
+    });
+
+    getClasses = () => {
+
+        fetch(`/api/classes/`, {
+                headers: {
+                    'authorization': `Bearer ${token}`,
+                }
+            })
+            .then((res) => {
+                return res.json();
+            })
+            .then((classes) => {
+                console.log(classes)
+                document.querySelector("#tClasses").textContent = classes.length;
+
+                let html = "";
+                classes.forEach((myClass) => {
+                    checkExist = () => {
+                        if (myClass.section !== undefined || myClass.tutorial_group !== undefined) {
+                            return `<div class="class-section text-truncate">${myClass.section}</div>
+                            <div class="class-group">Group ${myClass.tutorial_group}</div>`
+                        } else {
+                            return ""
+                        }
+
+                    }
+
+                    checkAdmin = () => {
+                        if (myClass.isAdmin === true) {
+                            return `admin`
+                        } else {
+                            return `member`
+                        }
+                    }
+
+                    html += `<div class="col-md-4 class-card__wrap class-card__wrap--${checkAdmin()} mb-3">
+                                <div class="class-card p-3" style="height:126px">
+                                    <a href="/classes/${myClass._id}" class="h-100">
+                                        <div class="d-flex flex-column justify-content-between h-100">
+                                            <div class="body hover-body mb-3 flex-grow-1">
+                                                <div class="class-name ellipsis1" style="font-size:1.25rem">${myClass.name}</div>
+                                                <div class="class-batch d-flex text-truncate">
+                                                    ${checkExist()}
+                                                </div>
+                                            </div>
+                                            <div class="footer">
+                                                <div class="class-creator">${myClass.admins[0].name}</div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>`
+                    document.querySelector('.class-list').innerHTML = html;
+                })
+
+            });
+    }
+
+    getClasses();
+
+    document.querySelector("#createClassBtn").addEventListener("click", function(e) {
+        $('#createClassModal').modal('show');
+    });
+
+    document.querySelector("#joinClassBtn").addEventListener("click", function(e) {
+        $('#joinClassModal').modal('show');
+    });
+
+    document.querySelector('#saveClassBtn').addEventListener('click', (e) => {
+        const className = document.querySelector('#className').value;
+        const section = document.querySelector('#section').value;
+        const group = document.querySelector('#group').value;
+        console.log(className)
+        console.log(section)
+        console.log(group)
+        if (className === "") {
+            return document.querySelector('#createClassAlert').innerHTML = `
+            <div class="alert alert-warning" role="alert">Class name is required.</div>
+            `
+        } else if (typeof group !== 'number') {
+            return document.querySelector('#createClassAlert').innerHTML = `
+            <div class="alert alert-warning" role="alert">Invalid tutorial group, please enter a number input.</div>
+            `
+        } else {
+            fetch(`/api/classes/`, {
+                    method: 'POST',
+                    headers: {
+                        'authorization': `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: className,
+                        section,
+                        tutorial_group: group
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res)
+                    if (res.isCreated) {
+                        getClasses();
+                        document.querySelector('#createClassAlert').innerHTML = `
+                        <div class="alert alert-success" role="alert">Created successful.</div>
+                        `
+                    }
+                })
+                .catch(err => console.log(err));
+
+        }
     });
 
 
-    fetch(`http://localhost:3000/api/classes/`, {
-            headers: {
-                'authorization': `Bearer ${token}`,
-            }
-        })
-        .then((res) => {
-            return res.json();
-        })
-        .then((classes) => {
-            console.log(classes)
-        });
+    document.querySelector('#JoinBtn').addEventListener('click', (e) => {
+        const classCode = document.querySelector('#classCode').value;
+
+        if (classCode === "") {
+            return document.querySelector('#joinClassAlert').innerHTML = `
+            <div class="alert alert-warning" role="alert">Class code is required.</div>
+            `
+        } else {
+            fetch(`/api/members/`, {
+                    method: 'POST',
+                    headers: {
+                        'authorization': `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        class_id: classCode
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    console.log(res)
+                    if (res.isUpdated === true) {
+                        getClasses();
+                        document.querySelector('#joinClassAlert').innerHTML = `
+                        <div class="alert alert-success" role="alert">Join successful.</div>
+                        `
+                    } else {
+                        document.querySelector('#joinClassAlert').innerHTML = `
+            <div class="alert alert-warning" role="alert">${res.err}</div>
+            `
+                    }
+                })
+                .catch(err => console.log(err));
+
+        }
+    });
 
 
+    $('#joinClassModal').on('hidden.bs.modal', function(e) {
+        document.querySelector('#classCode').value = "";
+    })
 
-
-
-
-
-
-
+    $('#createClassModal').on('hidden.bs.modal', function(e) {
+        document.querySelector('#className').value = "";
+        document.querySelector('#section').value = "";
+        document.querySelector('#group').value = "";
+    })
 }

@@ -7,4 +7,12 @@ router.get('/', function(req, res) {
     })
 })
 
+router.get('/:classId', function(req, res) {
+    res.render('classes/class-details', {
+        javascript: 'class-details.js'
+    })
+})
+
+
+
 module.exports = router;

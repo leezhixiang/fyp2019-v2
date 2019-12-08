@@ -21,15 +21,25 @@ exports.addNewMember = (req, res) => {
             if (myClass) {
                 return res.status(400).json({
                     message: 'join failed',
-                    err: 'already joined in class',
+                    err: 'Already joined in class.',
                     isUpdated: false,
                 });
             };
+
 
             Class.updateOne({ class_id: req.body.class_id }, {
                     $addToSet: { members: req.payload.userData._id }
                 })
                 .then((result) => {
+                    console.log(result)
+                    if (result.nModified === 0) {
+                        return res.status(400).json({
+                            message: 'join failed',
+                            err: 'Invalid class code.',
+                            isUpdated: false,
+                        });
+                    };
+
                     res.status(200).json({
                         message: 'join successful',
                         result,

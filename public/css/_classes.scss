@@ -1,27 +1,120 @@
 @import "./variables";
 .class-list {
-    .class-card__wrap:nth-child(4n + 1) {
+    .class-card__wrap {
         .class-card {
-            color: white;
-            background-color: $danger;
+            a {
+                color: white;
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+            .body {
+                .class-batch {
+                    .class-group::before {
+                        content: "•";
+                        margin: 0 4px;
+                    }
+                }
+            }
+            .hover-body:hover {
+                text-decoration: underline;
+            }
+            .menu {
+                position: absolute;
+                top: 0;
+                right: 0;
+                button {
+                    background: none;
+                    color: inherit;
+                    border: none;
+                    padding: 0;
+                    font: inherit;
+                    cursor: pointer;
+                    outline: inherit;
+                }
+                .dropdown-menu {
+                    a {
+                        color: $gray-900;
+                    }
+                    .dropdown-item {
+                        cursor: pointer;
+                    }
+                }
+                .more-button {
+                    color: white;
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    svg {
+                        fill: white;
+                    }
+                    &:hover {
+                        svg {
+                            fill: darken(white, 15%);
+                        }
+                    }
+                }
+            }
         }
     }
-    .class-card__wrap:nth-child(4n + 2) {
+    .class-card__wrap--admin {
         .class-card {
             color: white;
             background-color: $primary;
         }
     }
-    .class-card__wrap:nth-child(4n + 3) {
+    .class-card__wrap--member {
         .class-card {
             color: white;
             background-color: $success;
         }
     }
-    .class-card__wrap:nth-child(4n + 4) {
-        .class-card {
-            color: white;
-            background-color: $warning;
-        }
+    // .class-card__wrap:nth-child(4n + 1) {
+    //     .class-card {
+    //         color: white;
+    //         background-color: $danger;
+    //     }
+    // }
+    // .class-card__wrap:nth-child(4n + 2) {
+    //     .class-card {
+    //         color: white;
+    //         background-color: $primary;
+    //     }
+    // }
+    // .class-card__wrap:nth-child(4n + 3) {
+    //     .class-card {
+    //         color: white;
+    //         background-color: $success;
+    //     }
+    // }
+    // .class-card__wrap:nth-child(4n + 4) {
+    //     .class-card {
+    //         color: white;
+    //         background-color: $warning;
+    //     }
+    // }
+}
+
+.teachers-header {
+    .title {
+        font-size: 1.5rem;
+        font-weight: 500;
+        line-height: 1;
+        color: $primary;
     }
+}
+
+.students-header {
+    .title {
+        font-size: 1.5rem;
+        font-weight: 500;
+        line-height: 1;
+        color: $primary;
+    }
+}
+
+.btn-remove {
+    cursor: pointer;
+    font-size: 2rem;
 }

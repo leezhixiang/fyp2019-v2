@@ -10,10 +10,23 @@ exports.getClasses = (req, res) => {
         })
         .populate('admins', 'name')
         .populate('members', 'name')
-        .then(myClass => {
-            res.status(200).json(myClass)
+        .lean()
+        .then(classes => {
+
+            const newClasses = classes.map((newClass) => {
+                if (newClass.admins[0]._id.equals(req.payload.userData._id)) {
+                    newClass.isAdmin = true;
+                    return newClass;
+                } else {
+                    newClass.isAdmin = false;
+                    return newClass;
+                }
+            })
+
+            res.status(200).json(newClasses)
         })
         .catch(err => {
+            console.log(err)
             res.status(500).json(err);
         })
 }
@@ -23,7 +36,17 @@ exports.getClassDetails = (req, res) => {
         .populate('admins', 'name')
         .populate('members', 'name')
         .then(myClass => {
-            res.status(200).json(myClass)
+            if (myClass.admins[0]._id.equals(req.payload.userData._id)) {
+                res.status(200).json({
+                    myClass,
+                    isAdmin: true
+                })
+            } else {
+                res.status(200).json({
+                    myClass,
+                    isAdmin: false
+                })
+            }
         })
         .catch(err => {
             res.status(500).json(err);
@@ -31,6 +54,7 @@ exports.getClassDetails = (req, res) => {
 }
 
 exports.addNewClass = (req, res) => {
+    console.log(req.body)
     if (!req.body.name) {
         return res.status(400).json({
             message: 'create failed',
