@@ -1,6 +1,4 @@
 window.onload = () => {
-
-
     const token = JSON.parse(localStorage.getItem('auth_token'));
 
     const passToken = (token) => {
@@ -9,7 +7,7 @@ window.onload = () => {
         }
     }
 
-    const socket = io.connect('http://localhost:3000', passToken(token));
+    const socket = io.connect('/', passToken(token));
 
     // connection failed
     socket.on('error', (err) => {
@@ -298,7 +296,7 @@ window.onload = () => {
     document.querySelectorAll(".exit").forEach((exitBtn, index) => {
         exitBtn.addEventListener('click', () => {
             if (confirm("Are you sure you want to leave?")) {
-                window.location.replace("http://localhost:3000");
+                window.location.replace("/");
             }
         })
     })

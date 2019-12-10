@@ -110,7 +110,6 @@ window.onload = () => {
     });
 
     getClasses = () => {
-
         fetch(`/api/classes/`, {
                 headers: {
                     'authorization': `Bearer ${token}`,
@@ -121,29 +120,36 @@ window.onload = () => {
             })
             .then((classes) => {
                 console.log(classes)
-                document.querySelector("#tClasses").textContent = classes.length;
 
                 let html = "";
-                classes.forEach((myClass) => {
-                    checkExist = () => {
-                        if (myClass.section !== undefined || myClass.tutorial_group !== undefined) {
-                            return `<div class="class-section text-truncate">${myClass.section}</div>
+
+                const adminClasses = classes.filter((classroom) => classroom.isAdmin === true)
+                const memberClasses = classes.filter((classroom) => classroom.isAdmin === false)
+
+                document.querySelector("#tClasses1").textContent = adminClasses.length;
+                document.querySelector("#tClasses2").textContent = memberClasses.length;
+
+                if (adminClasses.length !== 0) {
+                    adminClasses.forEach((myClass) => {
+                        checkExist = () => {
+                            if (myClass.section !== undefined || myClass.tutorial_group !== undefined) {
+                                return `<div class="class-section text-truncate">${myClass.section}</div>
                             <div class="class-group">Group ${myClass.tutorial_group}</div>`
-                        } else {
-                            return ""
+                            } else {
+                                return ""
+                            }
+
                         }
 
-                    }
-
-                    checkAdmin = () => {
-                        if (myClass.isAdmin === true) {
-                            return `admin`
-                        } else {
-                            return `member`
+                        checkAdmin = () => {
+                            if (myClass.isAdmin === true) {
+                                return `admin`
+                            } else {
+                                return `member`
+                            }
                         }
-                    }
 
-                    html += `<div class="col-md-4 class-card__wrap class-card__wrap--${checkAdmin()} mb-3">
+                        html += `<div class="col-md-4 class-card__wrap class-card__wrap--${checkAdmin()} mb-3">
                                 <div class="class-card p-3" style="height:126px">
                                     <a href="/classes/${myClass._id}" class="h-100">
                                         <div class="d-flex flex-column justify-content-between h-100">
@@ -160,9 +166,50 @@ window.onload = () => {
                                     </a>
                                 </div>
                             </div>`
-                    document.querySelector('.class-list').innerHTML = html;
-                })
+                        document.querySelector('.class-list').innerHTML = html;
+                    })
+                }
 
+                if (memberClasses.length !== 0) {
+                    memberClasses.forEach((myClass) => {
+                        checkExist = () => {
+                            if (myClass.section !== undefined || myClass.tutorial_group !== undefined) {
+                                return `<div class="class-section text-truncate">${myClass.section}</div>
+                            <div class="class-group">Group ${myClass.tutorial_group}</div>`
+                            } else {
+                                return ""
+                            }
+
+                        }
+
+                        checkAdmin = (myClass) => {
+                            if (myClass.isAdmin === true) {
+                                return `admin`
+                            } else {
+                                return `member`
+                            }
+                        }
+
+                        html += `<div class="col-md-4 class-card__wrap class-card__wrap--${checkAdmin(myClass)} mb-3">
+                                <div class="class-card p-3" style="height:126px">
+                                    <a href="/classes/${myClass._id}" class="h-100">
+                                        <div class="d-flex flex-column justify-content-between h-100">
+                                            <div class="body hover-body mb-3 flex-grow-1">
+                                                <div class="class-name ellipsis1" style="font-size:1.25rem">${myClass.name}</div>
+                                                <div class="class-batch d-flex text-truncate">
+                                                    ${checkExist()}
+                                                </div>
+                                            </div>
+                                            <div class="footer">
+                                                <div class="class-creator">${myClass.admins[0].name}</div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>`
+                        document.querySelector('.class-list--joined').innerHTML = html;
+                    })
+                }
             });
     }
 
@@ -183,13 +230,10 @@ window.onload = () => {
         console.log(className)
         console.log(section)
         console.log(group)
+
         if (className === "") {
             return document.querySelector('#createClassAlert').innerHTML = `
             <div class="alert alert-warning" role="alert">Class name is required.</div>
-            `
-        } else if (typeof group !== 'number') {
-            return document.querySelector('#createClassAlert').innerHTML = `
-            <div class="alert alert-warning" role="alert">Invalid tutorial group, please enter a number input.</div>
             `
         } else {
             fetch(`/api/classes/`, {
@@ -218,7 +262,6 @@ window.onload = () => {
 
         }
     });
-
 
     document.querySelector('#JoinBtn').addEventListener('click', (e) => {
         const classCode = document.querySelector('#classCode').value;

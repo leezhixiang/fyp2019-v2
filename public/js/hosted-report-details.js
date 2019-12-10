@@ -33,9 +33,9 @@ window.onload = () => {
     document.querySelector('#quizzes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/quizzes";
+            window.location.href = "/quizzes";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
@@ -43,9 +43,9 @@ window.onload = () => {
     document.querySelector('#reports').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/reports";
+            window.location.href = "/reports";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
@@ -53,16 +53,16 @@ window.onload = () => {
     document.querySelector('#classes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/classes";
+            window.location.href = "/classes";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
     // notification
     document.querySelector('#jewelButton').addEventListener('click', (e) => {
         if (!token) {
-            return window.location.href = "http://localhost:3000/users/login";
+            return window.location.href = "/users/login";
         }
     });
 
@@ -90,14 +90,14 @@ window.onload = () => {
                 let html = "";
                 notifications.forEach(notification => {
                     html += `<div class="notification-box">
-                                    <div class="media">
-                                        <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
-                                        <div class="media-body">
-                                            <div>${notification.content}</div>
-                                            <small class="text-warning">${notification.time_stamp}</small>
-                                        </div>
+                                <div class="media">
+                                    <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
+                                    <div class="media-body">
+                                        <div>${notification.content}</div>
+                                        <small class="text-warning">${notification.time_stamp}</small>
                                     </div>
-                                </div>`;
+                                </div>
+                            </div>`;
                 });
                 document.querySelector('#notificationsFlyout').innerHTML = html;
             }
@@ -107,13 +107,13 @@ window.onload = () => {
     // logout button
     document.querySelector("#logout").addEventListener("click", function(e) {
         localStorage.removeItem('auth_token');
-        window.location.href = "http://localhost:3000/";
+        window.location.href = "/";
     });
 
     const pathName = window.location.pathname.split('/');
     const hoster_reportId = pathName[3];
 
-    fetch(`http://localhost:3000/api/reports/hoster/${hoster_reportId}`, {
+    fetch(`/api/reports/hoster/${hoster_reportId}`, {
             headers: {
                 'authorization': `Bearer ${token}`,
             }
@@ -140,8 +140,6 @@ window.onload = () => {
 
         })
 
-
-
     document.querySelector("#overallTab").addEventListener("click", function(e) {
         document.querySelector('#overallTab').classList.add("active");
         document.querySelector('#playersTab').classList.remove("active");
@@ -162,7 +160,7 @@ window.onload = () => {
         document.querySelector('#playersReport').classList.add("d-none");
         document.querySelector('#questionReport').classList.remove("d-none");
 
-        fetch(`http://localhost:3000/api/reports/hoster/${hoster_reportId}`, {
+        fetch(`/api/reports/hoster/${hoster_reportId}`, {
                 headers: {
                     'authorization': `Bearer ${token}`,
                 }
@@ -251,7 +249,7 @@ window.onload = () => {
         document.querySelector('#playersReport').classList.remove("d-none");
     })
 
-    fetch(`http://localhost:3000/api/reports/hoster/${hoster_reportId}`, {
+    fetch(`/api/reports/hoster/${hoster_reportId}`, {
             headers: {
                 'authorization': `Bearer ${token}`,
             }
@@ -283,6 +281,4 @@ window.onload = () => {
                 document.querySelector('#playersReportList').innerHTML = html;
             })
         })
-
-
 };

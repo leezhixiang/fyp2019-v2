@@ -2,11 +2,10 @@ window.onload = () => {
     pop = new Audio("https://play.kahoot.it/v2/assets/music/pop01.5d1ab475.mp3")
     questionEnd = new Audio("https://play.kahoot.it/v2/assets/music/TheEnd.d97a1e85.mp3")
     lobbyMusic = new Audio("https://play.kahoot.it/v2/assets/music/lobby-christmas.cf76f00d.mp3")
-    lobbyMusic.addEventListener('ended', function() {
+    lobbyMusic.addEventListener('ended', () => {
         this.currentTime = 0;
         this.play();
     }, false);
-
 
     document.body.style.background = "#6769F0";
 
@@ -18,7 +17,7 @@ window.onload = () => {
         }
     }
 
-    const socket = io.connect('http://localhost:3000', passToken(token));
+    const socket = io.connect('/', passToken(token));
 
     // connection failed
     socket.on('error', (err) => {
@@ -52,7 +51,7 @@ window.onload = () => {
                     settings.autoMoveThroughQuestions = setting.checked;
                     break;
                 default:
-                    // code block
+                // code block
             };
         });
 
@@ -157,7 +156,7 @@ window.onload = () => {
     })
 
     // next question to get next events
-    document.querySelector("#nextBtn").addEventListener("click", function() {
+    document.querySelector("#nextBtn").addEventListener("click", function () {
         const btnState = ((document.querySelector('#nextBtn').getAttribute("data-state")) == 'true')
 
         socket.emit('next-question', btnState, (data) => {
@@ -215,7 +214,7 @@ window.onload = () => {
 
                 document.querySelectorAll(".tC").forEach((tC, index) => {
                     tC.textContent = questionResults[Object.keys(questionResults)[index]];
-                    document.querySelector(`#block${index+1}`).style.height = `${choicesAccuracy[Object.keys(choicesAccuracy)[index]]}%`;
+                    document.querySelector(`#block${index + 1}`).style.height = `${choicesAccuracy[Object.keys(choicesAccuracy)[index]]}%`;
                     console.log(questionResults[Object.keys(choicesAccuracy)[index]])
                 })
 
@@ -259,7 +258,7 @@ window.onload = () => {
     })
 
     // when all players have answered the question
-    socket.on('display-summary', function() {
+    socket.on('display-summary', function () {
         document.querySelector("#nextBtn").click()
     })
 
@@ -298,7 +297,7 @@ window.onload = () => {
     document.querySelectorAll(".exit").forEach((exitBtn, index) => {
         exitBtn.addEventListener('click', () => {
             if (confirm("Are you sure you want to leave?")) {
-                window.location.replace("http://localhost:3000");
+                window.location.replace("/");
             }
         })
     })

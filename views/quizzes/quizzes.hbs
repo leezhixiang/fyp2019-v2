@@ -23,16 +23,32 @@
 <div class="container">
     <div class="tab-content" id="pills-tabContent">
         <div class="tab-pane fade show active" id="pills-quizzes" role="tabpanel" aria-labelledby="pills-quizzes-tab">
-            <h6 class="mt-4">My quizzes (<span id="tQuizzes">0</span>)</h6>
-            <div class="row" id="myQuizList"></div>
+            <div class="d-flex align-items-center mt-4">
+                <h6 class="mb-0 mr-2">My quizzes (<span id="tQuizzes">0</span>)</h6>
+                <div href="#" id="createQuizBtn" style="text-decoration: underline; cursor:pointer;color:#16d46b">
+                    Create quiz</div>
+            </div>
+            <div class="row mt-4" id="myQuizList">
+                <div class="col">
+                    <div class="text-muted">No quizzes.</div>
+                </div>
+            </div>
         </div>
         <div class="tab-pane fade" id="pills-favorites" role="tabpanel" aria-labelledby="pills-favorites-tab">
             <h6 class="mt-4">Favorite quizzes (<span id="tFavorites">0</span>)</h6>
-            <div class="row mt-4" id="favoriteList"></div>
+            <div class="row mt-4" id="favoriteList">
+                <div class="col">
+                    <div class="text-muted"></div>
+                </div>
+            </div>
         </div>
         <div class="tab-pane fade" id="pills-shared" role="tabpanel" aria-labelledby="pills-shared-tab">
             <h6 class="mt-4">Shared with me (<span id="tShares">0</span>)</h6>
-            <div class="row mt-4" id="sharedList"></div>
+            <div class="row mt-4" id="sharedList">
+                <div class="col">
+                    <div class="text-muted"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

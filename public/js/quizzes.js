@@ -33,9 +33,9 @@ window.onload = () => {
     document.querySelector('#quizzes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/quizzes";
+            window.location.href = "/quizzes";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
@@ -43,9 +43,9 @@ window.onload = () => {
     document.querySelector('#reports').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/reports";
+            window.location.href = "/reports";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
@@ -53,16 +53,16 @@ window.onload = () => {
     document.querySelector('#classes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/classes";
+            window.location.href = "/classes";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
     // notification
     document.querySelector('#jewelButton').addEventListener('click', (e) => {
         if (!token) {
-            return window.location.href = "http://localhost:3000/users/login";
+            return window.location.href = "/users/login";
         }
     });
 
@@ -107,10 +107,8 @@ window.onload = () => {
     // logout button
     document.querySelector("#logout").addEventListener("click", function(e) {
         localStorage.removeItem('auth_token');
-        window.location.href = "http://localhost:3000/";
+        window.location.href = "/";
     });
-
-
 
     $('a[data-toggle="pill"]').on('shown.bs.tab', function(e) {
         // e.target // newly activated tab
@@ -120,7 +118,7 @@ window.onload = () => {
 
         } else if (e.target.id === 'pills-favorites-tab') {
             // get favorite quizzes
-            fetch(`http://localhost:3000/api/library/favorites`, {
+            fetch(`/api/library/favorites`, {
                     headers: {
                         'authorization': `Bearer ${token}`,
                     }
@@ -129,48 +127,54 @@ window.onload = () => {
                 .then(favorites => {
                     console.log(favorites);
 
+                    document.querySelector('#tFavorites').textContent = favorites.length;
+
                     let html = "";
 
-                    favorites.map((favorite) => favorite.quiz_id).forEach((quiz, index) => {
-                        console.log(quiz);
+                    if (favorites.length === 0) {
+                        html = `<div class="col">
+                                    <div class="text-muted">No quizzes.</div>
+                                </div>`
+                    } else {
+                        favorites.map((favorite) => favorite.quiz_id).forEach((quiz, index) => {
+                            console.log(quiz);
 
-                        document.querySelector('#tFavorites').textContent = favorites.length;
-
-                        html += `<div class="col-md-6">
-                                    <div class="card shadow-sm mb-3">
-                                        <div class="row no-gutters">
-                                            <div class="col-3 border-right p-2">
-                                                <img src="/img/logo.png" class="card-img-top" style="opacity: 0.2" alt="...">
-                                            </div>
-                                            <div class="col-9">
-                                                <div class="d-flex flex-column h-100 justify-content-between">
-
-                                                    <div class="p-2">
-                                                        <div>
-                                                            <div class="badge badge-primary" id="tQuestionBadge">
-                                                                ${quiz.questions.length}<span>
-                                                                    Questions</span></div>
+                            html += `<div class="col-md-6">
+                                        <div class="card shadow-sm mb-3">
+                                            <div class="row no-gutters">
+                                                <div class="col-3 border-right p-2">
+                                                    <img src="/img/logo.png" class="card-img-top" style="opacity: 0.2" alt="...">
+                                                </div>
+                                                <div class="col-9">
+                                                    <div class="d-flex flex-column h-100 justify-content-between">
+    
+                                                        <div class="p-2">
+                                                            <div>
+                                                                <div class="badge badge-primary" id="tQuestionBadge">
+                                                                    ${quiz.questions.length}<span>
+                                                                        Questions</span></div>
+                                                            </div>
+                                                            <div class="mt-1">
+                                                                <a href="/quizzes/${quiz._id}" class="ellipsis font-weight-bold title"
+                                                                    id="title">${quiz.title}</a>
+                                                            </div>
                                                         </div>
-                                                        <div class="mt-1">
-                                                            <a href="/quizzes/${quiz._id}" class="ellipsis font-weight-bold title"
-                                                                id="title">${quiz.title}</a>
+                                                        <div class="d-flex flex-row justify-content-between px-2 py-1 border-top"
+                                                            style="background: #f0f0f0; height: 2.0625rem">
+                                                            <div class="flex-grow-1 mr-3">
+                                                                <span class="font-weight-normal text-muted text-truncate"
+                                                                    id="creator">${quiz.creator.name}</span>
+                                                            </div>
+                                                            <span class="text-right font-weight-bold text-truncate"
+                                                                id="tPlays">${quiz.plays} Plays</span>
                                                         </div>
-                                                    </div>
-                                                    <div class="d-flex flex-row justify-content-between px-2 py-1 border-top"
-                                                        style="background: #f0f0f0; height: 2.0625rem">
-                                                        <div class="flex-grow-1 mr-3">
-                                                            <span class="font-weight-normal text-muted text-truncate"
-                                                                id="creator">${quiz.creator.name}</span>
-                                                        </div>
-                                                        <span class="text-right font-weight-bold text-truncate"
-                                                            id="tPlays">${quiz.plays} Plays</span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>`
-                    });
+                                    </div>`
+                        });
+                    }
 
                     document.querySelector('#favoriteList').innerHTML = html;
 
@@ -183,7 +187,7 @@ window.onload = () => {
     document.querySelector("#pills-shared-tab").addEventListener("click", function(e) {
         console.log('hi');
         // get shared quizzes
-        fetch(`http://localhost:3000/api/library/shared`, {
+        fetch(`/api/library/shared`, {
                 headers: {
                     'authorization': `Bearer ${token}`,
                 }
@@ -192,53 +196,59 @@ window.onload = () => {
             .then(shares => {
                 console.log(shares);
 
+                document.querySelector('#tShares').textContent = shares.length;
+
                 let html = "";
 
-                shares.map((share, index) => {
-                    const quiz = share.quiz_id;
-                    console.log(quiz);
+                if (shares.length === 0) {
+                    html = `<div class="col">
+                                <div class="text-muted">No quizzes.</div>
+                            </div>`
+                } else {
+                    shares.forEach((share, index) => {
+                        const quiz = share.quiz_id;
+                        console.log(quiz);
 
-                    document.querySelector('#tShares').textContent = shares.length;
-
-                    html += `<div class="col-md-6">
-                                <div class="card shadow-sm mb-3">
-                                    <div class="row no-gutters">
-                                        <div class="col-3 border-right p-2">
-                                            <img src="/img/logo.png" class="card-img-top" style="opacity: 0.2" alt="...">
-                                        </div>
-                                        <div class="col-9">
-                                            <div class="d-flex flex-column h-100 justify-content-between">
-                                                <div class="p-2">
-                                                        <div class="dropdown float-right">
-                                                            <button type="button" class="close" data-id="${share._id}" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div>
-                                                        <div class="badge badge-primary" id="tQuestionBadge">
-                                                            ${quiz.questions.length}<span>
-                                                                Questions</span></div>
-                                                    </div>
-                                                    <div class="mt-1">
-                                                        <a href="/quizzes/${quiz._id}" class="ellipsis font-weight-bold title"
-                                                            id="title">${quiz.title}</a>
-                                                    </div>
+                        html += `<div class="col-md-6">
+                            <div class="card shadow-sm mb-3">
+                                <div class="row no-gutters">
+                                    <div class="col-3 border-right p-2">
+                                        <img src="/img/logo.png" class="card-img-top" style="opacity: 0.2" alt="...">
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="d-flex flex-column h-100 justify-content-between">
+                                            <div class="p-2">
+                                                    <div class="dropdown float-right">
+                                                        <button type="button" class="close" data-id="${share._id}" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
                                                 </div>
-                                                <div class="d-flex flex-row justify-content-between px-2 py-1 border-top"
-                                                    style="background: #f0f0f0; height: 2.0625rem">
-                                                    <div class="flex-grow-1 mr-3">
-                                                        <span class="font-weight-normal text-muted text-truncate"
-                                                            id="creator">${quiz.creator.name}</span>
-                                                    </div>
-                                                    <span class="text-right font-weight-bold text-truncate"
-                                                        id="tPlays">${quiz.plays} Plays</span>
+                                                <div>
+                                                    <div class="badge badge-primary" id="tQuestionBadge">
+                                                        ${quiz.questions.length}<span>
+                                                            Questions</span></div>
                                                 </div>
+                                                <div class="mt-1">
+                                                    <a href="/quizzes/${quiz._id}" class="ellipsis font-weight-bold title"
+                                                        id="title">${quiz.title}</a>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex flex-row justify-content-between px-2 py-1 border-top"
+                                                style="background: #f0f0f0; height: 2.0625rem">
+                                                <div class="flex-grow-1 mr-3">
+                                                    <span class="font-weight-normal text-muted text-truncate"
+                                                        id="creator">${quiz.creator.name}</span>
+                                                </div>
+                                                <span class="text-right font-weight-bold text-truncate"
+                                                    id="tPlays">${quiz.plays} Plays</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>`
-                });
+                            </div>
+                        </div>`
+                    });
+                }
 
                 document.querySelector('#sharedList').innerHTML = html;
 
@@ -246,7 +256,7 @@ window.onload = () => {
                     close.addEventListener('click', (e) => {
                         const quizId = e.target.parentElement.getAttribute('data-id');
 
-                        fetch(`http://localhost:3000/api/library/shared/${quizId}`, {
+                        fetch(`/api/library/shared/${quizId}`, {
                                 method: 'DELETE',
                                 headers: {
                                     'authorization': `Bearer ${token}`

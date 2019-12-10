@@ -11121,14 +11121,14 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
 }
 
 .c3 {
-  background-color: #f9b616;
+  background-color: #16d46b;
   height: calc(50% - 0.25rem);
   width: calc(50% - 0.25rem);
   margin-top: 0.5rem;
 }
 
 .c4 {
-  background-color: #16d46b;
+  background-color: #f9b616;
   height: calc(50% - 0.25rem);
   width: calc(50% - 0.25rem);
   margin-left: 0.5rem;
@@ -11634,30 +11634,36 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
   height: 16px;
 }
 
-.class-list .class-card__wrap .class-card a {
+.class-list .class-card__wrap .class-card a,
+.class-list--joined .class-card__wrap .class-card a {
   color: white;
 }
 
-.class-list .class-card__wrap .class-card a:hover {
+.class-list .class-card__wrap .class-card a:hover,
+.class-list--joined .class-card__wrap .class-card a:hover {
   text-decoration: none;
 }
 
-.class-list .class-card__wrap .class-card .body .class-batch .class-group::before {
+.class-list .class-card__wrap .class-card .body .class-batch .class-group::before,
+.class-list--joined .class-card__wrap .class-card .body .class-batch .class-group::before {
   content: "•";
   margin: 0 4px;
 }
 
-.class-list .class-card__wrap .class-card .hover-body:hover {
+.class-list .class-card__wrap .class-card .hover-body:hover,
+.class-list--joined .class-card__wrap .class-card .hover-body:hover {
   text-decoration: underline;
 }
 
-.class-list .class-card__wrap .class-card .menu {
+.class-list .class-card__wrap .class-card .menu,
+.class-list--joined .class-card__wrap .class-card .menu {
   position: absolute;
   top: 0;
   right: 0;
 }
 
-.class-list .class-card__wrap .class-card .menu button {
+.class-list .class-card__wrap .class-card .menu button,
+.class-list--joined .class-card__wrap .class-card .menu button {
   background: none;
   color: inherit;
   border: none;
@@ -11667,15 +11673,18 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
   outline: inherit;
 }
 
-.class-list .class-card__wrap .class-card .menu .dropdown-menu a {
+.class-list .class-card__wrap .class-card .menu .dropdown-menu a,
+.class-list--joined .class-card__wrap .class-card .menu .dropdown-menu a {
   color: #212529;
 }
 
-.class-list .class-card__wrap .class-card .menu .dropdown-menu .dropdown-item {
+.class-list .class-card__wrap .class-card .menu .dropdown-menu .dropdown-item,
+.class-list--joined .class-card__wrap .class-card .menu .dropdown-menu .dropdown-item {
   cursor: pointer;
 }
 
-.class-list .class-card__wrap .class-card .menu .more-button {
+.class-list .class-card__wrap .class-card .menu .more-button,
+.class-list--joined .class-card__wrap .class-card .menu .more-button {
   color: white;
   width: 24px;
   height: 24px;
@@ -11683,20 +11692,24 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
   cursor: pointer;
 }
 
-.class-list .class-card__wrap .class-card .menu .more-button svg {
+.class-list .class-card__wrap .class-card .menu .more-button svg,
+.class-list--joined .class-card__wrap .class-card .menu .more-button svg {
   fill: white;
 }
 
-.class-list .class-card__wrap .class-card .menu .more-button:hover svg {
+.class-list .class-card__wrap .class-card .menu .more-button:hover svg,
+.class-list--joined .class-card__wrap .class-card .menu .more-button:hover svg {
   fill: #d9d9d9;
 }
 
-.class-list .class-card__wrap--admin .class-card {
+.class-list .class-card__wrap--admin .class-card,
+.class-list--joined .class-card__wrap--admin .class-card {
   color: white;
   background-color: #6769f0;
 }
 
-.class-list .class-card__wrap--member .class-card {
+.class-list .class-card__wrap--member .class-card,
+.class-list--joined .class-card__wrap--member .class-card {
   color: white;
   background-color: #16d46b;
 }
@@ -11720,19 +11733,18 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
   font-size: 2rem;
 }
 
-@media (max-width: 1199.98px) {
+@media (max-width: 991.98px) {
   .vl {
     display: none;
   }
+}
+
+@media (max-width: 1199.98px) {
   .navbar-collapse {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
-  }
-  #jewelButton {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
   }
   .navbar-toggler {
     margin-right: 0.5rem;

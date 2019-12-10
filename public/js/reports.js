@@ -33,9 +33,9 @@ window.onload = () => {
     document.querySelector('#quizzes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/quizzes";
+            window.location.href = "/quizzes";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
@@ -43,9 +43,9 @@ window.onload = () => {
     document.querySelector('#reports').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/reports";
+            window.location.href = "/reports";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
@@ -53,16 +53,16 @@ window.onload = () => {
     document.querySelector('#classes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/classes";
+            window.location.href = "/classes";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
     // notification
     document.querySelector('#jewelButton').addEventListener('click', (e) => {
         if (!token) {
-            return window.location.href = "http://localhost:3000/users/login";
+            return window.location.href = "/users/login";
         }
     });
 
@@ -90,14 +90,14 @@ window.onload = () => {
                 let html = "";
                 notifications.forEach(notification => {
                     html += `<div class="notification-box">
-                                    <div class="media">
-                                        <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
-                                        <div class="media-body">
-                                            <div>${notification.content}</div>
-                                            <small class="text-warning">${notification.time_stamp}</small>
-                                        </div>
+                                <div class="media">
+                                    <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
+                                    <div class="media-body">
+                                        <div>${notification.content}</div>
+                                        <small class="text-warning">${notification.time_stamp}</small>
                                     </div>
-                                </div>`;
+                                </div>
+                            </div>`;
                 });
                 document.querySelector('#notificationsFlyout').innerHTML = html;
             }
@@ -107,7 +107,7 @@ window.onload = () => {
     // logout button
     document.querySelector("#logout").addEventListener("click", function(e) {
         localStorage.removeItem('auth_token');
-        window.location.href = "http://localhost:3000/";
+        window.location.href = "/";
     });
 
     document.querySelector("#playedTab").addEventListener("click", function(e) {
@@ -116,7 +116,7 @@ window.onload = () => {
         document.querySelector('#hostedTab').classList.remove("active");
         document.querySelector('#hostedReports').classList.add("d-none");
         // get player reports
-        fetch(`http://localhost:3000/api/reports/player`, {
+        fetch(`/api/reports/player`, {
                 headers: {
                     'authorization': `Bearer ${token}`,
                 }
@@ -131,16 +131,16 @@ window.onload = () => {
 
                 reports.forEach((report) => {
                     html += `<div class="col-md-6">
-                    <div class="report__wrap p-3 mb-3">
-                        <div class="report-header__wrap d-flex align-items-center">
-                            <img class="mr-2" src="/img/logo.png" height="18px" width="18px" alt="">
-                            <div class="report-time-stamp text-truncate"><small>${report.played_date}</small></div>
-                        </div>
-                        <a href="/reports/played/${report._id}" class="report-title mt-1">${report.game_name}</a>
-                        <div class="report-hosted text-muted text-truncate"><small>Hosted by
-                                <span id="creator">${report.hoster_name}</span></small></div>
-                    </div>
-                </div>`;
+                                <div class="report__wrap p-3 mb-3">
+                                    <div class="report-header__wrap d-flex align-items-center">
+                                        <img class="mr-2" src="/img/logo.png" height="18px" width="18px" alt="">
+                                        <div class="report-time-stamp text-truncate"><small>${report.played_date}</small></div>
+                                    </div>
+                                    <a href="/reports/played/${report._id}" class="report-title mt-1">${report.game_name}</a>
+                                    <div class="report-hosted text-muted text-truncate"><small>Hosted by
+                                            <span id="creator">${report.hoster_name}</span></small></div>
+                                </div>
+                            </div>`;
                     document.querySelector('#playedReportsList').innerHTML = html;
                 })
             });
@@ -155,7 +155,7 @@ window.onload = () => {
         document.querySelector('#playedTab').classList.remove("active");
         document.querySelector('#playedReports').classList.add("d-none");
         // get hoster reports
-        fetch(`http://localhost:3000/api/reports/hoster`, {
+        fetch(`/api/reports/hoster`, {
                 headers: {
                     'authorization': `Bearer ${token}`,
                 }
@@ -181,6 +181,5 @@ window.onload = () => {
                 })
             });
     })
-
 
 }

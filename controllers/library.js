@@ -131,7 +131,7 @@ exports.addSharedQuiz = (req, res) => {
             if (user._id.equals(req.payload.userData._id)) {
                 return res.status(400).json({
                     message: 'Share failed.',
-                    err: 'Share to oneself is not allowed.',
+                    err: 'Share to own account is not allowed.',
                     isShared: false
                 });
             };

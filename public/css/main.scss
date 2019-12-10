@@ -6,19 +6,18 @@
 @import "./reports";
 @import "./print";
 @import "./classes";
-@include media-breakpoint-down(lg) {
+@include media-breakpoint-down(md) {
     .vl {
         display: none;
     }
+}
+@include media-breakpoint-down(lg) {
+    
     .navbar-collapse {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
-    }
-    #jewelButton {
-        margin-top: 0.5rem;
-        margin-bottom: 0.5rem;
     }
     .navbar-toggler {
         margin-right: 0.5rem;
