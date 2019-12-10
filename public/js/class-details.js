@@ -32,9 +32,9 @@ window.onload = () => {
     document.querySelector('#quizzes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/quizzes";
+            window.location.href = "/quizzes";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
@@ -42,9 +42,9 @@ window.onload = () => {
     document.querySelector('#reports').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/reports";
+            window.location.href = "/reports";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
@@ -52,16 +52,16 @@ window.onload = () => {
     document.querySelector('#classes').addEventListener('click', (e) => {
         e.preventDefault();
         if (token) {
-            window.location.href = "http://localhost:3000/classes";
+            window.location.href = "/classes";
         } else {
-            window.location.href = "http://localhost:3000/users/login";
+            window.location.href = "/users/login";
         }
     });
 
     // notification
     document.querySelector('#jewelButton').addEventListener('click', (e) => {
         if (!token) {
-            return window.location.href = "http://localhost:3000/users/login";
+            return window.location.href = "/users/login";
         }
     });
 
@@ -106,10 +106,9 @@ window.onload = () => {
     // logout button
     document.querySelector("#logout").addEventListener("click", function(e) {
         localStorage.removeItem('auth_token');
-        window.location.href = "http://localhost:3000/";
+        window.location.href = "/";
     });
 
-    // quiz details
     const pathName = window.location.pathname.split('/');
     const classId = pathName[2];
 
@@ -117,58 +116,41 @@ window.onload = () => {
     let classCode;
 
     getClassDetails = () => {
-
-
-        fetch(`http://localhost:3000/api/classes/${classId}`, {
+        fetch(`/api/classes/${classId}`, {
                 headers: {
                     'authorization': `Bearer ${token}`,
                 }
             })
-            .then((res) => {
+            .then(res => {
                 return res.json();
             })
             .then((result) => {
                 console.log(result)
-                const { isAdmin, myClass } = result;
+                const { myClass, isAdmin } = result;
                 const classDetails = myClass;
-
                 classCode = classDetails.class_id;
+                
+                document.querySelector('#admin').textContent = classDetails.admins[0].name;
 
-                checkExist = () => {
-                    if (myClass.section !== undefined || myClass.tutorial_group !== undefined) {
-                        return `<div class="class-section text-truncate">${myClass.section}</div>
-                        <div class="class-group">Group ${myClass.tutorial_group}</div>`
-                    } else {
-                        return ""
-                    }
-
-                }
-
-                if (myClass.isAdmin === true) {
+                if (isAdmin === true) {
                     document.querySelector('.class-card__wrap').classList.add('class-card__wrap--admin')
                 } else {
                     document.querySelector('.class-card__wrap').classList.add('class-card__wrap--member')
                 }
 
-
-
-                `
-                <div class="d-flex flex-column justify-content-between h-100">
-                    <div class="body hover-body mb-3 flex-grow-1">
-                        <div class="class-name ellipsis1" style="font-size:1.25rem">${myClass.name}</div>
-                        <div class="class-batch d-flex text-truncate">
-                            ${checkExist()}
-                        </div>
-                    </div>
-                    <div class="footer">
-                        <div class="class-creator">${myClass.admins[0].name}</div>
-                    </div>
-                </div>`
+                checkExist = () => {
+                    if (myClass.section !== undefined || myClass.tutorial_group !== undefined) {
+                        return `<div class="class-section text-truncate">${myClass.section}</div>
+                                <div class="class-group">Group ${myClass.tutorial_group}</div>`
+                    } else {
+                        return ""
+                    }
+                }
 
                 let html1 = `<div class="d-flex flex-column justify-content-between h-100">
                                 <div class="body mb-3 mr-3 flex-grow-1">
                                     <div class="class-name ellipsis" style="font-size:1.25rem">${classDetails.name}<span
-                                                id="classCode"> (Class code: <strong>${classCode}</strong>)</span>
+                                                id="classCode"> (Class code: <strong>${ classDetails.class_id}</strong>)</span>
                                     </div>
                                     <div class="class-batch d-flex text-truncate">
                                      ${checkExist()}
@@ -178,24 +160,18 @@ window.onload = () => {
                                     <div class="class-creator">${classDetails.admins[0].name}</div>
                                 </div>
                             </div>`
-
                 document.querySelector(".class-card").insertAdjacentHTML('afterbegin', html1)
-                    // document.querySelector("#className").textContent = classDetails.name;
-                    // document.querySelector("#section").textContent = classDetails.section;
-                    // document.querySelector("#group").textContent = classDetails.group;
-                    // document.querySelector("#admin").textContent = classDetails.admins[0].name;
-                    // document.querySelector("#classCode").textContent = classDetails.class_id;
 
                 let html = "";
 
                 if (isAdmin) {
                     classDetails.members.forEach((member) => {
                         html += `<div class="col-md-8 member-card__wrap">
-                                <div class="d-flex align-items-center border-bottom">
-                                    <div class="flex-grow-1 mr-2">${member.name}</div>
-                                    <div class="btn-remove" id="removeBtn" data-id="${member._id}">&times;</div>
-                                </div>
-                            </div>`
+                                    <div class="d-flex align-items-center border-bottom">
+                                        <div class="flex-grow-1 mr-2">${member.name}</div>
+                                        <div class="btn-remove" id="removeBtn" data-id="${member._id}">&times;</div>
+                                    </div>
+                                </div>`
                         document.querySelector('.member-list').innerHTML = html;
                     })
 
@@ -227,10 +203,10 @@ window.onload = () => {
                 } else {
                     classDetails.members.forEach((member) => {
                         html += `<div class="col-md-8 member-card__wrap">
-                                <div class="d-flex align-items-center border-bottom">
-                                    <div class="flex-grow-1 mr-2 my-2">${member.name}</div>
-                                </div>
-                            </div>`
+                                    <div class="d-flex align-items-center border-bottom">
+                                        <div class="flex-grow-1 mr-2 my-2">${member.name}</div>
+                                    </div>
+                                </div>`
                         document.querySelector('.member-list').innerHTML = html;
                     })
 
@@ -242,6 +218,7 @@ window.onload = () => {
                     })
 
                     document.querySelector("#exitBtn").addEventListener('click', () => {
+                        console.log(classCode);
                         fetch(`/api/members/`, {
                                 method: 'DELETE',
                                 headers: {
@@ -298,9 +275,4 @@ window.onload = () => {
     }
 
     getClassDetails();
-
-
-
-
-
 }
