@@ -1,125 +1,150 @@
 window.onload = () => {
-    const token = JSON.parse(localStorage.getItem('auth_token'));
+  const token = JSON.parse(localStorage.getItem("auth_token"));
 
-    // account
+  // account
+  if (token) {
+    document.querySelectorAll(".guest").forEach(guest => {
+      guest.classList.add("d-none");
+    });
+  } else {
+    document.querySelector(".logged").classList.add("d-none");
+    document.querySelector("#jewelButton").setAttribute("data-toggle", "");
+  }
+
+  // socket.io connection
+  const passToken = token => {
     if (token) {
-        document.querySelectorAll('.guest').forEach(guest => {
-            guest.classList.add("d-none");
-        });
+      return { query: `auth_token=${token}` };
+    }
+  };
+  const notificationSocket = io("/notification", passToken(token));
+
+  // connection failed
+  notificationSocket.on("error", err => {
+    throw new Error(err.message);
+  });
+
+  // connection successful
+  notificationSocket.on("socket-conn", data => {
+    console.log(`[socket-conn] ${data.message}`);
+    console.log(`[socket-conn] token: ${data.hasToken}`);
+  });
+
+  // quizzes
+  document.querySelector("#quizzes").addEventListener("click", e => {
+    e.preventDefault();
+    if (token) {
+      window.location.href = "http://localhost:3000/quizzes";
     } else {
-        document.querySelector('.logged').classList.add("d-none");
-        document.querySelector('#jewelButton').setAttribute('data-toggle', '')
-    };
+      window.location.href = "http://localhost:3000/users/login";
+    }
+  });
 
-    // socket.io connection
-    const passToken = (token) => {
-        if (token) { return { query: `auth_token=${token}` } };
-    };
-    const notificationSocket = io('/notification', passToken(token));
+  // reports
+  document.querySelector("#reports").addEventListener("click", e => {
+    e.preventDefault();
+    if (token) {
+      window.location.href = "http://localhost:3000/reports";
+    } else {
+      window.location.href = "http://localhost:3000/users/login";
+    }
+  });
 
-    // connection failed
-    notificationSocket.on('error', (err) => {
-        throw new Error(err.message);
-    });
+  // classes
+  document.querySelector("#classes").addEventListener("click", e => {
+    e.preventDefault();
+    if (token) {
+      window.location.href = "http://localhost:3000/classes";
+    } else {
+      window.location.href = "http://localhost:3000/users/login";
+    }
+  });
 
-    // connection successful
-    notificationSocket.on('socket-conn', (data) => {
-        console.log(`[socket-conn] ${data.message}`);
-        console.log(`[socket-conn] token: ${data.hasToken}`);
-    })
+  // notification
+  document.querySelector("#jewelButton").addEventListener("click", e => {
+    if (!token) {
+      return (window.location.href = "http://localhost:3000/users/login");
+    }
+  });
 
-    // quizzes
-    document.querySelector('#quizzes').addEventListener('click', (e) => {
-        e.preventDefault();
-        if (token) {
-            window.location.href = "http://localhost:3000/quizzes";
-        } else {
-            window.location.href = "http://localhost:3000/users/login";
-        }
-    });
+  notificationSocket.on("total-notifications", number => {
+    if (number !== 0) {
+      document.querySelector("#jewelCount").textContent = number;
+      document.querySelector("#jewelCount").classList.remove("d-none");
+    }
+  });
 
-    // reports
-    document.querySelector('#reports').addEventListener('click', (e) => {
-        e.preventDefault();
-        if (token) {
-            window.location.href = "http://localhost:3000/reports";
-        } else {
-            window.location.href = "http://localhost:3000/users/login";
-        }
-    });
+  notificationSocket.on("new-notification", content => {
+    console.log(content);
+    document.querySelector("#jewelCount").classList.remove("d-none");
 
-    // classes
-    document.querySelector('#classes').addEventListener('click', (e) => {
-        e.preventDefault();
-        if (token) {
-            window.location.href = "http://localhost:3000/classes";
-        } else {
-            window.location.href = "http://localhost:3000/users/login";
-        }
-    });
+    const totalNum = document.querySelector("#jewelCount").textContent;
+    document.querySelector("#jewelCount").textContent = parseInt(totalNum) + 1;
 
-    // notification
-    document.querySelector('#jewelButton').addEventListener('click', (e) => {
-        if (!token) {
-            return window.location.href = "http://localhost:3000/users/login";
-        }
-    });
+    let html = `<div class="notification-box">
+                    <div class="media">
+                        <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
+                        <div class="media-body">
+                            <div>${content.content}</div>
+                            <small class="text-warning">${content.time_stamp}</small>
+                        </div>
+                    </div>
+                </div>`;
+    document
+      .querySelector("#notificationsFlyout")
+      .insertAdjacentHTML("afterbegin", html);
+  });
 
-    notificationSocket.on('total-notifications', (number) => {
-        document.querySelector('#jewelCount').textContent += 1;
-        if (number !== 0) {
-            document.querySelector('#jewelCount').textContent = number;
-        }
-    });
+  $(".dropdown").on("hidden.bs.dropdown	", () => {
+    document.querySelector("#jewelCount").textContent = 0;
+    document.querySelector("#jewelCount").classList.add("d-none");
+  });
+  
+  $(".dropdown").on("show.bs.dropdown", () => {
+    document.querySelector("#jewelCount").textContent = 0;
+    document.querySelector("#jewelCount").classList.add("d-none");
 
-    notificationSocket.on('new-notification', (content) => {
-        document.querySelector('#jewelCount').classList.remove("d-none");
-        document.querySelector('#jewelCount').textContent += 1;
-    });
-
-    $('.dropdown').on('show.bs.dropdown', () => {
-        document.querySelector('#jewelCount').textContent = 0;
-        document.querySelector('#jewelCount').classList.add("d-none");
-
-        notificationSocket.emit('read-notification', (notifications) => {
-            console.log(notifications);
-            if (notifications.length === 0) {
-                document.querySelector('#notificationsFlyout').innerHTML = `<a class="dropdown-item" href="#">No notifications.</a>`
-            } else {
-                let html = "";
-                notifications.forEach(notification => {
-                    html += `<div class="notification-box">
-                                <div class="media">
-                                    <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
-                                    <div class="media-body">
-                                        <div>${notification.content}</div>
-                                        <small class="text-warning">${notification.time_stamp}</small>
-                                    </div>
-                                </div>
-                            </div>`;
-                });
-                document.querySelector('#notificationsFlyout').innerHTML = html;
-            }
+    notificationSocket.emit("read-notification", notifications => {
+      console.log(notifications);
+      if (notifications.length === 0) {
+        document.querySelector(
+          "#notificationsFlyout"
+        ).innerHTML = `<a class="dropdown-item" href="#">No notifications.</a>`;
+      } else {
+        let html = "";
+        notifications.reverse().forEach(notification => {
+          html += `<div class="notification-box">
+                        <div class="media">
+                            <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
+                            <div class="media-body">
+                                <div>${notification.content}</div>
+                                <small class="text-warning">${notification.time_stamp}</small>
+                            </div>
+                        </div>
+                    </div>`;
         });
+        document.querySelector("#notificationsFlyout").innerHTML = html;
+      }
     });
+  });
 
-    // logout button
-    document.querySelector("#logout").addEventListener("click", function(e) {
-        localStorage.removeItem('auth_token');
-        window.location.href = "http://localhost:3000/";
-    });
+  // logout button
+  document.querySelector("#logout").addEventListener("click", function(e) {
+    localStorage.removeItem("auth_token");
+    window.location.href = "http://localhost:3000/";
+  });
 
-    // get quizzes from api
-    fetch(`http://localhost:3000/api/quizzes`)
-        .then(function(res) {
-            return res.json()
-        })
-        .then(function(quizzes) {
-            let html = "";
-            console.log(quizzes);
+  // get quizzes from api
+  fetch(`http://localhost:3000/api/quizzes`)
+    .then(function(res) {
+      return res.json();
+    })
+    .then(function(quizzes) {
+      let html = "";
+      console.log(quizzes);
 
-            quizzes.forEach((quiz, index) => {
-                html += `<div class="col-md-6">
+      quizzes.forEach((quiz, index) => {
+        html += `<div class="col-md-6">
                                     <div class="card shadow-sm mb-3">
                                         <div class="row no-gutters">
                                             <div class="col-3 border-right p-2">
@@ -151,12 +176,12 @@ window.onload = () => {
                                             </div>
                                         </div>
                                     </div>
-                                </div>`
-            });
+                                </div>`;
+      });
 
-            document.querySelector('#quizList').innerHTML = html;
-        })
-        .catch(function(err) {
-            console.log(err)
-        })
-}
+      document.querySelector("#quizList").innerHTML = html;
+    })
+    .catch(function(err) {
+      console.log(err);
+    });
+};

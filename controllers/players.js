@@ -78,8 +78,8 @@ exports.joinGame = (socket) => {
         if (!name || !gameId) {
             console.log(`Something went wrong!`);
             return callback({
-                message: 'join game failed',
-                error: 'all fields are required',
+                message: 'Join game failed.',
+                error: 'All fields are required.',
                 isJoined: false
             });
         };
@@ -141,7 +141,7 @@ exports.joinGame = (socket) => {
 
             // response to player
             callback({
-                message: 'join game successful',
+                message: 'Join game successful.',
                 joinGameData: {
                     gameLive: hoster.isGameLive,
                     name: player.name
@@ -152,8 +152,8 @@ exports.joinGame = (socket) => {
         } else {
             // response to player
             callback({
-                message: 'join game failed',
-                error: 'display name or game PIN is invalid',
+                message: 'Join game failed.',
+                error: 'Display name or game PIN is invalid.',
                 isJoined: false
             });
         };

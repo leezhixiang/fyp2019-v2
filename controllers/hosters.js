@@ -134,7 +134,7 @@ exports.hostGame = (socket) => {
                                 const users = OnlineUser.getUsers();
                                 const onlineUsers = users.filter(user => user.userId.equals(memberId));
                                 onlineUsers.forEach((onlineUser) => {
-                                    notification_io.getNotificationIO().to(`${onlineUser.socketId}`).emit('new-notification', notification.content);
+                                    notification_io.getNotificationIO().to(`${onlineUser.socketId}`).emit('new-notification', notification);
                                 });
                             });
                         })

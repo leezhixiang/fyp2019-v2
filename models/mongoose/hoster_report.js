@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const moment = require('moment');
 
 const User = require('./user')
 const Quiz = require('./quiz')
@@ -95,8 +96,8 @@ const HosterReportSchema = new mongoose.Schema({
         required: true
     },
     hosted_date: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default: moment().format('YYYY-MM-DD HH:mm')
     },
     game_name: {
         type: String,

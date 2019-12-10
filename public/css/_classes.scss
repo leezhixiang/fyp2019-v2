@@ -71,30 +71,7 @@
             background-color: $success;
         }
     }
-    // .class-card__wrap:nth-child(4n + 1) {
-    //     .class-card {
-    //         color: white;
-    //         background-color: $danger;
-    //     }
-    // }
-    // .class-card__wrap:nth-child(4n + 2) {
-    //     .class-card {
-    //         color: white;
-    //         background-color: $primary;
-    //     }
-    // }
-    // .class-card__wrap:nth-child(4n + 3) {
-    //     .class-card {
-    //         color: white;
-    //         background-color: $success;
-    //     }
-    // }
-    // .class-card__wrap:nth-child(4n + 4) {
-    //     .class-card {
-    //         color: white;
-    //         background-color: $warning;
-    //     }
-    // }
+    
 }
 
 .teachers-header {
@@ -118,4 +95,42 @@
 .btn-remove {
     cursor: pointer;
     font-size: 2rem;
+}
+
+.menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    button {
+        background: none;
+        color: inherit;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        outline: inherit;
+    }
+    .dropdown-menu {
+        a {
+            color: $gray-900;
+        }
+        .dropdown-item {
+            cursor: pointer;
+        }
+    }
+    .more-button {
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        svg {
+            fill: $gray-900;
+        }
+        &:hover {
+            svg {
+                fill: darken($gray-500, 15%);
+            }
+        }
+    }
 }

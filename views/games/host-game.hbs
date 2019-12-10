@@ -24,71 +24,87 @@
 
     <div class="row mt-4">
         <div class="col-md-5 mx-auto">
-            <div class="">
-                <div class="card-settings">
-                    <h4 class="card-header-settings font-weight-bold">Question Settings</h4>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item-settings mt-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="w-100 mr-3">
-                                    <h5 class="mb-0">Shuffle questions</h5>
-                                </div>
-                                <div class="flex-shrink-1">
-                                    <label class="switch mb-0">
-                                        <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item-settings mt-1">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="w-100 mr-3">
-                                    <h5 class="mb-0">Shuffle answer options</h5>
-                                </div>
-                                <div class="flex-shrink-1">
-                                    <label class="switch mb-0">
-                                        <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+
+            <div class="card-settings">
+
+                <h4 class="class-header-settings font-weight-bold"> Account Settings</h4>
+                
+                <div class="list-group-item-settings mt-2 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="w-100 mr-3">
+                            <h5 class="mb-0">Assign this game to a class</h5>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="classes-container" id="classList" style="max-height: 200px; overflow:auto;">
+                                       
                 </div>
 
-                <div class="card-settings mt-4">
-                    <h4 class="card-header-settings font-weight-bold">Game Settings</h4>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item-settings mt-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="w-100 mr-3">
-                                    <h5 class="mb-0">Question Timer</h5>
-                                </div>
-                                <div class="flex-shrink-1">
-                                    <label class="switch mb-0">
-                                        <input type="checkbox" name="settings" value="suffleQs" id="suffleQs" checked>
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+
+                <h4 class="card-header-settings font-weight-bold mt-4">Question Settings</h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item-settings mt-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="w-100 mr-3">
+                                <h5 class="mb-0">Shuffle questions</h5>
                             </div>
-                        </li>
-                        <li class="list-group-item-settings mt-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="w-100 mr-3">
-                                    <h5 class="mb-0">Automatically move through questions</h5>
-                                </div>
-                                <div class="flex-shrink-1">
-                                    <label class="switch mb-0">
-                                        <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
-                                        <span class="slider"></span>
-                                    </label>
-                                </div>
+                            <div class="flex-shrink-1">
+                                <label class="switch mb-0">
+                                    <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
+                                    <span class="slider"></span>
+                                </label>
                             </div>
-                        </li>
-                    </ul>
-                </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item-settings mt-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="w-100 mr-3">
+                                <h5 class="mb-0">Shuffle answer options</h5>
+                            </div>
+                            <div class="flex-shrink-1">
+                                <label class="switch mb-0">
+                                    <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
+
+            <div class="card-settings mt-4">
+                <h4 class="card-header-settings font-weight-bold">Game Settings</h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item-settings mt-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="w-100 mr-3">
+                                <h5 class="mb-0">Question Timer</h5>
+                            </div>
+                            <div class="flex-shrink-1">
+                                <label class="switch mb-0">
+                                    <input type="checkbox" name="settings" value="suffleQs" id="suffleQs" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item-settings mt-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="w-100 mr-3">
+                                <h5 class="mb-0">Automatically move through questions</h5>
+                            </div>
+                            <div class="flex-shrink-1">
+                                <label class="switch mb-0">
+                                    <input type="checkbox" name="settings" value="suffleQs" id="suffleQs">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
         </div>
     </div>
 </div><!-- #launch -->
@@ -196,7 +212,7 @@
                                             <div class="text-center">
                                                 <h2 id="tC3" class="tC">1</h2>
                                             </div>
-                                            <div id="block4" style="background-color:#16D46B;"></div>
+                                            <div id="block3" style="background-color:#16D46B;"></div>
                                             <div class="mt-2" style="background-color:#16D46B; height:10%;"></div>
                                         </div>
                                     </div><!-- .col -->
@@ -205,7 +221,7 @@
                                             <div class="text-center">
                                                 <h2 id="tC4" class="tC">1</h2>
                                             </div>
-                                            <div id="block3" style="background-color:#F9B616;"></div>
+                                            <div id="block4" style="background-color:#F9B616;"></div>
                                             <div class="mt-2" style="background-color:#F9B616; height:10%;"></div>
                                         </div>
                                     </div><!-- .col -->

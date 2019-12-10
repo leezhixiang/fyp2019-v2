@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const moment = require('moment');
 
 const User = require('./user')
 const Quiz = require('./quiz')
@@ -64,8 +65,8 @@ const PlayerReportSchema = new mongoose.Schema({
         required: true
     },
     played_date: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default: moment().format('YYYY-MM-DD HH:mm')
     },
     game_name: {
         type: String,

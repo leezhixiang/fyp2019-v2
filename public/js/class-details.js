@@ -58,50 +58,73 @@ window.onload = () => {
         }
     });
 
-    // notification
-    document.querySelector('#jewelButton').addEventListener('click', (e) => {
-        if (!token) {
-            return window.location.href = "/users/login";
-        }
-    });
+  // notification
+  document.querySelector("#jewelButton").addEventListener("click", e => {
+    if (!token) {
+      return (window.location.href = "http://localhost:3000/users/login");
+    }
+  });
 
-    notificationSocket.on('total-notifications', (number) => {
-        document.querySelector('#jewelCount').textContent += 1;
-        if (number !== 0) {
-            document.querySelector('#jewelCount').textContent = number;
-        }
-    });
+  notificationSocket.on("total-notifications", number => {
+    if (number !== 0) {
+      document.querySelector("#jewelCount").textContent = number;
+      document.querySelector("#jewelCount").classList.remove("d-none");
+    }
+  });
 
-    notificationSocket.on('new-notification', (content) => {
-        document.querySelector('#jewelCount').classList.remove("d-none");
-        document.querySelector('#jewelCount').textContent += 1;
-    });
+  notificationSocket.on("new-notification", content => {
+    console.log(content);
+    document.querySelector("#jewelCount").classList.remove("d-none");
 
-    $('#dropdownNotification').on('show.bs.dropdown', () => {
-        document.querySelector('#jewelCount').textContent = 0;
-        document.querySelector('#jewelCount').classList.add("d-none");
+    const totalNum = document.querySelector("#jewelCount").textContent;
+    document.querySelector("#jewelCount").textContent = parseInt(totalNum) + 1;
 
-        notificationSocket.emit('read-notification', (notifications) => {
-            console.log(notifications);
-            if (notifications.length === 0) {
-                document.querySelector('#notificationsFlyout').innerHTML = `<a class="dropdown-item" href="#">No notifications.</a>`
-            } else {
-                let html = "";
-                notifications.forEach(notification => {
-                    html += `<div class="notification-box">
-                                <div class="media">
-                                    <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
-                                    <div class="media-body">
-                                        <div>${notification.content}</div>
-                                        <small class="text-warning">${notification.time_stamp}</small>
-                                    </div>
-                                </div>
-                            </div>`;
-                });
-                document.querySelector('#notificationsFlyout').innerHTML = html;
-            }
+    let html = `<div class="notification-box">
+                    <div class="media">
+                        <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
+                        <div class="media-body">
+                            <div>${content.content}</div>
+                            <small class="text-warning">${content.time_stamp}</small>
+                        </div>
+                    </div>
+                </div>`;
+    document
+      .querySelector("#notificationsFlyout")
+      .insertAdjacentHTML("afterbegin", html);
+  });
+
+  $(".dropdown").on("hidden.bs.dropdown	", () => {
+    document.querySelector("#jewelCount").textContent = 0;
+    document.querySelector("#jewelCount").classList.add("d-none");
+  });
+  
+  $(".dropdown").on("show.bs.dropdown", () => {
+    document.querySelector("#jewelCount").textContent = 0;
+    document.querySelector("#jewelCount").classList.add("d-none");
+
+    notificationSocket.emit("read-notification", notifications => {
+      console.log(notifications);
+      if (notifications.length === 0) {
+        document.querySelector(
+          "#notificationsFlyout"
+        ).innerHTML = `<a class="dropdown-item" href="#">No notifications.</a>`;
+      } else {
+        let html = "";
+        notifications.reverse().forEach(notification => {
+          html += `<div class="notification-box">
+                        <div class="media">
+                            <img src="/img/avatar.jpg" width="46" height="46" alt="123" class="mr-3 rounded-circle">
+                            <div class="media-body">
+                                <div>${notification.content}</div>
+                                <small class="text-warning">${notification.time_stamp}</small>
+                            </div>
+                        </div>
+                    </div>`;
         });
+        document.querySelector("#notificationsFlyout").innerHTML = html;
+      }
     });
+  });
 
     // logout button
     document.querySelector("#logout").addEventListener("click", function(e) {

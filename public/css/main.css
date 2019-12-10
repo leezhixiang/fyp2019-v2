@@ -11733,6 +11733,46 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
   font-size: 2rem;
 }
 
+.menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.menu button {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+.menu .dropdown-menu a {
+  color: #212529;
+}
+
+.menu .dropdown-menu .dropdown-item {
+  cursor: pointer;
+}
+
+.menu .more-button {
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.menu .more-button svg {
+  fill: #212529;
+}
+
+.menu .more-button:hover svg {
+  fill: #838f9b;
+}
+
 @media (max-width: 991.98px) {
   .vl {
     display: none;
@@ -12020,6 +12060,10 @@ input:checked + .slider:before {
   background-clip: border-box;
   border: 0 solid rgba(0, 0, 0, 0.125);
   border-radius: 0;
+  /* width */
+  /* Track */
+  /* Handle */
+  /* Handle on hover */
 }
 
 .card-settings > hr {
@@ -12037,6 +12081,22 @@ input:checked + .slider:before {
   border-bottom-left-radius: 0;
 }
 
+.card-settings ::-webkit-scrollbar {
+  width: 10px;
+}
+
+.card-settings ::-webkit-scrollbar-track {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.card-settings ::-webkit-scrollbar-thumb {
+  background: white;
+}
+
+.card-settings ::-webkit-scrollbar-thumb:hover {
+  background: #dee2e6;
+}
+
 .card-header-settings {
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
@@ -12050,6 +12110,22 @@ input:checked + .slider:before {
 }
 
 .card-header-settings + .list-group .list-group-item:first-child {
+  border-top: 0;
+}
+
+.class-header-settings {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0;
+  color: #212529;
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.class-header-settings:first-child {
+  border-radius: -1px -1px 0 0;
+}
+
+.class-header-settings + .list-group .list-group-item:first-child {
   border-top: 0;
 }
 
