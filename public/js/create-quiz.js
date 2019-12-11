@@ -172,7 +172,7 @@ window.onload = () => {
   });
 
   document.querySelector("#cancelBtn").addEventListener("click", () => {
-    console.log("hi");
+    window.location.href = "/quizzes";
   });
 
   document.querySelector("#addBtn").addEventListener("click", () => {
@@ -181,8 +181,17 @@ window.onload = () => {
 
     let html = `<div class="card question__wrap mb-4" id="question${totalQuestion +
       1}">
-                    <h5 class="card-header" style="background-color:#6769f0; color:white">Question ${totalQuestion +
-                      1}</h5>
+                    <div class="px-4 py-2" style="background-color:#6769f0; color:white">
+                        <div class="d-flex flex-row justify-content-between align-items-center">
+                            <h5 class="mb-0 question-header">Question ${totalQuestion +
+                              1}</h5>
+                            <div id="removeBtn${totalQuestion +
+                              1}" data-id="question${totalQuestion +
+      1}" style="cursor: pointer; font-size:1.5rem">&times;
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card-body">
                         <div>
                             <div class="questionAllFieldAlert__wrap"></div>
@@ -254,5 +263,71 @@ window.onload = () => {
     document
       .querySelector(".questions-list__wrap")
       .insertAdjacentHTML("beforeend", html);
+
+    document
+      .querySelector(`#removeBtn${totalQuestion + 1}`)
+      .addEventListener("click", e => {
+        const totalQuestion = document.querySelectorAll(".question__wrap")
+          .length;
+        const dataId = e.target.getAttribute("data-id");
+        if (totalQuestion === 1) {
+          console.log("last one cnnt be removed");
+          return;
+        } else {
+          console.log(dataId);
+          console.log(document.querySelector(`#${dataId}`));
+          document.querySelector(`#${dataId}`).remove();
+
+          const questionHeaders = document.querySelectorAll(".question-header");
+          console.log(questionHeaders);
+          questionHeaders.forEach((header, index) => {
+            header.textContent = `Question ${index + 1}`;
+          });
+
+          const questions = document.querySelectorAll(".question__wrap");
+          questions.forEach((question, index) => {
+            question.setAttribute("id", `question${index + 1}`);
+            question.childNodes[1].childNodes[1].childNodes[3].setAttribute(
+              "id",
+              `removeBtn${index + 1}`
+            );
+            question.childNodes[1].childNodes[1].childNodes[3].setAttribute(
+              "data-id",
+              `question${index + 1}`
+            );
+          });
+        }
+      });
+  });
+
+  document.querySelector(`#removeBtn1`).addEventListener("click", e => {
+    const totalQuestion = document.querySelectorAll(".question__wrap").length;
+    const dataId = e.target.getAttribute("data-id");
+    if (totalQuestion === 1) {
+      console.log("last one cnnt be removed");
+      return;
+    } else {
+      console.log(dataId);
+      console.log(document.querySelector(`#${dataId}`));
+      document.querySelector(`#${dataId}`).remove();
+
+      const questionHeaders = document.querySelectorAll(".question-header");
+      questionHeaders.forEach((header, index) => {
+        header.textContent = `Question ${index + 1}`;
+      });
+
+      const questions = document.querySelectorAll(".question__wrap");
+      questions.forEach((question, index) => {
+        question.setAttribute("id", `question${index + 1}`);
+        question.childNodes[1].childNodes[1].childNodes[3].setAttribute(
+          "id",
+          `removeBtn${index + 1}`
+        );
+        question.childNodes[1].childNodes[1].childNodes[3].setAttribute(
+          "data-id",
+          `question${index + 1}`
+        );
+      });
+    }
   });
 };

@@ -99,7 +99,7 @@ window.onload = () => {
     document.querySelector("#jewelCount").textContent = 0;
     document.querySelector("#jewelCount").classList.add("d-none");
   });
-  
+
   $(".dropdown").on("show.bs.dropdown", () => {
     document.querySelector("#jewelCount").textContent = 0;
     document.querySelector("#jewelCount").classList.add("d-none");
