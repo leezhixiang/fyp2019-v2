@@ -1,8 +1,9 @@
 window.onload = () => {
   const token = JSON.parse(localStorage.getItem("auth_token"));
 
-  let quiz = {};
   document.querySelector("#saveBtn").addEventListener("click", () => {
+    let quiz = {};
+
     quiz.title = document.querySelector("#quizTitle").value;
 
     quiz.questions = [];
@@ -10,7 +11,7 @@ window.onload = () => {
     const questions = document.querySelectorAll(".question__wrap");
     console.log(questions);
 
-    questions.forEach((ques, index) => {
+    questions.forEach((qs, index) => {
       let insert = {};
 
       insert.question = document.querySelector(
@@ -62,7 +63,112 @@ window.onload = () => {
       quiz.questions.push(insert);
     });
 
-    console.log(quiz.questions);
+    let isAllFilled = [];
+    let hasTrueAns = [];
+
+    quiz.questions.forEach((question, index) => {
+      const allFilled = question.choices.every((choice, index) => {
+        return choice.choice !== "";
+      });
+      isAllFilled.push({ allFilled, index });
+
+      const trueAns = question.choices.some((choice, index) => {
+        return choice.is_correct === true;
+      });
+      hasTrueAns.push({ trueAns, index });
+    });
+
+    console.log(isAllFilled);
+    console.log(hasTrueAns);
+
+    console.log(quiz);
+
+    if (
+      isAllFilled.map(fill => fill.allFilled).includes(false) ||
+      hasTrueAns.map(fill => fill.trueAns).includes(false) ||
+      quiz.title === ""
+    ) {
+      console.log("Some inputs are invalid");
+
+      if (quiz.title === "") {
+        let html = `<div class="alert alert-warning alert-dismissible fade show" id="titleAlert" role="alert">
+                      Question title is needed.
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>`;
+
+        document.querySelector(".titleAlert__wrap").innerHTML = html;
+        setTimeout(() => {
+          $("#titleAlert").alert("close");
+        }, 3000);
+      }
+      isAllFilled.forEach((fill, index) => {
+        if (fill.allFilled === false) {
+          let html = `<div class="alert alert-warning alert-dismissible fade show questionAllFieldAlert" role="alert">
+          All answer options must be filled up.
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>`;
+          document.querySelector(
+            `#question${fill.index + 1} .questionAllFieldAlert__wrap`
+          ).innerHTML = html;
+          document.querySelectorAll(".questionAllFieldAlert").forEach(x => {
+            setTimeout(() => {
+              $(x).alert("close");
+            }, 3000);
+          });
+        }
+      });
+
+      hasTrueAns.forEach((ans, index) => {
+        if (ans.trueAns === false) {
+          let html = `<div class="alert alert-warning alert-dismissible fade show questionAnsAlert" role="alert">
+          Correct answer not selected.
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>`;
+          document.querySelector(
+            `#question${ans.index + 1} .questionAnsAlert__wrap`
+          ).innerHTML = html;
+          document.querySelectorAll(".questionAnsAlert").forEach(x => {
+            setTimeout(() => {
+              $(x).alert("close");
+            }, 3000);
+          });
+        }
+      });
+    } else {
+      console.log("All inputs are valid");
+
+      fetch(`/api/quizzes`, {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(quiz)
+      })
+        .then(res => res.json())
+        .then(res => {
+          console.log(res);
+          let html = `<div class="alert alert-success alert-dismissible fade show" id="titleAlert" role="alert">
+                      Create quiz successful
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>`;
+
+          document.querySelector(".successAlert__wrap").innerHTML = html;
+          setTimeout(() => {
+            $("#titleAlert").alert("close");
+            window.location.href = "/quizzes";
+          }, 1000);
+        })
+        .catch(err => console.log(err));
+    }
   });
 
   document.querySelector("#cancelBtn").addEventListener("click", () => {
@@ -79,6 +185,8 @@ window.onload = () => {
                       1}</h5>
                     <div class="card-body">
                         <div>
+                            <div class="questionAllFieldAlert__wrap"></div>
+                            <div class="questionAnsAlert__wrap"></div>
                             <input type="text" class="form-control form-control-lg question-title" id="quizTitle"
                                 placeholder="Write your question">
                         </div>
