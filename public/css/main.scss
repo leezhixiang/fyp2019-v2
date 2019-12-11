@@ -370,10 +370,7 @@ input:checked + .slider:before {
 }
 
 .classes-container {
-  
-
   .class__wrap:nth-child(even) {
-    
   }
 }
 .list-group-item-settings {
@@ -422,4 +419,11 @@ input:checked + .slider:before {
   color: white;
   opacity: 0.8;
   cursor: pointer;
+}
+
+.question__wrap {
+  input[type="checkbox"] {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
 }

@@ -1,0 +1,107 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary line-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="/img/logo.png" width="56" height="56" alt="" class="border">
+        </a>
+
+        <div class="d-flex">
+            <button class="btn btn-outline-light mr-2" id="cancelBtn" style="width: 75px">Cancel</button>
+            <button class="btn btn-success" id="saveBtn" style="width: 75px">Save</button>
+        </div>
+    </div>
+</nav>
+
+<div class="quiz__wrap container mt-4">
+    <div class="row">
+        <div class="col-md-10">
+            <div>
+                <input type="text" class="form-control form-control-lg" id="quizTitle"
+                    placeholder="Enter quiz title...">
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4 mb-5">
+        <div class="col-md-10">
+
+            <div class="questions-list__wrap">
+
+                <div class="card question__wrap mb-4" id="question1">
+                    <h5 class="card-header" style="background-color:#6769f0; color:white">Question 1</h5>
+                    <div class="card-body">
+                        <div>
+                            <input type="text" class="form-control form-control-lg question-title" id="quizTitle"
+                                placeholder="Write your question">
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6 mb-2">
+                                <div class="d-flex align-items-center opt1">
+                                    <div class="flex-grow-1 mr-2">
+                                        <input type="text" class="form-control answerOpt" placeholder="Answer option 1">
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" class="opt1 answer" name="opt1">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="d-flex align-items-center opt2">
+                                    <div class="flex-grow-1 mr-2">
+                                        <input type="text" class="form-control answerOpt" placeholder="Answer option 2">
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" class="opt3 answer" name="opt2">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="d-flex align-items-center opt3">
+                                    <div class="flex-grow-1 mr-2">
+                                        <input type="text" class="form-control answerOpt" placeholder="Answer option 3">
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" class="opt4 answer" name="opt3">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="d-flex align-items-center opt4">
+                                    <div class="flex-grow-1 mr-2">
+                                        <input type="text" class="form-control answerOpt" placeholder="Answer option 4">
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" class="opt4 answer" name="opt4">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-top">
+                        <div class="mx-3 mt-3" style="width: 140px;">
+                            <div class="form-group">
+                                <select class="form-control form-control-sm timer">
+                                    <option>5 Seconds</option>
+                                    <option selected="selected">10 Seconds</option>
+                                    <option>20 Seconds</option>
+                                    <option>30 Seconds</option>
+                                    <option>40 Seconds</option>
+                                    <option>50 Seconds</option>
+                                    <option>60 Seconds</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-primary" id="addBtn">+ Add question</button>
+            </div>
+
+
+        </div>
+    </div>
+</div>
