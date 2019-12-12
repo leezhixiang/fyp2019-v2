@@ -220,9 +220,7 @@ window.onload = () => {
                                         <div class="mr-2">${
                                           question.accuracy
                                         }%</div>
-                                        <div class="choice-result choice-result--${
-                                          question.choices[0].is_correct
-                                        }"></div>
+                                        <div class="choice-result choice-result--"></div>
                                     </div>
                                     <ul class="question-list question-list--hoster">
                                         <li class="question-item d-flex px-3 py-2 align-items-center flex-wrap">

@@ -11431,6 +11431,10 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
   background-color: #16d46b;
 }
 
+.question-list__wrap .question-list__header .choice-result--false {
+  background-color: #e21a3c;
+}
+
 .question-list__wrap .question-list {
   list-style-type: none;
   margin: 0;
@@ -11608,9 +11612,8 @@ a.text-dark-purple:hover, a.text-dark-purple:focus {
 
 @media print {
   @page {
-    size: 210mm 297mm;
-    /* Chrome sets own margins, we change these printer settings */
-    margin: 27mm 16mm 27mm 16mm;
+    size: A4;
+    margin: 0;
   }
   html,
   body {
