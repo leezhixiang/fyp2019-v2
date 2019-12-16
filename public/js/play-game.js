@@ -277,11 +277,11 @@ window.onload = () => {
                             </div>
                             <div class="d-flex align-items-center mb-2">
                                 <div class="incorrect-result-circle mr-2"></div>
-                                <div class="mr-3">${incorrect} Correct</div>
+                                <div class="mr-3">${incorrect} Inorrect</div>
                             </div>
                             <div class="d-flex align-items-center mb-2">
                                 <div class="unattempted-result-circle mr-2"></div>
-                                <div class="mr-3">${unattempted} Correct</div>
+                                <div class="mr-3">${unattempted} Unattempted</div>
                             </div>
                         </div>
             `;

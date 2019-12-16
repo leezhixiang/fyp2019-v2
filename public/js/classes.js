@@ -146,8 +146,6 @@ window.onload = () => {
       .then(classes => {
         console.log(classes);
 
-        let html = "";
-
         const adminClasses = classes.filter(
           classroom => classroom.isAdmin === true
         );
@@ -155,10 +153,16 @@ window.onload = () => {
           classroom => classroom.isAdmin === false
         );
 
+        console.log(classes);
+        console.log(adminClasses);
+        console.log(memberClasses);
+
         document.querySelector("#tClasses1").textContent = adminClasses.length;
         document.querySelector("#tClasses2").textContent = memberClasses.length;
 
         if (adminClasses.length !== 0) {
+          let html = "";
+
           adminClasses.forEach(myClass => {
             checkExist = () => {
               if (
@@ -208,6 +212,8 @@ window.onload = () => {
         }
 
         if (memberClasses.length !== 0) {
+          let html = "";
+
           memberClasses.forEach(myClass => {
             checkExist = () => {
               if (
