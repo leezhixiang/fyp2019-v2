@@ -91,7 +91,7 @@ window.onload = () => {
 
   console.log(quizId);
 
-  fetch(`http://localhost:3000/api/quizzes/${quizId}`)
+  fetch(`/api/quizzes/${quizId}`)
     .then(res => res.json())
     .then(res => {
       quiz = res.quiz;

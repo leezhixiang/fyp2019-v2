@@ -35,9 +35,9 @@ window.onload = () => {
   document.querySelector("#quizzes").addEventListener("click", e => {
     e.preventDefault();
     if (token) {
-      window.location.href = "http://localhost:3000/quizzes";
+      window.location.href = "/quizzes";
     } else {
-      window.location.href = "http://localhost:3000/users/login";
+      window.location.href = "/users/login";
     }
   });
 
@@ -45,9 +45,9 @@ window.onload = () => {
   document.querySelector("#reports").addEventListener("click", e => {
     e.preventDefault();
     if (token) {
-      window.location.href = "http://localhost:3000/reports";
+      window.location.href = "/reports";
     } else {
-      window.location.href = "http://localhost:3000/users/login";
+      window.location.href = "/users/login";
     }
   });
 
@@ -55,16 +55,16 @@ window.onload = () => {
   document.querySelector("#classes").addEventListener("click", e => {
     e.preventDefault();
     if (token) {
-      window.location.href = "http://localhost:3000/classes";
+      window.location.href = "/classes";
     } else {
-      window.location.href = "http://localhost:3000/users/login";
+      window.location.href = "/users/login";
     }
   });
 
   // notification
   document.querySelector("#jewelButton").addEventListener("click", e => {
     if (!token) {
-      return (window.location.href = "http://localhost:3000/users/login");
+      return (window.location.href = "/users/login");
     }
   });
 
@@ -132,7 +132,7 @@ window.onload = () => {
   // logout button
   document.querySelector("#logout").addEventListener("click", function(e) {
     localStorage.removeItem("auth_token");
-    window.location.href = "http://localhost:3000/";
+    window.location.href = "/";
   });
 
   // quiz details
@@ -140,7 +140,7 @@ window.onload = () => {
   const quizId = pathName[2];
 
   document.querySelector("#printBtn").addEventListener("click", function(e) {
-    window.location.href = `http://localhost:3000/print/quizzes/${quizId}`;
+    window.location.href = `/print/quizzes/${quizId}`;
   });
 
   passHeader = token => {
@@ -151,7 +151,7 @@ window.onload = () => {
     }
   };
 
-  fetch(`http://localhost:3000/api/quizzes/${quizId}`, {
+  fetch(`/api/quizzes/${quizId}`, {
     method: "GET",
     headers: passHeader(token)
   })
@@ -317,13 +317,13 @@ window.onload = () => {
 
   // host game
   document.querySelector("#hostBtn").addEventListener("click", e => {
-    window.location.href = `http://localhost:3000/games/host-game?quizId=${quizId}`;
+    window.location.href = `/games/host-game?quizId=${quizId}`;
   });
 
   // favorite
   document.querySelector("#favBtn").addEventListener("click", e => {
     if (!token) {
-      return (window.location.href = "http://localhost:3000/users/login");
+      return (window.location.href = "/users/login");
     }
     // unfavorite
     if (document.querySelector("#favIcon").classList.contains("fa-star")) {
@@ -332,7 +332,7 @@ window.onload = () => {
         document.querySelector("#favIcon").classList.add("fa-star-o");
       }, 15);
 
-      fetch(`http://localhost:3000/api/library/favorites/${quizId}`, {
+      fetch(`/api/library/favorites/${quizId}`, {
         method: "DELETE",
         headers: {
           authorization: `Bearer ${token}`
@@ -347,7 +347,7 @@ window.onload = () => {
         document.querySelector("#favIcon").classList.add("fa-star");
       }, 15);
 
-      fetch(`http://localhost:3000/api/library/favorites/`, {
+      fetch(`/api/library/favorites/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -365,7 +365,7 @@ window.onload = () => {
   document.querySelector("#shareBtn").addEventListener("click", e => {
     console.log(token);
     if (!token) {
-      return (window.location.href = "http://localhost:3000/users/login");
+      return (window.location.href = "/users/login");
     }
     $("#exampleModalCenter").modal("toggle");
   });
@@ -374,7 +374,7 @@ window.onload = () => {
     e.preventDefault();
     const email = document.querySelector("#email").value;
 
-    fetch(`http://localhost:3000/api/library/shared`, {
+    fetch(`/api/library/shared`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

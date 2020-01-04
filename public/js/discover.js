@@ -34,9 +34,9 @@ window.onload = () => {
   document.querySelector("#quizzes").addEventListener("click", e => {
     e.preventDefault();
     if (token) {
-      window.location.href = "http://localhost:3000/quizzes";
+      window.location.href = "/quizzes";
     } else {
-      window.location.href = "http://localhost:3000/users/login";
+      window.location.href = "/users/login";
     }
   });
 
@@ -44,9 +44,9 @@ window.onload = () => {
   document.querySelector("#reports").addEventListener("click", e => {
     e.preventDefault();
     if (token) {
-      window.location.href = "http://localhost:3000/reports";
+      window.location.href = "/reports";
     } else {
-      window.location.href = "http://localhost:3000/users/login";
+      window.location.href = "/users/login";
     }
   });
 
@@ -54,16 +54,16 @@ window.onload = () => {
   document.querySelector("#classes").addEventListener("click", e => {
     e.preventDefault();
     if (token) {
-      window.location.href = "http://localhost:3000/classes";
+      window.location.href = "/classes";
     } else {
-      window.location.href = "http://localhost:3000/users/login";
+      window.location.href = "/users/login";
     }
   });
 
   // notification
   document.querySelector("#jewelButton").addEventListener("click", e => {
     if (!token) {
-      return (window.location.href = "http://localhost:3000/users/login");
+      return (window.location.href = "/users/login");
     }
   });
 
@@ -131,11 +131,11 @@ window.onload = () => {
   // logout button
   document.querySelector("#logout").addEventListener("click", function(e) {
     localStorage.removeItem("auth_token");
-    window.location.href = "http://localhost:3000/";
+    window.location.href = "/";
   });
 
   // get quizzes from api
-  fetch(`http://localhost:3000/api/quizzes`)
+  fetch(`/api/quizzes`)
     .then(function(res) {
       return res.json();
     })

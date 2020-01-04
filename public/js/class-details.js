@@ -61,7 +61,7 @@ window.onload = () => {
   // notification
   document.querySelector("#jewelButton").addEventListener("click", e => {
     if (!token) {
-      return (window.location.href = "http://localhost:3000/users/login");
+      return (window.location.href = "/users/login");
     }
   });
 
