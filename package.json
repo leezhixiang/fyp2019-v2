@@ -13,7 +13,7 @@
     "moment": "^2.24.0",
     "mongoose": "^5.7.8",
     "path": "^0.12.7",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "socketio-jwt-auth": "^0.1.0"
   },
   "devDependencies": {},
